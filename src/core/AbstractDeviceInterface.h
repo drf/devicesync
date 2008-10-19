@@ -10,6 +10,12 @@
 
 #include <QObject>
 #include <kdemacros.h>
+#include <KPluginFactory>
+#include <KPluginLoader>
+
+#define DEVICESYNC_PLUGIN_EXPORT( c ) \
+    K_PLUGIN_FACTORY( DeviceSyncFactory, registerPlugin< c >(); ) \
+    K_EXPORT_PLUGIN( DeviceSyncFactory("c") )
 
 class KDE_EXPORT AbstractDeviceInterface : public QObject
 {

@@ -7,15 +7,15 @@
 
 #include "LocalStorage.h"
 
+DEVICESYNC_PLUGIN_EXPORT(LocalStorage)
+
 LocalStorage::LocalStorage(QObject *parent, const QVariantList&)
 {
-    // TODO Auto-generated constructor stub
 
 }
 
 LocalStorage::~LocalStorage()
 {
-    // TODO Auto-generated destructor stub
 }
 
 void LocalStorage::init()
