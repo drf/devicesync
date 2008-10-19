@@ -22,4 +22,10 @@ DeviceSyncView::~DeviceSyncView()
 
 }
 
+void DeviceSyncView::addDevice(const QString &name, const QVariant &data)
+{
+    ui_devicesyncview_base.leftDeviceBox->addItem(name, data);
+    ui_devicesyncview_base.rightDeviceBox->addItem(name, data);
+}
+
 #include "devicesyncview.moc"

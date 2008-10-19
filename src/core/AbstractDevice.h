@@ -8,18 +8,32 @@
 #ifndef ABSTRACTDEVICE_H
 #define ABSTRACTDEVICE_H
 
+#include <QObject>
 #include <QList>
 
-class AbstractDevice
+#include <kdemacros.h>
+
+class KDE_EXPORT AbstractDevice
 {
+    Q_PROPERTY(QString name READ name WRITE setName)
+
     public:
         typedef QList<AbstractDevice*> List;
 
         AbstractDevice();
         virtual ~AbstractDevice();
+
+        QString name();
+
+    protected:
+        void setName(const QString &name);
+
+    private:
+        class Private;
+        Private *d;
 };
 
-class DeviceContainer
+class KDE_EXPORT DeviceContainer
 {
     public:
         typedef QList<DeviceContainer*> List;
@@ -32,7 +46,5 @@ class DeviceContainer
         AbstractDevice *device;
         Status status;
 };
-
-Q_DECLARE_METATYPE(AbstractDevice)
 
 #endif /* ABSTRACTDEVICE_H_ */
