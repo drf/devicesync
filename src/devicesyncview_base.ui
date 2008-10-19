@@ -49,10 +49,10 @@
           </spacer>
          </item>
          <item>
-          <widget class="KPushButton" name="kpushbutton" />
+          <widget class="KPushButton" name="moveRightButton" />
          </item>
          <item>
-          <widget class="KPushButton" name="kpushbutton_2" />
+          <widget class="KPushButton" name="moveLeftButton" />
          </item>
          <item>
           <spacer name="verticalSpacer_2" >

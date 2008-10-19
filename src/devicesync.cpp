@@ -54,7 +54,7 @@ void DeviceSync::setupActions()
 
     KStandardAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
 
-    KAction *connectDevice = new KAction(KIcon(""), i18n("&Connect Device..."), this);
+    KAction *connectDevice = new KAction(KIcon("network-connect"), i18n("&Connect Device..."), this);
     actionCollection()->addAction("connect_device", connectDevice);
 
 }
