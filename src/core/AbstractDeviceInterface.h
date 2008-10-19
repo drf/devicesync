@@ -8,10 +8,11 @@
 #ifndef ABSTRACTDEVICEINTERFACE_H
 #define ABSTRACTDEVICEINTERFACE_H
 
-#include <QObject>
 #include <kdemacros.h>
 #include <KPluginFactory>
 #include <KPluginLoader>
+
+#include "AbstractDevice.h"
 
 #define DEVICESYNC_PLUGIN_EXPORT( c ) \
     K_PLUGIN_FACTORY( DeviceSyncFactory, registerPlugin< c >(); ) \
@@ -32,8 +33,8 @@ class KDE_EXPORT AbstractDeviceInterface : public QObject
         virtual void connectDevice(const QString &uuid) = 0;
         virtual void disconnectDevice(const QString &uuid) = 0;
 
-        virtual void getConnectedDevices() = 0;
-        virtual void getAllDevices() = 0;
+        virtual AbstractDevice::List getConnectedDevices() = 0;
+        virtual DeviceContainer::List getAllDevices() = 0;
 
     signals:
         void deviceConnected();
