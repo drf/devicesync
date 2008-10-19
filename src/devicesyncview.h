@@ -37,6 +37,8 @@ public:
      */
     virtual ~DeviceSyncView();
 
+    void addDevice(const QString &name, const QVariant &data);
+
 private:
     Ui::devicesyncview_base ui_devicesyncview_base;
 

@@ -47,9 +47,6 @@ private slots:
 
     void deviceConnected(AbstractDevice *device);
 
-    void loadLeft();
-    void loadRight();
-
 private:
     void setupActions();
     AbstractDeviceInterface * createPluginFromService(const KService::Ptr &service);
