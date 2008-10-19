@@ -26,10 +26,10 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2" >
          <item>
-          <widget class="KComboBox" name="kcombobox" />
+          <widget class="KComboBox" name="leftDeviceBox" />
          </item>
          <item>
-          <widget class="QTreeView" name="treeView" />
+          <widget class="QTreeView" name="leftTreeView" />
          </item>
         </layout>
        </item>
@@ -72,10 +72,10 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_4" >
          <item>
-          <widget class="KComboBox" name="kcombobox_2" />
+          <widget class="KComboBox" name="rightDeviceBox" />
          </item>
          <item>
-          <widget class="QTreeView" name="treeView_2" />
+          <widget class="QTreeView" name="rightTreeView" />
          </item>
         </layout>
        </item>
