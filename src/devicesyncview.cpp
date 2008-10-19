@@ -13,6 +13,8 @@ DeviceSyncView::DeviceSyncView(QWidget *)
 {
     ui_devicesyncview_base.setupUi(this);
     setAutoFillBackground(true);
+    ui_devicesyncview_base.moveRightButton->setIcon(KIcon("arrow-right"));
+    ui_devicesyncview_base.moveLeftButton->setIcon(KIcon("arrow-left"));
 }
 
 DeviceSyncView::~DeviceSyncView()

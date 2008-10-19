@@ -1,3 +1,7 @@
+
+add_subdirectory(core)
+add_subdirectory(plugins)
+
 set(devicesync_SRCS
    devicesync.cpp
    main.cpp
