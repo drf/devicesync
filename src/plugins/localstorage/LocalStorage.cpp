@@ -7,7 +7,7 @@
 
 #include "LocalStorage.h"
 
-LocalStorage::LocalStorage()
+LocalStorage::LocalStorage(QObject *parent, const QVariantList&)
 {
     // TODO Auto-generated constructor stub
 
@@ -19,6 +19,36 @@ LocalStorage::~LocalStorage()
 }
 
 void LocalStorage::init()
+{
+
+}
+
+void LocalStorage::startWatching()
+{
+
+}
+
+void LocalStorage::stopWatching()
+{
+
+}
+
+void LocalStorage::connectDevice(const QString &uuid)
+{
+
+}
+
+void LocalStorage::disconnectDevice(const QString &uuid)
+{
+
+}
+
+void LocalStorage::getConnectedDevices()
+{
+
+}
+
+void LocalStorage::getAllDevices()
 {
 
 }

@@ -9,8 +9,9 @@
 #define ABSTRACTDEVICEINTERFACE_H
 
 #include <QObject>
+#include <kdemacros.h>
 
-class AbstractDeviceInterface : public QObject
+class KDE_EXPORT AbstractDeviceInterface : public QObject
 {
     public:
         AbstractDeviceInterface();

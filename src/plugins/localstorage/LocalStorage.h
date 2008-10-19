@@ -10,6 +10,8 @@
 
 #include "AbstractDeviceInterface.h"
 
+#include <QVariant>
+
 class LocalStorage : public AbstractDeviceInterface
 {
     public:
