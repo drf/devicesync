@@ -8,8 +8,11 @@
 
 
 #include <kxmlguiwindow.h>
+#include <KService>
 
 #include "ui_prefs_base.h"
+
+#include "AbstractDeviceInterface.h"
 
 class DeviceSyncView;
 class QPrinter;
@@ -40,9 +43,11 @@ public:
 
 private slots:
     void optionsPreferences();
+    bool loadAllPlugins();
 
 private:
     void setupActions();
+    AbstractDeviceInterface * createPluginFromService(const KService::Ptr &service);
 
 private:
     Ui::prefs_base ui_prefs_base ;
@@ -51,6 +56,9 @@ private:
     QPrinter   *m_printer;
     KToggleAction *m_toolbarAction;
     KToggleAction *m_statusbarAction;
+
+    QList<KService::Ptr> m_services;
+    AbstractDeviceInterface::List m_interfaces;
 };
 
 #endif // _DEVICESYNC_H_

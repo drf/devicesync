@@ -20,7 +20,11 @@
 
 class KDE_EXPORT AbstractDeviceInterface : public QObject
 {
+    Q_OBJECT
+
     public:
+        typedef QList<AbstractDeviceInterface*> List;
+
         AbstractDeviceInterface();
         virtual ~AbstractDeviceInterface();
 

@@ -17,3 +17,5 @@ AbstractDeviceInterface::~AbstractDeviceInterface()
 {
     // TODO Auto-generated destructor stub
 }
+
+#include "AbstractDeviceInterface.moc"
