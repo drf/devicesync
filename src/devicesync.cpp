@@ -18,6 +18,10 @@
 #include <kactioncollection.h>
 #include <kstandardaction.h>
 
+#include <KServiceTypeTrader>
+#include <KPluginSelector>
+#include <KPluginInfo>
+
 #include <KDE/KLocale>
 
 DeviceSync::DeviceSync()
@@ -32,6 +36,8 @@ DeviceSync::DeviceSync()
 
     // then, setup our actions
     setupActions();
+
+    loadAllPlugins();
 
     // add a status bar
     statusBar()->show();
@@ -76,6 +82,62 @@ void DeviceSync::optionsPreferences()
     connect(dialog, SIGNAL(settingsChanged(QString)), m_view, SLOT(settingsChanged()));
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->show();
+}
+
+bool DeviceSync::loadAllPlugins()
+{
+    KService::List offers;
+
+    //Static plugins
+    offers = KServiceTypeTrader::self()->query("Devicesync/Plugin");
+
+    bool loaded = false;
+
+    KSharedConfig::Ptr config = KGlobal::config();
+    KConfigGroup conf(config, "Plugins");
+
+    for (int i = 0; i < offers.size(); i++) {
+        KService::Ptr offer = offers[i];
+        m_services.append(offer);
+
+        AbstractDeviceInterface * section;
+
+        KPluginInfo description(offer);
+        description.load(conf);
+
+        bool selected = description.isPluginEnabled();
+
+        if (selected) {
+            if ((section = createPluginFromService(offer)) != 0) {
+                kDebug() << "# Plugin " + description.name() + " found";
+                kDebug() << "# Version: " + description.version();
+                kDebug() << "# Description: " + description.comment() + description.icon();
+                kDebug() << "# Author: " + description.author();
+                kDebug() << "# Website: " + description.website();
+            } else {
+                kDebug() << "Error loading Devicesync plugin ("
+                << (offers[i])->library() << ")" << endl;
+            }
+        } else {
+            kDebug() << "# Plugin " + description.name() + " found, however it's not activated, skipping...";
+            continue;
+        }
+    }
+}
+
+AbstractDeviceInterface * DeviceSync::createPluginFromService(const KService::Ptr &service)
+{
+    //try to load the specified library
+    KPluginFactory *factory = KPluginLoader(service->library()).factory();
+
+    if (!factory) {
+        kError(5001) << "KPluginFactory could not load the plugin:" << service->library();
+        return 0;
+    }
+
+    QObject * plugin = factory->create< AbstractDeviceInterface >();
+
+    return qobject_cast<AbstractDeviceInterface *>(plugin);
 }
 
 #include "devicesync.moc"
