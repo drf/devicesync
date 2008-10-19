@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 {
     KAboutData about("devicesync", 0, ki18n("DeviceSync"), version, ki18n(description),
                      KAboutData::License_GPL, ki18n("(C) 2008 Dario Freddi"), KLocalizedString(), 0, "drf54321@gmail.com");
-    about.addAuthor( ki18n("Dario Freddi"), KLocalizedString("Maintainer"), "drf54321@gmail.com" );
+    about.addAuthor( ki18n("Dario Freddi"), ki18n("Maintainer"), "drf54321@gmail.com" );
     KCmdLineArgs::init(argc, argv, &about);
 
     KCmdLineOptions options;

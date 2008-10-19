@@ -12,7 +12,6 @@
 DeviceSyncView::DeviceSyncView(QWidget *)
 {
     ui_devicesyncview_base.setupUi(this);
-    settingsChanged();
     setAutoFillBackground(true);
 }
 

@@ -50,10 +50,12 @@ DeviceSync::~DeviceSync()
 
 void DeviceSync::setupActions()
 {
-    KStandardAction::openNew(this, SLOT(fileNew()), actionCollection());
     KStandardAction::quit(qApp, SLOT(closeAllWindows()), actionCollection());
 
     KStandardAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
+
+    KAction *connectDevice = new KAction(KIcon(""), i18n("&Connect Device..."), this);
+    actionCollection()->addAction("connect_device", connectDevice);
 
 }
 

@@ -39,7 +39,6 @@ public:
     virtual ~DeviceSync();
 
 private slots:
-    void fileNew();
     void optionsPreferences();
 
 private:
