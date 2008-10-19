@@ -43,12 +43,12 @@ void LocalStorage::disconnectDevice(const QString &uuid)
 
 }
 
-void LocalStorage::getConnectedDevices()
+AbstractDevice::List LocalStorage::getConnectedDevices()
 {
 
 }
 
-void LocalStorage::getAllDevices()
+DeviceContainer::List LocalStorage::getAllDevices()
 {
 
 }

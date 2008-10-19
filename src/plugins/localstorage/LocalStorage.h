@@ -27,8 +27,8 @@ class LocalStorage : public AbstractDeviceInterface
         void connectDevice(const QString &uuid);
         void disconnectDevice(const QString &uuid);
 
-        void getConnectedDevices();
-        void getAllDevices();
+        AbstractDevice::List getConnectedDevices();
+        DeviceContainer::List getAllDevices();
 };
 
 #endif /* LOCALSTORAGE_H_ */
