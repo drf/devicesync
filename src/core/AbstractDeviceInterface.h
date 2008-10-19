@@ -46,4 +46,6 @@ class KDE_EXPORT AbstractDeviceInterface : public QObject
         void newDeviceAvailable();
 };
 
+Q_DECLARE_METATYPE(AbstractDeviceInterface)
+
 #endif /* ABSTRACTDEVICEINTERFACE_H */

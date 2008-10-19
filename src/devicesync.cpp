@@ -140,4 +140,19 @@ AbstractDeviceInterface * DeviceSync::createPluginFromService(const KService::Pt
     return qobject_cast<AbstractDeviceInterface *>(plugin);
 }
 
+void DeviceSync::deviceConnected(AbstractDevice *device)
+{
+    m_view->addDevice(device->name(), device)
+}
+
+void DeviceSync::loadLeft()
+{
+
+}
+
+void DeviceSync::loadRight()
+{
+
+}
+
 #include "devicesync.moc"

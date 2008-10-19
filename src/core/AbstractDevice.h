@@ -33,4 +33,6 @@ class DeviceContainer
         Status status;
 };
 
+Q_DECLARE_METATYPE(AbstractDevice)
+
 #endif /* ABSTRACTDEVICE_H_ */
