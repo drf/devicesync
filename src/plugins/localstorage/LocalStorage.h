@@ -16,10 +16,17 @@ class LocalStorage : public AbstractDeviceInterface
         LocalStorage(QObject *parent, const QVariantList&);
         virtual ~LocalStorage();
 
-        void init();
+        virtual void init();
 
     public slots:
-        QAbstractItemModel *getFileList();
+        void startWatching();
+        void stopWatching();
+
+        void connectDevice(const QString &uuid);
+        void disconnectDevice(const QString &uuid);
+
+        void getConnectedDevices();
+        void getAllDevices();
 };
 
 #endif /* LOCALSTORAGE_H_ */

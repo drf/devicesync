@@ -19,7 +19,19 @@ class AbstractDeviceInterface : public QObject
         virtual void init() = 0;
 
     public slots:
-        virtual QAbstractItemModel * getFileList() = 0;
+        virtual void startWatching() = 0;
+        virtual void stopWatching() = 0;
+
+        virtual void connectDevice(const QString &uuid) = 0;
+        virtual void disconnectDevice(const QString &uuid) = 0;
+
+        virtual void getConnectedDevices() = 0;
+        virtual void getAllDevices() = 0;
+
+    signals:
+        void deviceConnected();
+        void deviceDisconnected();
+        void newDeviceAvailable();
 };
 
 #endif /* ABSTRACTDEVICEINTERFACE_H */
