@@ -1,2 +1,5 @@
 add_subdirectory(localstorage)
-add_subdirectory(mtp)
+
+if(MTP_FOUND)
+	add_subdirectory(mtp)
+endif(MTP_FOUND)
