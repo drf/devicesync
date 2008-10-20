@@ -114,6 +114,11 @@ bool DeviceSync::loadAllPlugins()
                 kDebug() << "# Description: " + description.comment() + description.icon();
                 kDebug() << "# Author: " + description.author();
                 kDebug() << "# Website: " + description.website();
+
+                connect(section, SIGNAL(deviceConnected(AbstractDevice*)), this, SLOT(deviceConnected(AbstractDevice*)));
+
+                m_interfaces.append(section);
+                section->init();
             } else {
                 kDebug() << "Error loading Devicesync plugin ("
                 << (offers[i])->library() << ")" << endl;
@@ -142,6 +147,7 @@ AbstractDeviceInterface * DeviceSync::createPluginFromService(const KService::Pt
 
 void DeviceSync::deviceConnected(AbstractDevice *device)
 {
+    kDebug() << "A new device has been connected:" << device->name();
     m_view->addDevice(device->name(), device->name());
 }
 

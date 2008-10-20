@@ -1,5 +1,6 @@
 set(localstorageplugin_SRCS
     LocalStorage.cpp
+    LocalStorageDevice.cpp
 )
 
 kde4_add_plugin(devicesync_localstorageplugin ${localstorageplugin_SRCS})

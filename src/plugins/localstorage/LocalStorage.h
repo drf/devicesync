@@ -14,6 +14,8 @@
 
 class LocalStorage : public AbstractDeviceInterface
 {
+    Q_OBJECT
+
     public:
         LocalStorage(QObject *parent, const QVariantList&);
         virtual ~LocalStorage();
@@ -29,6 +31,14 @@ class LocalStorage : public AbstractDeviceInterface
 
         AbstractDevice::List getConnectedDevices();
         DeviceContainer::List getAllDevices();
+
+    signals:
+        void deviceConnected(AbstractDevice *device);
+        void deviceDisconnected(AbstractDevice *device);
+        void newDeviceAvailable(AbstractDevice *device);
+
+    private:
+        DeviceContainer::List m_devices;
 };
 
 #endif /* LOCALSTORAGE_H_ */
