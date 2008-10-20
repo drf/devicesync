@@ -10,6 +10,8 @@
 
 #include "AbstractDevice.h"
 
+class QFileSystemModel;
+
 class LocalStorageDevice : public AbstractDevice
 {
     public:
@@ -17,6 +19,9 @@ class LocalStorageDevice : public AbstractDevice
         virtual ~LocalStorageDevice();
 
         QAbstractItemModel * getFileModel();
+
+    private:
+        QFileSystemModel *m_model;
 };
 
 #endif /* LOCALSTORAGEDEVICE_H_ */

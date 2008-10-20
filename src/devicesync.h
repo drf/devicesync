@@ -41,6 +41,8 @@ public:
      */
     virtual ~DeviceSync();
 
+    AbstractDevice *getConnectedDeviceByName(const QString &name);
+
 private slots:
     void optionsPreferences();
     bool loadAllPlugins();

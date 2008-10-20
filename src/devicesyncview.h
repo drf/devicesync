@@ -8,6 +8,8 @@
 
 #include <QtGui/QWidget>
 
+#include "devicesync.h"
+
 #include "ui_devicesyncview_base.h"
 
 class QPainter;
@@ -30,7 +32,7 @@ public:
     /**
      * Default constructor
      */
-    DeviceSyncView(QWidget *parent);
+    DeviceSyncView(DeviceSync *parent);
 
     /**
      * Destructor
@@ -39,8 +41,13 @@ public:
 
     void addDevice(const QString &name, const QVariant &data);
 
+private slots:
+    void leftDeviceChanged(const QString &name);
+    void rightDeviceChanged(const QString &name);
+
 private:
     Ui::devicesyncview_base ui_devicesyncview_base;
+    DeviceSync *m_core;
 
 signals:
     /**
