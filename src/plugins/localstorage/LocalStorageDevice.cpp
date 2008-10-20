@@ -28,6 +28,11 @@ QAbstractItemModel *LocalStorageDevice::getFileModel()
     return m_model;
 }
 
+QString LocalStorageDevice::getPathForCurrentIndex(const QModelIndex &index)
+{
+    return m_model->filePath(index);
+}
+
 int LocalStorageDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 {
     int token = getNextTransferToken();

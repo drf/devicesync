@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QModelIndex>
 
 #include <kdemacros.h>
 
@@ -29,6 +30,7 @@ public:
     QString name();
 
     virtual QAbstractItemModel *getFileModel() = 0;
+    virtual QString getPathForCurrentIndex(const QModelIndex &index) = 0;
 
 public slots:
     virtual int sendFileToDevice(const QString &fromPath, const QString &toPath) = 0;

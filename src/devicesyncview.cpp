@@ -6,6 +6,8 @@
 #include "devicesyncview.h"
 #include "settings.h"
 
+#include "AbstractDeviceInterface.h"
+
 #include <klocale.h>
 #include <QtGui/QLabel>
 
