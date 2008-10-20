@@ -76,6 +76,11 @@ DeviceSync::~DeviceSync()
     delete d;
 }
 
+QueueManager * DeviceSync::queueManager()
+{
+    return d->manager;
+}
+
 void DeviceSync::setupActions()
 {
     KStandardAction::quit(qApp, SLOT(closeAllWindows()), actionCollection());

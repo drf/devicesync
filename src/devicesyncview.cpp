@@ -7,6 +7,7 @@
 #include "settings.h"
 
 #include "AbstractDeviceInterface.h"
+#include "QueueManager.h"
 
 #include <klocale.h>
 #include <QtGui/QLabel>
@@ -23,6 +24,10 @@ DeviceSyncView::DeviceSyncView(DeviceSync *parent)
             SLOT(leftDeviceChanged(const QString&)));
     connect(ui_devicesyncview_base.rightDeviceBox, SIGNAL(currentIndexChanged(const QString&)),
             SLOT(rightDeviceChanged(const QString&)));
+    connect(ui_devicesyncview_base.moveRightButton, SIGNAL(clicked()),
+            this, SLOT(addToQueueFromLeft()));
+    connect(ui_devicesyncview_base.moveLeftButton, SIGNAL(clicked()),
+            this, SLOT(addToQueueFromRight()));
 }
 
 DeviceSyncView::~DeviceSyncView()
@@ -47,6 +52,7 @@ void DeviceSyncView::leftDeviceChanged(const QString &name)
     kDebug() << "Loading new model";
     AbstractDevice *device = m_core->getConnectedDeviceByName(name);
     ui_devicesyncview_base.leftTreeView->setModel(device->getFileModel());
+    m_leftDevice = device;
 }
 
 void DeviceSyncView::rightDeviceChanged(const QString &name)
@@ -54,6 +60,23 @@ void DeviceSyncView::rightDeviceChanged(const QString &name)
     kDebug() << "Loading new model";
     AbstractDevice *device = m_core->getConnectedDeviceByName(name);
     ui_devicesyncview_base.rightTreeView->setModel(device->getFileModel());
+    m_rightDevice = device;
+}
+
+void DeviceSyncView::addToQueueFromLeft()
+{
+    m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_leftDevice,
+            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()),
+            m_rightDevice,
+            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()));
+}
+
+void DeviceSyncView::addToQueueFromRight()
+{
+    m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_rightDevice,
+            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()),
+            m_leftDevice,
+            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()));
 }
 
 #include "devicesyncview.moc"

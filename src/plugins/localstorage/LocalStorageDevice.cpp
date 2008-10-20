@@ -8,7 +8,6 @@
 #include "LocalStorageDevice.h"
 
 #include <QFileSystemModel>
-#include <kio/job.h>
 #include <kio/copyjob.h>
 
 LocalStorageDevice::LocalStorageDevice()
@@ -40,6 +39,9 @@ int LocalStorageDevice::sendFileToDevice(const QString &fromPath, const QString 
     KJob *job = KIO::copy(KUrl::fromPath(fromPath), KUrl::fromPath(toPath));
     job->setProperty("transfer_token", token);
 
+    connect(job, SIGNAL(copyingDone(KIO::Job*,const KUrl&,const KUrl&,time_t,bool,bool)),
+            this, SLOT(sendToDeviceDone(KIO::Job*,const KUrl&,const KUrl&,time_t,bool,bool)));
+
     return token;
 }
 
@@ -55,7 +57,20 @@ int LocalStorageDevice::getFileFromDevice(const QString &path, const QString &to
     KJob *job = KIO::copy(KUrl::fromPath(path), KUrl::fromPath(toPath));
     job->setProperty("transfer_token", token);
 
+    connect(job, SIGNAL(copyingDone(KIO::Job*,const KUrl&,const KUrl&,time_t,bool,bool)),
+            this, SLOT(getFromDeviceDone(KIO::Job*,const KUrl&,const KUrl&,time_t,bool,bool)));
+
     return token;
+}
+
+void LocalStorageDevice::sendToDeviceDone(KIO::Job *job,const KUrl&,const KUrl &to,time_t,bool,bool)
+{
+    emit fileCopiedToDevice(job->property("transfer_token").toInt(), to.pathOrUrl());
+}
+
+void LocalStorageDevice::getFromDeviceDone(KIO::Job *job,const KUrl&,const KUrl &to,time_t,bool,bool)
+{
+    emit fileCopiedFromDevice(job->property("transfer_token").toInt(), to.pathOrUrl());
 }
 
 int LocalStorageDevice::getByteArrayFromDeviceFile(const QString &path)

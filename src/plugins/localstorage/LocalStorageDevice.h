@@ -9,8 +9,10 @@
 #define LOCALSTORAGEDEVICE_H
 
 #include "AbstractDevice.h"
+#include <kio/job.h>
 
 class QFileSystemModel;
+class KJob;
 
 class LocalStorageDevice : public AbstractDevice
 {
@@ -29,6 +31,10 @@ public slots:
 
     int getFileFromDevice(const QString &path, const QString &toPath);
     int getByteArrayFromDeviceFile(const QString &path);
+
+private slots:
+    void sendToDeviceDone(KIO::Job*,const KUrl&,const KUrl&,time_t,bool,bool);
+    void getFromDeviceDone(KIO::Job*,const KUrl&,const KUrl&,time_t,bool,bool);
 
 private:
     QFileSystemModel *m_model;

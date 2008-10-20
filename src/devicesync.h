@@ -18,6 +18,7 @@ class KToggleAction;
 class KUrl;
 class AbstractDevice;
 class AbstractDeviceInterface;
+class QueueManager;
 
 /**
  * This class serves as the main window for DeviceSync.  It handles the
@@ -42,6 +43,8 @@ public:
     virtual ~DeviceSync();
 
     AbstractDevice *getConnectedDeviceByName(const QString &name);
+
+    QueueManager *queueManager();
 
 private slots:
     void optionsPreferences();
