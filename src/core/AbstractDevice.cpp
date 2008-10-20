@@ -18,13 +18,15 @@ public:
     QString name;
 };
 
-AbstractDevice::AbstractDevice()
-        : d(new Private())
+AbstractDevice::AbstractDevice(QObject *parent)
+        : QObject(parent),
+        d(new Private())
 {
 }
 
 AbstractDevice::~AbstractDevice()
 {
+    delete d;
 }
 
 void AbstractDevice::setName(const QString &name)
@@ -36,3 +38,5 @@ QString AbstractDevice::name()
 {
     return d->name;
 }
+
+#include "AbstractDevice.moc"

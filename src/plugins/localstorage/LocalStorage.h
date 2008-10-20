@@ -25,20 +25,6 @@ public:
 public slots:
     void startWatching();
     void stopWatching();
-
-    void connectDevice(const QString &uuid);
-    void disconnectDevice(const QString &uuid);
-
-    AbstractDevice::List getConnectedDevices();
-    DeviceContainer::List getAllDevices();
-
-signals:
-    void deviceConnected(AbstractDevice *device);
-    void deviceDisconnected(AbstractDevice *device);
-    void newDeviceAvailable(AbstractDevice *device);
-
-private:
-    DeviceContainer::List m_devices;
 };
 
 #endif /* LOCALSTORAGE_H_ */
