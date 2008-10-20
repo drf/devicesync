@@ -69,6 +69,8 @@ private slots:
     void newDeviceRegistered(AbstractDevice *device);
     void deviceRemoved(AbstractDevice *device);
 
+    void connectDevice();
+
     void processQueue();
 
 private:
