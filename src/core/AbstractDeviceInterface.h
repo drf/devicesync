@@ -50,7 +50,7 @@ public slots:
     DeviceContainer::List getAllDevices();
 
 protected slots:
-    void addDevice(AbstractDevice *device);
+    void addDevice(AbstractDevice *device, const QString &udi = QString());
     void removeDevice(AbstractDevice *device);
     void connectDevice(AbstractDevice *device);
     void disconnectDevice(AbstractDevice *device);

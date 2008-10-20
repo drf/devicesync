@@ -37,6 +37,13 @@ public:
 public slots:
     void startWatching();
     void stopWatching();
+
+private slots:
+    void deviceAdded(const QString &udi);
+    void deviceRemoved(const QString &udi);
+
+private:
+    bool isMtp(const QString &udi);
 };
 
 #endif /* MTPINTERFACE_H */

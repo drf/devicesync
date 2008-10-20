@@ -34,6 +34,9 @@ public:
     LocalStorageDevice();
     virtual ~LocalStorageDevice();
 
+    void connectDevice();
+    void disconnectDevice();
+
     QAbstractItemModel * getFileModel();
     QString getPathForCurrentIndex(const QModelIndex &index);
 

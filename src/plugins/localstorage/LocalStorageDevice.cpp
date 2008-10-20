@@ -24,14 +24,24 @@
 
 LocalStorageDevice::LocalStorageDevice()
 {
-    setName("Local Storage");
-    m_model = new QFileSystemModel();
-    m_model->setRootPath("/");
+
 }
 
 LocalStorageDevice::~LocalStorageDevice()
 {
     // TODO Auto-generated destructor stub
+}
+
+void LocalStorageDevice::connectDevice()
+{
+    setName("Local Storage");
+    m_model = new QFileSystemModel();
+    m_model->setRootPath("/");
+}
+
+void LocalStorageDevice::disconnectDevice()
+{
+    m_model->deleteLater();
 }
 
 QAbstractItemModel *LocalStorageDevice::getFileModel()
