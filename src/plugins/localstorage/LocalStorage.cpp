@@ -56,10 +56,8 @@ AbstractDevice::List LocalStorage::getConnectedDevices()
 {
     AbstractDevice::List retlist;
 
-    foreach (DeviceContainer *ent, m_devices)
-    {
-        if (ent->status == DeviceContainer::Connected)
-        {
+    foreach(DeviceContainer *ent, m_devices) {
+        if (ent->status == DeviceContainer::Connected) {
             retlist.append(ent->device);
         }
     }

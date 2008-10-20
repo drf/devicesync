@@ -25,8 +25,8 @@
 #include <KDE/KLocale>
 
 DeviceSync::DeviceSync()
-    : KXmlGuiWindow(),
-      m_view(new DeviceSyncView(this))
+        : KXmlGuiWindow(),
+        m_view(new DeviceSyncView(this))
 {
     // accept dnd
     setAcceptDrops(true);
@@ -72,7 +72,7 @@ void DeviceSync::optionsPreferences()
     // compare the names of the widgets in the .ui file
     // to the names of the variables in the .kcfg file
     //avoid to have 2 dialogs shown
-    if ( KConfigDialog::showDialog( "settings" ) )  {
+    if (KConfigDialog::showDialog("settings"))  {
         return;
     }
     KConfigDialog *dialog = new KConfigDialog(this, "settings", Settings::self());
@@ -84,7 +84,7 @@ void DeviceSync::optionsPreferences()
     KService::List offers = KServiceTypeTrader::self()->query("Devicesync/Plugin");
 
     pluginSelector->addPlugins(KPluginInfo::fromServices(offers), KPluginSelector::ReadConfigFile,
-            i18n("Plugins"), "Service", KGlobal::config());
+                               i18n("Plugins"), "Service", KGlobal::config());
 
     pluginSelector->load();
 
@@ -92,7 +92,7 @@ void DeviceSync::optionsPreferences()
     page->setIcon(KIcon("preferences-plugin"));
 
     connect(dialog, SIGNAL(settingsChanged(QString)), m_view, SLOT(settingsChanged()));
-    dialog->setAttribute( Qt::WA_DeleteOnClose );
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
 }
 
@@ -165,12 +165,9 @@ void DeviceSync::deviceConnected(AbstractDevice *device)
 
 AbstractDevice * DeviceSync::getConnectedDeviceByName(const QString &name)
 {
-    foreach (AbstractDeviceInterface *ent, m_interfaces)
-    {
-        foreach (AbstractDevice *device, ent->getConnectedDevices())
-        {
-            if (device->name() == name)
-            {
+    foreach(AbstractDeviceInterface *ent, m_interfaces) {
+        foreach(AbstractDevice *device, ent->getConnectedDevices()) {
+            if (device->name() == name) {
                 return device;
             }
         }

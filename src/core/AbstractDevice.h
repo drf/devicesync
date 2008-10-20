@@ -19,36 +19,36 @@ class KDE_EXPORT AbstractDevice
 {
     Q_PROPERTY(QString name READ name WRITE setName)
 
-    public:
-        typedef QList<AbstractDevice*> List;
+public:
+    typedef QList<AbstractDevice*> List;
 
-        AbstractDevice();
-        virtual ~AbstractDevice();
+    AbstractDevice();
+    virtual ~AbstractDevice();
 
-        QString name();
+    QString name();
 
-        virtual QAbstractItemModel *getFileModel() = 0;
+    virtual QAbstractItemModel *getFileModel() = 0;
 
-    protected:
-        void setName(const QString &name);
+protected:
+    void setName(const QString &name);
 
-    private:
-        class Private;
-        Private *d;
+private:
+    class Private;
+    Private *d;
 };
 
 class KDE_EXPORT DeviceContainer
 {
-    public:
-        typedef QList<DeviceContainer*> List;
+public:
+    typedef QList<DeviceContainer*> List;
 
-        enum Status {
-            Connected,
-            Disconnected
-        };
+    enum Status {
+        Connected,
+        Disconnected
+    };
 
-        AbstractDevice *device;
-        Status status;
+    AbstractDevice *device;
+    Status status;
 };
 
 #endif /* ABSTRACTDEVICE_H_ */
