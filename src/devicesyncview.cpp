@@ -34,6 +34,12 @@ void DeviceSyncView::addDevice(const QString &name, const QVariant &data)
     ui_devicesyncview_base.rightDeviceBox->addItem(name, data);
 }
 
+void DeviceSyncView::removeDevice(const QVariant &data)
+{
+    ui_devicesyncview_base.leftDeviceBox->removeItem(ui_devicesyncview_base.leftDeviceBox->findData(data));
+    ui_devicesyncview_base.rightDeviceBox->removeItem(ui_devicesyncview_base.rightDeviceBox->findData(data));
+}
+
 void DeviceSyncView::leftDeviceChanged(const QString &name)
 {
     kDebug() << "Loading new model";

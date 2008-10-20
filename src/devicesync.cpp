@@ -130,6 +130,9 @@ bool DeviceSync::loadAllPlugins()
                 kDebug() << "# Website: " + description.website();
 
                 connect(section, SIGNAL(deviceConnected(AbstractDevice*)), this, SLOT(deviceConnected(AbstractDevice*)));
+                connect(section, SIGNAL(deviceDisconnected(AbstractDevice*)), this, SLOT(deviceDisconnected(AbstractDevice*)));
+                connect(section, SIGNAL(newDeviceRegistered(AbstractDevice*)), this, SLOT(newDeviceRegistered(AbstractDevice*)));
+                connect(section, SIGNAL(deviceRemoved(AbstractDevice*)), this, SLOT(deviceRemoved(AbstractDevice*)));
 
                 m_interfaces.append(section);
                 section->init();
@@ -159,10 +162,26 @@ AbstractDeviceInterface * DeviceSync::createPluginFromService(const KService::Pt
     return qobject_cast<AbstractDeviceInterface *>(plugin);
 }
 
+void DeviceSync::newDeviceRegistered(AbstractDevice *device)
+{
+    kDebug() << "A new device has been registered:" << device->name();
+}
+
 void DeviceSync::deviceConnected(AbstractDevice *device)
 {
     kDebug() << "A new device has been connected:" << device->name();
     m_view->addDevice(device->name(), device->name());
+}
+
+void DeviceSync::deviceDisconnected(AbstractDevice *device)
+{
+    kDebug() << "The following device has been removed:" << device->name();
+    m_view->removeDevice(device->name());
+}
+
+void DeviceSync::deviceRemoved(AbstractDevice *device)
+{
+    kDebug() << "The following device is no longer available:" << device->name();
 }
 
 AbstractDevice * DeviceSync::getConnectedDeviceByName(const QString &name)

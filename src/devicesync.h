@@ -48,6 +48,9 @@ private slots:
     bool loadAllPlugins();
 
     void deviceConnected(AbstractDevice *device);
+    void deviceDisconnected(AbstractDevice *device);
+    void newDeviceRegistered(AbstractDevice *device);
+    void deviceRemoved(AbstractDevice *device);
 
 private:
     void setupActions();

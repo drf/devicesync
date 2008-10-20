@@ -46,7 +46,7 @@ protected slots:
 signals:
     void deviceConnected(AbstractDevice *device);
     void deviceDisconnected(AbstractDevice *device);
-    void newDeviceAvailable(AbstractDevice *device);
+    void newDeviceRegistered(AbstractDevice *device);
     void deviceRemoved(AbstractDevice *device);
 
 private:

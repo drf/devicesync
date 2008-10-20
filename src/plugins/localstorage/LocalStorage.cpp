@@ -11,6 +11,7 @@
 DEVICESYNC_PLUGIN_EXPORT(LocalStorage)
 
 LocalStorage::LocalStorage(QObject *parent, const QVariantList&)
+        : AbstractDeviceInterface(parent)
 {
 
 }
