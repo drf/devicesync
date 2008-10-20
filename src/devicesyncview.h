@@ -40,6 +40,7 @@ public:
     virtual ~DeviceSyncView();
 
     void addDevice(const QString &name, const QVariant &data);
+    void removeDevice(const QVariant &data);
 
 private slots:
     void leftDeviceChanged(const QString &name);

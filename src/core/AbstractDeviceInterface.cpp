@@ -26,6 +26,7 @@ AbstractDeviceInterface::AbstractDeviceInterface(QObject *parent)
 
 AbstractDeviceInterface::~AbstractDeviceInterface()
 {
+    delete d;
 }
 
 AbstractDevice::List AbstractDeviceInterface::getConnectedDevices()
@@ -55,7 +56,7 @@ void AbstractDeviceInterface::addDevice(AbstractDevice *device)
 
     d->m_devices.append(cont);
 
-    emit newDeviceAvailable(device);
+    emit newDeviceRegistered(device);
 }
 
 void AbstractDeviceInterface::removeDevice(AbstractDevice *device)
