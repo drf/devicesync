@@ -12,6 +12,8 @@
 LocalStorageDevice::LocalStorageDevice()
 {
     setName("Local Storage");
+    m_model = new QFileSystemModel();
+    m_model->setRootPath("/");
 }
 
 LocalStorageDevice::~LocalStorageDevice()
@@ -21,5 +23,5 @@ LocalStorageDevice::~LocalStorageDevice()
 
 QAbstractItemModel *LocalStorageDevice::getFileModel()
 {
-    return new QFileSystemModel();
+    return m_model;
 }

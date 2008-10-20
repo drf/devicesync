@@ -88,7 +88,9 @@ void DeviceSync::optionsPreferences()
 
     pluginSelector->load();
 
-    dialog->addPage(pluginSelector, i18n("Plugins"), "plugin_setting");
+    KPageWidgetItem *page = dialog->addPage(pluginSelector, i18n("Plugins"), "plugin_setting");
+    page->setIcon(KIcon("preferences-plugin"));
+
     connect(dialog, SIGNAL(settingsChanged(QString)), m_view, SLOT(settingsChanged()));
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->show();
@@ -159,6 +161,20 @@ void DeviceSync::deviceConnected(AbstractDevice *device)
 {
     kDebug() << "A new device has been connected:" << device->name();
     m_view->addDevice(device->name(), device->name());
+}
+
+AbstractDevice * DeviceSync::getConnectedDeviceByName(const QString &name)
+{
+    foreach (AbstractDeviceInterface *ent, m_interfaces)
+    {
+        foreach (AbstractDevice *device, ent->getConnectedDevices())
+        {
+            if (device->name() == name)
+            {
+                return device;
+            }
+        }
+    }
 }
 
 #include "devicesync.moc"

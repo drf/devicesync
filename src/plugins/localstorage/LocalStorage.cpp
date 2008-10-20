@@ -54,7 +54,17 @@ void LocalStorage::disconnectDevice(const QString &uuid)
 
 AbstractDevice::List LocalStorage::getConnectedDevices()
 {
+    AbstractDevice::List retlist;
 
+    foreach (DeviceContainer *ent, m_devices)
+    {
+        if (ent->status == DeviceContainer::Connected)
+        {
+            retlist.append(ent->device);
+        }
+    }
+
+    return retlist;
 }
 
 DeviceContainer::List LocalStorage::getAllDevices()
