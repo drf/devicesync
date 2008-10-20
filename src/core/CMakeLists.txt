@@ -2,6 +2,7 @@
 set(dscore_SRCS
     AbstractDeviceInterface.cpp
     AbstractDevice.cpp
+    QueueManager.cpp
 )
 
 kde4_add_library(devicesynccore SHARED ${dscore_SRCS})
@@ -16,6 +17,7 @@ install(TARGETS devicesynccore ${INSTALL_TARGETS_DEFAULT_ARGS})
 set(dscore_HDRS
     AbstractDeviceInterface.h
     AbstractDevice.h
+    QueueManager.h
 )
 
 install(FILES ${dscore_HDRS} DESTINATION ${INCLUDE_INSTALL_DIR}/devicesync)
