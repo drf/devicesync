@@ -10,8 +10,7 @@
 class QueueManager::Private
 {
 public:
-    Private()
-    {
+    Private() {
     }
     ~Private() {}
 
@@ -19,8 +18,8 @@ public:
 };
 
 QueueManager::QueueManager(QObject *parent)
- : QObject(parent),
- d(new Private())
+        : QObject(parent),
+        d(new Private())
 {
 
 }
@@ -31,7 +30,7 @@ QueueManager::~QueueManager()
 }
 
 int QueueManager::addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,
-                AbstractDevice *out, const QString &outpath)
+                                AbstractDevice *out, const QString &outpath)
 {
     QueueItem *item = new QueueItem;
 
@@ -51,8 +50,7 @@ int QueueManager::generateItemId()
 {
     int new_id = 0;
 
-    foreach (QueueItem *itm, d->itemList)
-    {
+    foreach(QueueItem *itm, d->itemList) {
         if (itm->jobId >= new_id) {
             new_id = itm->jobId + 1;
         }
@@ -63,10 +61,8 @@ int QueueManager::generateItemId()
 
 void QueueManager::removeJobFromQueue(int jobId)
 {
-    foreach (QueueItem *itm, d->itemList)
-    {
-        if (itm->jobId == jobId)
-        {
+    foreach(QueueItem *itm, d->itemList) {
+        if (itm->jobId == jobId) {
             d->itemList.removeOne(itm);
             delete itm;
         }
@@ -75,8 +71,7 @@ void QueueManager::removeJobFromQueue(int jobId)
 
 void QueueManager::clearQueue()
 {
-    while (!d->itemList.isEmpty())
-    {
+    while (!d->itemList.isEmpty()) {
         QueueItem *itm = d->itemList.takeFirst();
         delete itm;
     }

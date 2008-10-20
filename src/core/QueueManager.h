@@ -12,45 +12,45 @@
 
 class QueueItem
 {
-    public:
-        typedef QList<QueueItem*> List;
+public:
+    typedef QList<QueueItem*> List;
 
-        enum Action {
-            Copy,
-            Move,
-            Delete,
-            Rename
-        };
+    enum Action {
+        Copy,
+        Move,
+        Delete,
+        Rename
+    };
 
-        Action action;
-        AbstractDevice *in_device;
-        AbstractDevice *out_device;
-        QString in_path;
-        QString out_path;
-        int jobId;
+    Action action;
+    AbstractDevice *in_device;
+    AbstractDevice *out_device;
+    QString in_path;
+    QString out_path;
+    int jobId;
 };
 
 class QueueManager : public QObject
 {
     Q_OBJECT
 
-    public:
-        QueueManager(QObject *parent = 0);
-        virtual ~QueueManager();
+public:
+    QueueManager(QObject *parent = 0);
+    virtual ~QueueManager();
 
-    public slots:
-        int addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,
-                AbstractDevice *out = 0, const QString &outpath = QString());
-        void removeJobFromQueue(int jobId);
+public slots:
+    int addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,
+                      AbstractDevice *out = 0, const QString &outpath = QString());
+    void removeJobFromQueue(int jobId);
 
-        void clearQueue();
+    void clearQueue();
 
-    private:
-        int generateItemId();
+private:
+    int generateItemId();
 
-    private:
-        class Private;
-        Private *d;
+private:
+    class Private;
+    Private *d;
 };
 
 #endif /* QUEUEMANAGER_H */
