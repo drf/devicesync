@@ -15,14 +15,15 @@
 
 class QAbstractItemModel;
 
-class KDE_EXPORT AbstractDevice
+class KDE_EXPORT AbstractDevice : public QObject
 {
+    Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName)
 
 public:
     typedef QList<AbstractDevice*> List;
 
-    AbstractDevice();
+    AbstractDevice(QObject *parent = 0);
     virtual ~AbstractDevice();
 
     QString name();
