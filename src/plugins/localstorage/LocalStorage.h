@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef LOCALSTORAGE_H_
-#define LOCALSTORAGE_H_
+#ifndef LOCALSTORAGE_H
+#define LOCALSTORAGE_H
 
 #include "AbstractDeviceInterface.h"
 
@@ -39,4 +39,4 @@ public slots:
     void stopWatching();
 };
 
-#endif /* LOCALSTORAGE_H_ */
+#endif /* LOCALSTORAGE_H */

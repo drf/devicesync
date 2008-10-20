@@ -127,7 +127,7 @@ void DeviceSync::optionsPreferences()
     KConfigDialog *dialog = new KConfigDialog(this, "settings", Settings::self());
     QWidget *generalSettingsDlg = new QWidget;
     ui_prefs_base.setupUi(generalSettingsDlg);
-    dialog->addPage(generalSettingsDlg, i18n("General"), "package_setting");
+    dialog->addPage(generalSettingsDlg, i18n("General Settings"), "package_setting");
 
     KPluginSelector *pluginSelector = new KPluginSelector();
     KService::List offers = KServiceTypeTrader::self()->query("Devicesync/Plugin");
