@@ -54,22 +54,22 @@ DeviceSyncView::~DeviceSyncView()
 
 void DeviceSyncView::showQueueWidgetContextMenu()
 {
-    if ( ui_devicesyncview_base.listWidget->selectedItems().isEmpty() )
+    if (ui_devicesyncview_base.listWidget->selectedItems().isEmpty())
         return;
 
     QMenu *menu = new QMenu(this);
 
-    QAction *removeAction = menu->addAction( KIcon("edit-delete"),
-            i18n("&Remove from Queue"));
+    QAction *removeAction = menu->addAction(KIcon("edit-delete"),
+                                            i18n("&Remove from Queue"));
     connect(removeAction, SIGNAL(triggered()), SLOT(removeSelectedActions()));
 
     menu->addSeparator();
 
-    QAction *clearAction = menu->addAction( KIcon("edit-clear"),
-                i18n("&Clear Queue"));
-        connect(clearAction, SIGNAL(triggered()), SLOT(clearQueue()));
+    QAction *clearAction = menu->addAction(KIcon("edit-clear"),
+                                           i18n("&Clear Queue"));
+    connect(clearAction, SIGNAL(triggered()), SLOT(clearQueue()));
 
-    menu->popup( QCursor::pos() );
+    menu->popup(QCursor::pos());
 }
 
 void DeviceSyncView::addDevice(const QString &name, const QVariant &data)
@@ -136,8 +136,7 @@ void DeviceSyncView::addToQueueFromRight()
 
 void DeviceSyncView::removeSelectedActions()
 {
-    foreach (QListWidgetItem *itm, ui_devicesyncview_base.listWidget->selectedItems())
-    {
+    foreach(QListWidgetItem *itm, ui_devicesyncview_base.listWidget->selectedItems()) {
         m_core->queueManager()->removeJobFromQueue(itm->data(40).toInt());
         delete itm;
     }
