@@ -91,9 +91,11 @@ void DeviceSync::optionsPreferences()
     KPageWidgetItem *page = dialog->addPage(pluginSelector, i18n("Plugins"), "plugin_setting");
     page->setIcon(KIcon("preferences-plugin"));
 
-    connect(dialog, SIGNAL(settingsChanged(QString)), m_view, SLOT(settingsChanged()));
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->show();
+    dialog->exec();
+
+    pluginSelector->save();
+
+    dialog->deleteLater();
 }
 
 bool DeviceSync::loadAllPlugins()
