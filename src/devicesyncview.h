@@ -63,6 +63,10 @@ private slots:
     void addToQueueFromLeft();
     void addToQueueFromRight();
 
+    void showQueueWidgetContextMenu();
+    void removeSelectedActions();
+    void clearQueue();
+
 private:
     Ui::devicesyncview_base ui_devicesyncview_base;
     DeviceSync *m_core;

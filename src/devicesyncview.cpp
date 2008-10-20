@@ -25,6 +25,7 @@
 
 #include <klocale.h>
 #include <QtGui/QLabel>
+#include <QMenu>
 
 DeviceSyncView::DeviceSyncView(DeviceSync *parent)
         : m_core(parent)
@@ -42,11 +43,33 @@ DeviceSyncView::DeviceSyncView(DeviceSync *parent)
             this, SLOT(addToQueueFromLeft()));
     connect(ui_devicesyncview_base.moveLeftButton, SIGNAL(clicked()),
             this, SLOT(addToQueueFromRight()));
+    connect(ui_devicesyncview_base.listWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
+            this, SLOT(showQueueWidgetContextMenu()));
 }
 
 DeviceSyncView::~DeviceSyncView()
 {
 
+}
+
+void DeviceSyncView::showQueueWidgetContextMenu()
+{
+    if ( ui_devicesyncview_base.listWidget->selectedItems().isEmpty() )
+        return;
+
+    QMenu *menu = new QMenu(this);
+
+    QAction *removeAction = menu->addAction( KIcon("edit-delete"),
+            i18n("&Remove from Queue"));
+    connect(removeAction, SIGNAL(triggered()), SLOT(removeSelectedActions()));
+
+    menu->addSeparator();
+
+    QAction *clearAction = menu->addAction( KIcon("edit-clear"),
+                i18n("&Clear Queue"));
+        connect(clearAction, SIGNAL(triggered()), SLOT(clearQueue()));
+
+    menu->popup( QCursor::pos() );
 }
 
 void DeviceSyncView::addDevice(const QString &name, const QVariant &data)
@@ -79,18 +102,51 @@ void DeviceSyncView::rightDeviceChanged(const QString &name)
 
 void DeviceSyncView::addToQueueFromLeft()
 {
-    m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_leftDevice,
-                                          m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()),
-                                          m_rightDevice,
-                                          m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()));
+    int token =
+        m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_leftDevice,
+                                              m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()),
+                                              m_rightDevice,
+                                              m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()));
+
+    QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Copy %1 from %2 to %3 in %4",
+            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()),
+            m_leftDevice->name(), m_rightDevice->name(),
+            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex())),
+            ui_devicesyncview_base.listWidget);
+
+    itm->setData(40, token);
 }
 
 void DeviceSyncView::addToQueueFromRight()
 {
-    m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_rightDevice,
-                                          m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()),
-                                          m_leftDevice,
-                                          m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()));
+    int token =
+        m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_rightDevice,
+                                              m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()),
+                                              m_leftDevice,
+                                              m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()));
+
+    QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Copy %1 from %2 to %3 in %4",
+            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()),
+            m_rightDevice->name(), m_leftDevice->name(),
+            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex())),
+            ui_devicesyncview_base.listWidget);
+
+    itm->setData(40, token);
+}
+
+void DeviceSyncView::removeSelectedActions()
+{
+    foreach (QListWidgetItem *itm, ui_devicesyncview_base.listWidget->selectedItems())
+    {
+        m_core->queueManager()->removeJobFromQueue(itm->data(40).toInt());
+        delete itm;
+    }
+}
+
+void DeviceSyncView::clearQueue()
+{
+    m_core->queueManager()->clearQueue();
+    ui_devicesyncview_base.listWidget->clear();
 }
 
 #include "devicesyncview.moc"
