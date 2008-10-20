@@ -7,6 +7,9 @@
 #include "devicesyncview.h"
 #include "settings.h"
 
+#include "AbstractDeviceInterface.h"
+#include "QueueManager.h"
+
 #include <QtGui/QDropEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QPrinter>
@@ -24,15 +27,33 @@
 
 #include <KDE/KLocale>
 
+class DeviceSync::Private
+{
+public:
+    Private()
+    {
+    }
+    ~Private() {}
+
+
+    DeviceSyncView *view;
+    QList<KService::Ptr> services;
+    AbstractDeviceInterface::List interfaces;
+    QueueManager *manager;
+};
+
 DeviceSync::DeviceSync()
         : KXmlGuiWindow(),
-        m_view(new DeviceSyncView(this))
+        d(new Private())
 {
+    d->view = new DeviceSyncView(this);
+    d->manager = new QueueManager(this);
+
     // accept dnd
     setAcceptDrops(true);
 
     // tell the KXmlGuiWindow that this is indeed the main widget
-    setCentralWidget(m_view);
+    setCentralWidget(d->view);
 
     // then, setup our actions
     setupActions();
@@ -52,6 +73,7 @@ DeviceSync::DeviceSync()
 
 DeviceSync::~DeviceSync()
 {
+    delete d;
 }
 
 void DeviceSync::setupActions()
@@ -112,7 +134,7 @@ bool DeviceSync::loadAllPlugins()
 
     for (int i = 0; i < offers.size(); i++) {
         KService::Ptr offer = offers[i];
-        m_services.append(offer);
+        d->services.append(offer);
 
         AbstractDeviceInterface * section;
 
@@ -134,7 +156,7 @@ bool DeviceSync::loadAllPlugins()
                 connect(section, SIGNAL(newDeviceRegistered(AbstractDevice*)), this, SLOT(newDeviceRegistered(AbstractDevice*)));
                 connect(section, SIGNAL(deviceRemoved(AbstractDevice*)), this, SLOT(deviceRemoved(AbstractDevice*)));
 
-                m_interfaces.append(section);
+                d->interfaces.append(section);
                 section->init();
             } else {
                 kDebug() << "Error loading Devicesync plugin ("
@@ -170,13 +192,13 @@ void DeviceSync::newDeviceRegistered(AbstractDevice *device)
 void DeviceSync::deviceConnected(AbstractDevice *device)
 {
     kDebug() << "A new device has been connected:" << device->name();
-    m_view->addDevice(device->name(), device->name());
+    d->view->addDevice(device->name(), device->name());
 }
 
 void DeviceSync::deviceDisconnected(AbstractDevice *device)
 {
     kDebug() << "The following device has been removed:" << device->name();
-    m_view->removeDevice(device->name());
+    d->view->removeDevice(device->name());
 }
 
 void DeviceSync::deviceRemoved(AbstractDevice *device)
@@ -186,7 +208,7 @@ void DeviceSync::deviceRemoved(AbstractDevice *device)
 
 AbstractDevice * DeviceSync::getConnectedDeviceByName(const QString &name)
 {
-    foreach(AbstractDeviceInterface *ent, m_interfaces) {
+    foreach(AbstractDeviceInterface *ent, d->interfaces) {
         foreach(AbstractDevice *device, ent->getConnectedDevices()) {
             if (device->name() == name) {
                 return device;

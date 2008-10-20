@@ -21,6 +21,7 @@ public:
     virtual ~LocalStorageDevice();
 
     QAbstractItemModel * getFileModel();
+    QString getPathForCurrentIndex(const QModelIndex &index);
 
 public slots:
     int sendFileToDevice(const QString &fromPath, const QString &toPath);

@@ -12,12 +12,12 @@
 
 #include "ui_prefs_base.h"
 
-#include "AbstractDeviceInterface.h"
-
 class DeviceSyncView;
 class QPrinter;
 class KToggleAction;
 class KUrl;
+class AbstractDevice;
+class AbstractDeviceInterface;
 
 /**
  * This class serves as the main window for DeviceSync.  It handles the
@@ -58,14 +58,9 @@ private:
 
 private:
     Ui::prefs_base ui_prefs_base ;
-    DeviceSyncView *m_view;
 
-    QPrinter   *m_printer;
-    KToggleAction *m_toolbarAction;
-    KToggleAction *m_statusbarAction;
-
-    QList<KService::Ptr> m_services;
-    AbstractDeviceInterface::List m_interfaces;
+    class Private;
+    Private *d;
 };
 
 #endif // _DEVICESYNC_H_
