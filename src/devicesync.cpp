@@ -88,8 +88,17 @@ void DeviceSync::setupActions()
     KStandardAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
 
     KAction *connectDevice = new KAction(KIcon("network-connect"), i18n("&Connect Device..."), this);
-    actionCollection()->addAction("connect_device", connectDevice);
+    KAction *processQueue = new KAction(KIcon("network-connect"), i18n("Process Q&ueue"), this);
 
+    connect(processQueue, SIGNAL(triggered()), this, SLOT(processQueue()));
+
+    actionCollection()->addAction("connect_device", connectDevice);
+    actionCollection()->addAction("process_queue", processQueue);
+}
+
+void DeviceSync::processQueue()
+{
+    queueManager()->processQueue();
 }
 
 void DeviceSync::optionsPreferences()
