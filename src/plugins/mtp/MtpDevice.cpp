@@ -184,7 +184,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         trackmeta->tracknumber = file->tag()->track();
         trackmeta->date = (char *)file->tag()->year();
         trackmeta->filesize = file->length();
-        trackmeta->filename = url.fileName().toUtf8();
+        trackmeta->filename = qstrdup(url.fileName().toUtf8());
 
         int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( url.path().toUtf8() ), trackmeta,
                     0, this );
