@@ -124,10 +124,14 @@ void DeviceSync::optionsPreferences()
     if (KConfigDialog::showDialog("settings"))  {
         return;
     }
+
+    KPageWidgetItem *page;
+
     KConfigDialog *dialog = new KConfigDialog(this, "settings", Settings::self());
     QWidget *generalSettingsDlg = new QWidget;
     ui_prefs_base.setupUi(generalSettingsDlg);
-    dialog->addPage(generalSettingsDlg, i18n("General Settings"), "package_setting");
+    page = dialog->addPage(generalSettingsDlg, i18n("General Settings"), "package_setting");
+    page->setIcon(KIcon("preferences-other"));
 
     KPluginSelector *pluginSelector = new KPluginSelector();
     KService::List offers = KServiceTypeTrader::self()->query("Devicesync/Plugin");
@@ -137,7 +141,7 @@ void DeviceSync::optionsPreferences()
 
     pluginSelector->load();
 
-    KPageWidgetItem *page = dialog->addPage(pluginSelector, i18n("Plugins"), "plugin_setting");
+    page = dialog->addPage(pluginSelector, i18n("Plugins"), "plugin_setting");
     page->setIcon(KIcon("preferences-plugin"));
 
     dialog->exec();
