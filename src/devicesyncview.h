@@ -46,9 +46,14 @@ private slots:
     void leftDeviceChanged(const QString &name);
     void rightDeviceChanged(const QString &name);
 
+    void addToQueueFromLeft();
+    void addToQueueFromRight();
+
 private:
     Ui::devicesyncview_base ui_devicesyncview_base;
     DeviceSync *m_core;
+    AbstractDevice *m_leftDevice;
+    AbstractDevice *m_rightDevice;
 
 signals:
     /**

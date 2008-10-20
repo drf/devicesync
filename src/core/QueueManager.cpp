@@ -48,6 +48,8 @@ int QueueManager::addJobToQueue(QueueItem::Action action, AbstractDevice *in, co
 
     d->itemList.append(item);
 
+    kDebug() << "Added to queue: copy" << inpath << "to" << outpath << ", job ID: " << item->jobId;
+
     return item->jobId;
 }
 
