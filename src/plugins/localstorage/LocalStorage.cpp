@@ -6,6 +6,7 @@
  */
 
 #include "LocalStorage.h"
+#include "LocalStorageDevice.h"
 
 DEVICESYNC_PLUGIN_EXPORT(LocalStorage)
 
@@ -20,7 +21,15 @@ LocalStorage::~LocalStorage()
 
 void LocalStorage::init()
 {
+    DeviceContainer *cont = new DeviceContainer();
+    LocalStorageDevice *device = new LocalStorageDevice();
 
+    cont->device = device;
+    cont->status = DeviceContainer::Connected;
+
+    m_devices.append(cont);
+
+    emit deviceConnected(device);
 }
 
 void LocalStorage::startWatching()
@@ -52,3 +61,5 @@ DeviceContainer::List LocalStorage::getAllDevices()
 {
 
 }
+
+#include "LocalStorage.moc"

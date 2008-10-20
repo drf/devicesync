@@ -41,9 +41,9 @@ class KDE_EXPORT AbstractDeviceInterface : public QObject
         virtual DeviceContainer::List getAllDevices() = 0;
 
     signals:
-        void deviceConnected();
-        void deviceDisconnected();
-        void newDeviceAvailable();
+        void deviceConnected(AbstractDevice *device);
+        void deviceDisconnected(AbstractDevice *device);
+        void newDeviceAvailable(AbstractDevice *device);
 };
 
 #endif /* ABSTRACTDEVICEINTERFACE_H */
