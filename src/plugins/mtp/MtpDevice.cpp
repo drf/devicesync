@@ -20,11 +20,16 @@
 #include "MtpDevice.h"
 
 #include <KDebug>
+#include <KUrl>
 
 #include <threadweaver/ThreadWeaver.h>
 
 #include <solid/device.h>
 #include <solid/portablemediaplayer.h>
+
+#include <taglib/taglib.h>
+#include <taglib/mpegfile.h>
+#include <taglib/tag.h>
 
 MtpDevice::MtpDevice(const QString &udi, QObject *parent)
  : AbstractDevice(parent),
@@ -164,6 +169,26 @@ QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
 
 int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 {
+    KUrl url = KUrl::fromPath(fromPath);
+
+    if (fromPath.contains(".mp3"))
+    {
+        TagLib::MPEG::File *file = new TagLib::MPEG::File(TagLib::FileName(fromPath.toAscii().data()));
+
+        LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
+        trackmeta->filetype = LIBMTP_FILETYPE_MP3;
+        trackmeta->title = (char *)file->tag()->title().toCString();
+        trackmeta->album = (char *)file->tag()->album().toCString();
+        trackmeta->artist = (char *)file->tag()->artist().toCString();
+        trackmeta->genre = (char *)file->tag()->genre().toCString();
+        trackmeta->tracknumber = file->tag()->track();
+        trackmeta->date = (char *)file->tag()->year();
+        trackmeta->filesize = file->length();
+        trackmeta->filename = url.fileName().toAscii().data();
+
+        int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( url.path().toUtf8() ), trackmeta,
+                    0, this );
+    }
 }
 
 int MtpDevice::sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath)
