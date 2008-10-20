@@ -79,6 +79,16 @@ void DeviceSync::optionsPreferences()
     QWidget *generalSettingsDlg = new QWidget;
     ui_prefs_base.setupUi(generalSettingsDlg);
     dialog->addPage(generalSettingsDlg, i18n("General"), "package_setting");
+
+    KPluginSelector *pluginSelector = new KPluginSelector();
+    KService::List offers = KServiceTypeTrader::self()->query("Devicesync/Plugin");
+
+    pluginSelector->addPlugins(KPluginInfo::fromServices(offers), KPluginSelector::ReadConfigFile,
+            i18n("Plugins"), "Service", KGlobal::config());
+
+    pluginSelector->load();
+
+    dialog->addPage(pluginSelector, i18n("Plugins"), "plugin_setting");
     connect(dialog, SIGNAL(settingsChanged(QString)), m_view, SLOT(settingsChanged()));
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->show();

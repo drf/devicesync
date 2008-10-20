@@ -14,7 +14,7 @@ kde4_add_kcfg_files(devicesync_SRCS settings.kcfgc )
 
 kde4_add_executable(devicesync ${devicesync_SRCS})
 
-target_link_libraries(devicesync ${KDE4_KDEUI_LIBS} devicesynccore)
+target_link_libraries(devicesync ${KDE4_KDEUI_LIBS} ${KDE4_KUTILS_LIBS} devicesynccore)
 
 install(TARGETS devicesync DESTINATION ${BIN_INSTALL_DIR} )
 
