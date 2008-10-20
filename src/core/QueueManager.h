@@ -10,7 +10,9 @@
 
 #include "AbstractDevice.h"
 
-class QueueItem
+#include <kdemacros.h>
+
+class KDE_EXPORT QueueItem
 {
 public:
     typedef QList<QueueItem*> List;
@@ -30,7 +32,7 @@ public:
     int jobId;
 };
 
-class QueueManager : public QObject
+class KDE_EXPORT QueueManager : public QObject
 {
     Q_OBJECT
 
@@ -44,6 +46,13 @@ public slots:
     void removeJobFromQueue(int jobId);
 
     void clearQueue();
+
+    void processQueue();
+
+private slots:
+    void processNextQueueItem();
+    void fileCopiedFromDevice(int token, const QString &path);
+    void fileCopiedToDevice(int token, const QString &filePath);
 
 private:
     int generateItemId();

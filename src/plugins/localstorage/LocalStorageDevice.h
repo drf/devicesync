@@ -14,11 +14,20 @@ class QFileSystemModel;
 
 class LocalStorageDevice : public AbstractDevice
 {
+    Q_OBJECT
+
 public:
     LocalStorageDevice();
     virtual ~LocalStorageDevice();
 
     QAbstractItemModel * getFileModel();
+
+public slots:
+    int sendFileToDevice(const QString &fromPath, const QString &toPath);
+    int sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath);
+
+    int getFileFromDevice(const QString &path, const QString &toPath);
+    int getByteArrayFromDeviceFile(const QString &path);
 
 private:
     QFileSystemModel *m_model;
