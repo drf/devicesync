@@ -22,6 +22,8 @@
 #include <KDebug>
 #include <KUrl>
 
+#include <QStandardItemModel>
+
 #include <threadweaver/ThreadWeaver.h>
 
 #include <solid/device.h>
@@ -161,10 +163,12 @@ void MtpDevice::disconnectDevice()
 
 QAbstractItemModel *MtpDevice::getFileModel()
 {
+    return new QStandardItemModel();
 }
 
 QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
 {
+    return QString();
 }
 
 int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
@@ -177,12 +181,11 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 
         LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
         trackmeta->filetype = LIBMTP_FILETYPE_MP3;
-        trackmeta->title = (char *)file->tag()->title().toCString();
-        trackmeta->album = (char *)file->tag()->album().toCString();
-        trackmeta->artist = (char *)file->tag()->artist().toCString();
-        trackmeta->genre = (char *)file->tag()->genre().toCString();
+        trackmeta->title = qstrdup(file->tag()->title().toCString());
+        trackmeta->album = qstrdup(file->tag()->album().toCString());
+        trackmeta->artist = qstrdup(file->tag()->artist().toCString());
+        trackmeta->genre = qstrdup(file->tag()->genre().toCString());
         trackmeta->tracknumber = file->tag()->track();
-        trackmeta->date = (char *)file->tag()->year();
         trackmeta->filesize = file->length();
         trackmeta->filename = qstrdup(url.fileName().toUtf8());
 
