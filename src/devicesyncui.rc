@@ -3,5 +3,6 @@
 <ToolBar fullWidth="true" name="devicesync_toolbar"><text>Main Toolbar</text>
     <Action name="connect_device"/>
     <Separator lineSeparator="true"/>
+    <Action name="process_queue"/>
 </ToolBar>
 </kpartgui>

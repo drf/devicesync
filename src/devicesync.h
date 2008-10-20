@@ -55,6 +55,8 @@ private slots:
     void newDeviceRegistered(AbstractDevice *device);
     void deviceRemoved(AbstractDevice *device);
 
+    void processQueue();
+
 private:
     void setupActions();
     AbstractDeviceInterface * createPluginFromService(const KService::Ptr &service);

@@ -98,6 +98,8 @@ void QueueManager::processNextQueueItem()
         return;
     }
 
+    kDebug() << "Processing next queue item";
+
     int token;
 
     switch ((*d->iterator)->action) {
