@@ -22,6 +22,9 @@
 
 #include "AbstractDevice.h"
 
+#include <libmtp.h>
+#include <threadweaver/Job.h>
+
 class QAbstractItemModel;
 
 class MtpDevice : public AbstractDevice
@@ -29,11 +32,16 @@ class MtpDevice : public AbstractDevice
     Q_OBJECT
 
 public:
-    MtpDevice();
+    MtpDevice(const QString &udi, QObject *parent = 0);
     virtual ~MtpDevice();
+
+    void connectDevice();
+    void disconnectDevice();
 
     QAbstractItemModel * getFileModel();
     QString getPathForCurrentIndex(const QModelIndex &index);
+
+    bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial );
 
 public slots:
     int sendFileToDevice(const QString &fromPath, const QString &toPath);
@@ -44,6 +52,29 @@ public slots:
 
 private:
     QAbstractItemModel *m_model;
+    QString m_udi;
+    bool m_success;
+    LIBMTP_mtpdevice_t *m_device;
+};
+
+class WorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpDevice* handler );
+        virtual ~WorkerThread();
+
+        virtual bool success() const;
+
+    protected:
+        virtual void run();
+
+    private:
+        bool m_success;
+        int m_numrawdevices;
+        LIBMTP_raw_device_t* m_rawdevices;
+        QString m_serial;
+        MtpDevice *m_handler;
 };
 
 #endif /* MTPDEVICE_H */

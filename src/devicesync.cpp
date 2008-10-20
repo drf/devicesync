@@ -187,6 +187,10 @@ bool DeviceSync::loadAllPlugins()
                 connect(section, SIGNAL(newDeviceRegistered(AbstractDevice*)), this, SLOT(newDeviceRegistered(AbstractDevice*)));
                 connect(section, SIGNAL(deviceRemoved(AbstractDevice*)), this, SLOT(deviceRemoved(AbstractDevice*)));
 
+                if (Settings::watch_devices()) {
+                    section->startWatching();
+                }
+
                 d->interfaces.append(section);
                 section->init();
             } else {

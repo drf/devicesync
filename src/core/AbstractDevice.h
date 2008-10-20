@@ -39,6 +39,9 @@ public:
     AbstractDevice(QObject *parent = 0);
     virtual ~AbstractDevice();
 
+    virtual void connectDevice() = 0;
+    virtual void disconnectDevice() = 0;
+
     QString name();
 
     virtual QAbstractItemModel *getFileModel() = 0;
@@ -76,6 +79,7 @@ public:
 
     AbstractDevice *device;
     Status status;
+    QString udi;
 };
 
 #endif /* ABSTRACTDEVICE_H_ */

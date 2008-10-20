@@ -59,12 +59,13 @@ DeviceContainer::List AbstractDeviceInterface::getAllDevices()
     return d->m_devices;
 }
 
-void AbstractDeviceInterface::addDevice(AbstractDevice *device)
+void AbstractDeviceInterface::addDevice(AbstractDevice *device, const QString &udi)
 {
     DeviceContainer *cont = new DeviceContainer();
 
     cont->device = device;
     cont->status = DeviceContainer::Disconnected;
+    cont->udi = udi;
 
     d->m_devices.append(cont);
 
@@ -88,6 +89,7 @@ void AbstractDeviceInterface::connectDevice(AbstractDevice *device)
 {
     foreach(DeviceContainer *cont, d->m_devices) {
         if (cont->device == device) {
+            cont->device->connectDevice();
             cont->status = DeviceContainer::Connected;
         }
     }
@@ -99,6 +101,7 @@ void AbstractDeviceInterface::disconnectDevice(AbstractDevice *device)
 {
     foreach(DeviceContainer *cont, d->m_devices) {
         if (cont->device == device) {
+            cont->device->disconnectDevice();
             cont->status = DeviceContainer::Disconnected;
         }
     }
