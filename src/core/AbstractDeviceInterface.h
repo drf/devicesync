@@ -22,28 +22,28 @@ class KDE_EXPORT AbstractDeviceInterface : public QObject
 {
     Q_OBJECT
 
-    public:
-        typedef QList<AbstractDeviceInterface*> List;
+public:
+    typedef QList<AbstractDeviceInterface*> List;
 
-        AbstractDeviceInterface();
-        virtual ~AbstractDeviceInterface();
+    AbstractDeviceInterface();
+    virtual ~AbstractDeviceInterface();
 
-        virtual void init() = 0;
+    virtual void init() = 0;
 
-    public slots:
-        virtual void startWatching() = 0;
-        virtual void stopWatching() = 0;
+public slots:
+    virtual void startWatching() = 0;
+    virtual void stopWatching() = 0;
 
-        virtual void connectDevice(const QString &uuid) = 0;
-        virtual void disconnectDevice(const QString &uuid) = 0;
+    virtual void connectDevice(const QString &uuid) = 0;
+    virtual void disconnectDevice(const QString &uuid) = 0;
 
-        virtual AbstractDevice::List getConnectedDevices() = 0;
-        virtual DeviceContainer::List getAllDevices() = 0;
+    virtual AbstractDevice::List getConnectedDevices() = 0;
+    virtual DeviceContainer::List getAllDevices() = 0;
 
-    signals:
-        void deviceConnected(AbstractDevice *device);
-        void deviceDisconnected(AbstractDevice *device);
-        void newDeviceAvailable(AbstractDevice *device);
+signals:
+    void deviceConnected(AbstractDevice *device);
+    void deviceDisconnected(AbstractDevice *device);
+    void newDeviceAvailable(AbstractDevice *device);
 };
 
 #endif /* ABSTRACTDEVICEINTERFACE_H */

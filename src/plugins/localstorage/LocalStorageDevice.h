@@ -14,14 +14,14 @@ class QFileSystemModel;
 
 class LocalStorageDevice : public AbstractDevice
 {
-    public:
-        LocalStorageDevice();
-        virtual ~LocalStorageDevice();
+public:
+    LocalStorageDevice();
+    virtual ~LocalStorageDevice();
 
-        QAbstractItemModel * getFileModel();
+    QAbstractItemModel * getFileModel();
 
-    private:
-        QFileSystemModel *m_model;
+private:
+    QFileSystemModel *m_model;
 };
 
 #endif /* LOCALSTORAGEDEVICE_H_ */

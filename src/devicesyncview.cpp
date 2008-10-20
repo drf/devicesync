@@ -10,7 +10,7 @@
 #include <QtGui/QLabel>
 
 DeviceSyncView::DeviceSyncView(DeviceSync *parent)
- : m_core(parent)
+        : m_core(parent)
 {
     ui_devicesyncview_base.setupUi(this);
     setAutoFillBackground(true);
@@ -20,7 +20,7 @@ DeviceSyncView::DeviceSyncView(DeviceSync *parent)
     connect(ui_devicesyncview_base.leftDeviceBox, SIGNAL(currentIndexChanged(const QString&)),
             SLOT(leftDeviceChanged(const QString&)));
     connect(ui_devicesyncview_base.rightDeviceBox, SIGNAL(currentIndexChanged(const QString&)),
-                SLOT(rightDeviceChanged(const QString&)));
+            SLOT(rightDeviceChanged(const QString&)));
 }
 
 DeviceSyncView::~DeviceSyncView()

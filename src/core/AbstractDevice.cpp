@@ -9,19 +9,17 @@
 
 class AbstractDevice::Private
 {
-    public:
-        Private()
-        {
-        }
-        ~Private()
-        {}
+public:
+    Private() {
+    }
+    ~Private() {}
 
 
-        QString name;
+    QString name;
 };
 
 AbstractDevice::AbstractDevice()
- : d(new Private())
+        : d(new Private())
 {
 }
 
