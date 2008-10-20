@@ -103,10 +103,25 @@ void DeviceSync::setupActions()
     KAction *connectDevice = new KAction(KIcon("network-connect"), i18n("&Connect Device..."), this);
     KAction *processQueue = new KAction(KIcon("network-connect"), i18n("Process Q&ueue"), this);
 
+    connect(connectDevice, SIGNAL(triggered()), this, SLOT(connectDevice()));
     connect(processQueue, SIGNAL(triggered()), this, SLOT(processQueue()));
 
     actionCollection()->addAction("connect_device", connectDevice);
     actionCollection()->addAction("process_queue", processQueue);
+}
+
+void DeviceSync::connectDevice()
+{
+    foreach (AbstractDeviceInterface *iface, d->interfaces)
+    {
+        foreach (DeviceContainer *device, iface->getAllDevices())
+        {
+            if (device->status != DeviceContainer::Connected)
+            {
+                iface->connectDevice(device->device);
+            }
+        }
+    }
 }
 
 void DeviceSync::processQueue()

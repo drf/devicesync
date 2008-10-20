@@ -48,12 +48,12 @@ public slots:
 
     AbstractDevice::List getConnectedDevices();
     DeviceContainer::List getAllDevices();
+    void connectDevice(AbstractDevice *device);
+    void disconnectDevice(AbstractDevice *device);
 
 protected slots:
     void addDevice(AbstractDevice *device, const QString &udi = QString());
     void removeDevice(AbstractDevice *device);
-    void connectDevice(AbstractDevice *device);
-    void disconnectDevice(AbstractDevice *device);
 
 signals:
     void deviceConnected(AbstractDevice *device);

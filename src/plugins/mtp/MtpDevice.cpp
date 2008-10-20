@@ -23,6 +23,9 @@
 
 #include <threadweaver/ThreadWeaver.h>
 
+#include <solid/device.h>
+#include <solid/portablemediaplayer.h>
+
 MtpDevice::MtpDevice(const QString &udi, QObject *parent)
  : AbstractDevice(parent),
  m_udi(udi)
@@ -36,6 +39,10 @@ MtpDevice::~MtpDevice()
 
 void MtpDevice::connectDevice()
 {
+    Solid::PortableMediaPlayer* pmp = Solid::Device( m_udi ).as<Solid::PortableMediaPlayer>();
+    QString serial = pmp->driverHandle( "mtp" ).toString();
+    setName("Mtp Device");
+
     LIBMTP_raw_device_t * rawdevices;
     int numrawdevices;
     LIBMTP_error_number_t err;
@@ -80,7 +87,7 @@ void MtpDevice::connectDevice()
     if( m_success )
     {
         kDebug() << "Got mtp list, connecting to device using thread";
-        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, m_udi, this ) );
+        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, serial, this ) );
     }
     else
     {
