@@ -173,7 +173,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 
     if (fromPath.contains(".mp3"))
     {
-        TagLib::MPEG::File *file = new TagLib::MPEG::File(TagLib::FileName(fromPath.toAscii().data()));
+        TagLib::MPEG::File *file = new TagLib::MPEG::File(TagLib::FileName(url.path().toUtf8()));
 
         LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
         trackmeta->filetype = LIBMTP_FILETYPE_MP3;
@@ -184,7 +184,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         trackmeta->tracknumber = file->tag()->track();
         trackmeta->date = (char *)file->tag()->year();
         trackmeta->filesize = file->length();
-        trackmeta->filename = url.fileName().toAscii().data();
+        trackmeta->filename = url.fileName().toUtf8();
 
         int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( url.path().toUtf8() ), trackmeta,
                     0, this );
