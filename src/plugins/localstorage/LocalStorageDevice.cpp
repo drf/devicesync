@@ -8,6 +8,8 @@
 #include "LocalStorageDevice.h"
 
 #include <QFileSystemModel>
+#include <kio/job.h>
+#include <kio/copyjob.h>
 
 LocalStorageDevice::LocalStorageDevice()
 {
@@ -25,3 +27,35 @@ QAbstractItemModel *LocalStorageDevice::getFileModel()
 {
     return m_model;
 }
+
+int LocalStorageDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
+{
+    int token = getNextTransferToken();
+
+    KJob *job = KIO::copy(KUrl::fromPath(fromPath), KUrl::fromPath(toPath));
+    job->setProperty("transfer_token", token);
+
+    return token;
+}
+
+int LocalStorageDevice::sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath)
+{
+    return -1;
+}
+
+int LocalStorageDevice::getFileFromDevice(const QString &path, const QString &toPath)
+{
+    int token = getNextTransferToken();
+
+    KJob *job = KIO::copy(KUrl::fromPath(path), KUrl::fromPath(toPath));
+    job->setProperty("transfer_token", token);
+
+    return token;
+}
+
+int LocalStorageDevice::getByteArrayFromDeviceFile(const QString &path)
+{
+    return -1;
+}
+
+#include "LocalStorageDevice.moc"

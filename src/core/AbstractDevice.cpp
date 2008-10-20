@@ -10,12 +10,15 @@
 class AbstractDevice::Private
 {
 public:
-    Private() {
+    Private()
+     : token(0)
+    {
     }
     ~Private() {}
 
 
     QString name;
+    int token;
 };
 
 AbstractDevice::AbstractDevice(QObject *parent)
@@ -37,6 +40,14 @@ void AbstractDevice::setName(const QString &name)
 QString AbstractDevice::name()
 {
     return d->name;
+}
+
+int AbstractDevice::getNextTransferToken()
+{
+    int token = d->token;
+    ++d->token;
+
+    return token;
 }
 
 #include "AbstractDevice.moc"
