@@ -172,6 +172,12 @@ QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
     return QString();
 }
 
+void MtpDevice::transferSuccessful( ThreadWeaver::Job *job )
+{
+    emit fileCopiedToDevice(job->property("ds_transfer_token").toInt(), job->property("ds_filename").toString());
+    job->deleteLater();
+}
+
 int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 {
     KUrl url = KUrl::fromPath(fromPath);
@@ -197,6 +203,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         ThreadWeaver::Job * thread = new SendTrackThread( m_device, qstrdup( url.path().toUtf8() ),
                 trackmeta, 0, this);
         thread->setProperty("ds_transfer_token", token);
+        thread->setProperty("ds_filename", url.fileName());
         ThreadWeaver::Weaver::instance()->enqueue( thread );
 
         return token;
@@ -263,7 +270,6 @@ SendTrackThread::SendTrackThread(LIBMTP_mtpdevice_t *device, QString name, LIBMT
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_parent, SLOT( transferFailed( ThreadWeaver::Job* ) ) );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_parent, SLOT( transferSuccessful( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
 SendTrackThread::~SendTrackThread()
