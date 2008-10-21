@@ -242,6 +242,8 @@ void DeviceSync::deviceConnected(AbstractDevice *device)
 {
     kDebug() << "A new device has been connected:" << device->name();
     d->view->addDevice(device->name(), device->name());
+    connect(device, SIGNAL(actionProgressChanged(int)),
+            queueManager()->progressInterface(), SLOT(setCurrentItemProgress(int)));
 }
 
 void DeviceSync::deviceDisconnected(AbstractDevice *device)
