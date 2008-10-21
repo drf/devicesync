@@ -51,8 +51,12 @@ private slots:
     void sendToDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool);
     void getFromDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool);
 
+    void sendDoneConfirmation();
+
 private:
     QFileSystemModel *m_model;
+    int m_token;
+    KUrl m_url;
 };
 
 #endif /* LOCALSTORAGEDEVICE_H_ */
