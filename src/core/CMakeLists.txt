@@ -3,6 +3,7 @@ set(dscore_SRCS
     AbstractDeviceInterface.cpp
     AbstractDevice.cpp
     QueueManager.cpp
+    ProgressInterface.cpp
 )
 
 kde4_add_library(devicesynccore SHARED ${dscore_SRCS})

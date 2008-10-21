@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "QueueManager.h"
+#include "ProgressInterface.h"
 
 #include <QMap>
 #include <KDebug>
@@ -25,25 +26,32 @@
 class QueueManager::Private
 {
 public:
-    Private() {
+    Private()
+    {
     }
     ~Private() {}
 
     QueueItem::List itemList;
     QueueItem::List::iterator iterator;
     QMap<int, QueueItem*> tokenActions;
+    ProgressInterface *progressInterface;
 };
 
 QueueManager::QueueManager(QObject *parent)
         : QObject(parent),
         d(new Private())
 {
-
+    d->progressInterface = new ProgressInterface(this);
 }
 
 QueueManager::~QueueManager()
 {
     delete d;
+}
+
+ProgressInterface *QueueManager::progressInterface()
+{
+    return d->progressInterface;
 }
 
 int QueueManager::addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,
@@ -100,6 +108,8 @@ void QueueManager::processQueue()
 {
     d->iterator = d->itemList.begin();
 
+    progressInterface()->setItems(d->itemList);
+
     processNextQueueItem();
 }
 
@@ -113,17 +123,23 @@ void QueueManager::processNextQueueItem()
 
     kDebug() << "Processing next queue item";
 
+    progressInterface()->setCurrentItem(*d->iterator);
+
     int token;
 
     switch ((*d->iterator)->action) {
     case QueueItem::Copy:
     case QueueItem::Move:
+        progressInterface()->setCurrentItemAction(ProgressInterface::Getting);
+
+        connect((*d->iterator)->in_device, SIGNAL(fileCopiedFromDevice(int, const QString&)),
+                        this, SLOT(fileCopiedFromDevice(int, const QString&)));
+        connect((*d->iterator)->in_device, SIGNAL(actionProgressChanged(int)),
+                        progressInterface(), SLOT(setCurrentItemProgress(int)));
+
         token = (*d->iterator)->in_device->getFileFromDevice((*d->iterator)->in_path, "/tmp");
 
         d->tokenActions[token] = (*d->iterator);
-
-        connect((*d->iterator)->in_device, SIGNAL(fileCopiedFromDevice(int, const QString&)),
-                this, SLOT(fileCopiedFromDevice(int, const QString&)));
         break;
     default:
         break;
@@ -139,6 +155,8 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
     case QueueItem::Copy:
         disconnect(d->tokenActions[token]->in_device, SIGNAL(fileCopiedFromDevice(int, const QString&)),
                    this, SLOT(fileCopiedFromDevice(int, const QString&)));
+        disconnect((*d->iterator)->in_device, SIGNAL(actionProgressChanged(int)),
+                                progressInterface(), SLOT(setCurrentItemProgress(int)));
 
         new_token = d->tokenActions[token]->out_device->sendFileToDevice(filePath, d->tokenActions[token]->out_path);
 
