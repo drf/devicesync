@@ -49,7 +49,7 @@ public slots:
 signals:
     void currentItemChanged(QueueItem *item);
     void totalProgressChanged(int percent);
-    void currentItemProgressChanged(Action action, int percent);
+    void currentItemProgressChanged(ProgressInterface::Action action, int percent);
 
 private:
     class Private;

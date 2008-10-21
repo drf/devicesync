@@ -21,6 +21,8 @@
 
 #include "QueueManager.h"
 
+#include <KDebug>
+
 ProgressDialog::ProgressDialog(ProgressInterface *iface, QWidget *parent)
         : KDialog(parent),
         m_interface(iface)
@@ -33,9 +35,13 @@ ProgressDialog::ProgressDialog(ProgressInterface *iface, QWidget *parent)
     setMainWidget(m_widget);
     setModal(true);
     setAttribute(Qt::WA_DeleteOnClose);
+    show();
+
+    ui.totalBar->setRange(0, 100);
+    ui.currentBar->setRange(0, 100);
 
     connect(m_interface, SIGNAL(totalProgressChanged(int)), this, SLOT(totalProgressChanged(int)));
-    connect(m_interface, SIGNAL(void currentItemChanged(QueueItem*)), this, SLOT(void currentItemChanged(QueueItem*)));
+    connect(m_interface, SIGNAL(currentItemChanged(QueueItem*)), this, SLOT(currentItemChanged(QueueItem*)));
     connect(m_interface, SIGNAL(currentItemProgressChanged(ProgressInterface::Action, int)),
             this, SLOT(currentItemProgressChanged(ProgressInterface::Action, int)));
 }
@@ -47,6 +53,7 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::totalProgressChanged(int percent)
 {
+    kDebug() << "Setting total percent";
     ui.totalBar->setValue(percent);
 }
 

@@ -67,6 +67,8 @@ class LibMtpCallbacks : public QObject
     public:
         static LibMtpCallbacks* instance() { return s_instance ? s_instance : new LibMtpCallbacks(); }
 
+        LibMtpCallbacks() { s_instance = this; };
+
         void setActionPercentage(int percentage);
 
     signals:
