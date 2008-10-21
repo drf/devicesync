@@ -22,6 +22,8 @@
 #include <QFileSystemModel>
 #include <kio/copyjob.h>
 
+#include <QTimer>
+
 LocalStorageDevice::LocalStorageDevice()
 {
 
@@ -74,15 +76,29 @@ int LocalStorageDevice::sendFileToDeviceFromByteArray(const QByteArray &file, co
 
 int LocalStorageDevice::getFileFromDevice(const QString &path, const QString &toPath)
 {
-    int token = getNextTransferToken();
+    Q_UNUSED(toPath)
+
+    m_token = getNextTransferToken();
+    m_url = KUrl::fromPath(path);
+
+    QTimer::singleShot(50, this, SLOT(sendDoneConfirmation()));
+
+    return m_token;
+
+    /*emit fileCopiedToDevice(token, KUrl::fromPath(path).pathOrUrl());
 
     KJob *job = KIO::copy(KUrl::fromPath(path), KUrl::fromPath(toPath), KIO::HideProgressInfo | KIO::Overwrite);
     job->setProperty("transfer_token", token);
 
     connect(job, SIGNAL(copyingDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool)),
-            this, SLOT(getFromDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool)));
+            this, SLOT(getFromDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool)));*/
 
-    return token;
+
+}
+
+void LocalStorageDevice::sendDoneConfirmation()
+{
+    emit fileCopiedFromDevice(m_token, m_url.pathOrUrl());
 }
 
 void LocalStorageDevice::sendToDeviceDone(KIO::Job *job, const KUrl&, const KUrl &to, time_t, bool, bool)
