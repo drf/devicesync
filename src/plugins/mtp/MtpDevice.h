@@ -77,4 +77,26 @@ class WorkerThread : public ThreadWeaver::Job
         MtpDevice *m_handler;
 };
 
+class SendTrackThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+    public:
+        SendTrackThread( LIBMTP_mtpdevice_t *device, QString name, LIBMTP_track_t *trackmeta,
+                LIBMTP_progressfunc_t cb, MtpDevice *parent );
+        virtual ~SendTrackThread();
+
+        virtual bool success() const;
+
+    protected:
+        virtual void run();
+
+    private:
+        int m_success;
+        LIBMTP_mtpdevice_t* m_device;
+        QString m_name;
+        LIBMTP_track_t *m_trackmeta;
+        LIBMTP_progressfunc_t m_callback;
+        MtpDevice *m_parent;
+};
+
 #endif /* MTPDEVICE_H */

@@ -175,6 +175,7 @@ QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
 int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 {
     KUrl url = KUrl::fromPath(fromPath);
+    int token = getNextTransferToken();
 
     if (fromPath.contains(".mp3"))
     {
@@ -193,9 +194,15 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         trackmeta->bitrate = file->audioProperties()->bitrate();
         trackmeta->samplerate = file->audioProperties()->sampleRate();
 
-        int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( url.path().toUtf8() ), trackmeta,
-                    0, this );
+        ThreadWeaver::Job * thread = new SendTrackThread( m_device, qstrdup( url.path().toUtf8() ),
+                trackmeta, 0, this);
+        thread->setProperty("ds_transfer_token", token);
+        ThreadWeaver::Weaver::instance()->enqueue( thread );
+
+        return token;
     }
+
+    return -1;
 }
 
 int MtpDevice::sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath)
@@ -241,5 +248,39 @@ void WorkerThread::run()
 {
     m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices, m_serial );
 }
+
+//
+
+SendTrackThread::SendTrackThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_track_t *trackmeta,
+        LIBMTP_progressfunc_t cb, MtpDevice *parent)
+    : ThreadWeaver::Job()
+    , m_success( 0 )
+    , m_device( device )
+    , m_name( name )
+    , m_trackmeta( trackmeta )
+    , m_callback( cb )
+    , m_parent( parent )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_parent, SLOT( transferFailed( ThreadWeaver::Job* ) ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_parent, SLOT( transferSuccessful( ThreadWeaver::Job* ) ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+}
+
+SendTrackThread::~SendTrackThread()
+{
+    //nothing to do
+}
+
+bool SendTrackThread::success() const
+{
+    return m_success;
+}
+
+void SendTrackThread::run()
+{
+    m_success = LIBMTP_Send_Track_From_File( m_device, qstrdup( m_name.toUtf8() ), m_trackmeta,
+            m_callback, m_parent);
+}
+
 
 #include "MtpDevice.moc"
