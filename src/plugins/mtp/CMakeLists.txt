@@ -1,3 +1,6 @@
+
+include_directories (${TAGLIB_INCLUDES})
+
 set(mtpplugin_SRCS
     MtpInterface.cpp
     MtpDevice.cpp
