@@ -24,6 +24,8 @@
 
 #include <kdemacros.h>
 
+class ProgressInterface;
+
 class KDE_EXPORT QueueItem
 {
 public:
@@ -51,6 +53,8 @@ class KDE_EXPORT QueueManager : public QObject
 public:
     QueueManager(QObject *parent = 0);
     virtual ~QueueManager();
+
+    ProgressInterface *progressInterface();
 
 public slots:
     int addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,

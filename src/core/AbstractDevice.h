@@ -62,6 +62,8 @@ signals:
     void fileCopiedToDevice(int, const QString&);
     void fileCopiedFromDevice(int, const QString&);
 
+    void actionProgressChanged(int);
+
 private:
     class Private;
     Private *d;
