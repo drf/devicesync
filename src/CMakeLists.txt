@@ -8,7 +8,11 @@ set(devicesync_SRCS
    devicesyncview.cpp
  )
 
-kde4_add_ui_files(devicesync_SRCS devicesyncview_base.ui prefs_base.ui)
+kde4_add_ui_files(devicesync_SRCS 
+	devicesyncview_base.ui 
+	prefs_base.ui
+	progressdialog.ui
+)
 
 kde4_add_kcfg_files(devicesync_SRCS settings.kcfgc )
 
