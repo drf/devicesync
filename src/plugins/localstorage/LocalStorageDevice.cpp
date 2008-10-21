@@ -76,7 +76,7 @@ int LocalStorageDevice::getFileFromDevice(const QString &path, const QString &to
 {
     int token = getNextTransferToken();
 
-    KJob *job = KIO::copy(KUrl::fromPath(path), KUrl::fromPath(toPath));
+    KJob *job = KIO::copy(KUrl::fromPath(path), KUrl::fromPath(toPath), KIO::HideProgressInfo | KIO::Overwrite);
     job->setProperty("transfer_token", token);
 
     connect(job, SIGNAL(copyingDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool)),
