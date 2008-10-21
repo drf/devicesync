@@ -23,6 +23,7 @@
 #include <KUrl>
 
 #include <QStandardItemModel>
+#include <QFile>
 
 #include <threadweaver/ThreadWeaver.h>
 
@@ -216,6 +217,20 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         ThreadWeaver::Weaver::instance()->enqueue(thread);
 
         return token;
+    } else {
+        LIBMTP_file_t *file = LIBMTP_new_file_t();
+        QFile qfile(url.path().toUtf8());
+
+        file->filename = qstrdup(url.fileName().toUtf8());
+        file->filesize = qfile.size();
+
+        ThreadWeaver::Job * thread = new SendFileThread(m_device, qstrdup(url.path().toUtf8()),
+                file, mtp_transfer_callback, this);
+        thread->setProperty("ds_transfer_token", token);
+        thread->setProperty("ds_filename", url.fileName());
+        ThreadWeaver::Weaver::instance()->enqueue(thread);
+
+        return token;
     }
 
     return -1;
@@ -302,6 +317,39 @@ void SendTrackThread::run()
 {
     m_success = LIBMTP_Send_Track_From_File(m_device, qstrdup(m_name.toUtf8()), m_trackmeta,
                                             m_callback, m_parent);
+}
+
+//
+
+SendFileThread::SendFileThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_file_t *file,
+                                 LIBMTP_progressfunc_t cb, MtpDevice *parent)
+        : ThreadWeaver::Job()
+        , m_success(0)
+        , m_device(device)
+        , m_name(name)
+        , m_file(file)
+        , m_callback(cb)
+        , m_parent(parent)
+{
+    connect(this, SIGNAL(failed(ThreadWeaver::Job*)), m_parent, SLOT(transferFailed(ThreadWeaver::Job*)));
+    connect(this, SIGNAL(done(ThreadWeaver::Job*)), m_parent, SLOT(transferSuccessful(ThreadWeaver::Job*)));
+}
+
+SendFileThread::~SendFileThread()
+{
+    //nothing to do
+}
+
+bool SendFileThread::success() const
+{
+    return m_success;
+}
+
+void SendFileThread::run()
+{
+    m_success = LIBMTP_Send_File_From_File(m_device, qstrdup(m_name.toUtf8()), m_file,
+                                            m_callback, m_parent);
+    kDebug() << m_success;
 }
 
 

@@ -120,4 +120,26 @@ private:
     MtpDevice *m_parent;
 };
 
+class SendFileThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    SendFileThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_file_t *file,
+                    LIBMTP_progressfunc_t cb, MtpDevice *parent);
+    virtual ~SendFileThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    int m_success;
+    LIBMTP_mtpdevice_t* m_device;
+    QString m_name;
+    LIBMTP_file_t *m_file;
+    LIBMTP_progressfunc_t m_callback;
+    MtpDevice *m_parent;
+};
+
 #endif /* MTPDEVICE_H */
