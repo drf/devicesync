@@ -102,36 +102,54 @@ void DeviceSyncView::rightDeviceChanged(const QString &name)
 
 void DeviceSyncView::addToQueueFromLeft()
 {
-    int token =
-        m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_leftDevice,
-                                              m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()),
-                                              m_rightDevice,
-                                              m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()));
+    QStringList paths;
+    foreach(QModelIndex index, ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes()) {
+        if (paths.contains(m_leftDevice->getPathForCurrentIndex(index))) {
+            continue;
+        }
 
-    QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Copy %1 from %2 to %3 in %4",
-            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()),
-            m_leftDevice->name(), m_rightDevice->name(),
-            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex())),
-            ui_devicesyncview_base.listWidget);
+        paths.append(m_leftDevice->getPathForCurrentIndex(index));
 
-    itm->setData(40, token);
+        int token =
+            m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_leftDevice,
+                                                  m_leftDevice->getPathForCurrentIndex(index),
+                                                  m_rightDevice,
+                                                  m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()));
+
+        QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Copy %1 from %2 to %3 in %4",
+                m_leftDevice->getPathForCurrentIndex(index),
+                m_leftDevice->name(), m_rightDevice->name(),
+                m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex())),
+                ui_devicesyncview_base.listWidget);
+
+        itm->setData(40, token);
+    }
 }
 
 void DeviceSyncView::addToQueueFromRight()
 {
-    int token =
-        m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_rightDevice,
-                                              m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()),
-                                              m_leftDevice,
-                                              m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()));
+    QStringList paths;
+    foreach(QModelIndex index, ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes()) {
+        if (paths.contains(m_rightDevice->getPathForCurrentIndex(index))) {
+            continue;
+        }
 
-    QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Copy %1 from %2 to %3 in %4",
-            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->currentIndex()),
-            m_rightDevice->name(), m_leftDevice->name(),
-            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex())),
-            ui_devicesyncview_base.listWidget);
+        paths.append(m_leftDevice->getPathForCurrentIndex(index));
 
-    itm->setData(40, token);
+        int token =
+            m_core->queueManager()->addJobToQueue(QueueItem::Copy, m_rightDevice,
+                                                  m_rightDevice->getPathForCurrentIndex(index),
+                                                  m_leftDevice,
+                                                  m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex()));
+
+        QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Copy %1 from %2 to %3 in %4",
+                m_rightDevice->getPathForCurrentIndex(index),
+                m_rightDevice->name(), m_leftDevice->name(),
+                m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->currentIndex())),
+                ui_devicesyncview_base.listWidget);
+
+        itm->setData(40, token);
+    }
 }
 
 void DeviceSyncView::removeSelectedActions()

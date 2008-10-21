@@ -19,11 +19,11 @@
 
 #include "ProgressDialog.h"
 
-#include "ProgressInterface.h"
+#include "QueueManager.h"
 
 ProgressDialog::ProgressDialog(ProgressInterface *iface, QWidget *parent)
- : KDialog(parent),
- m_interface(iface)
+        : KDialog(parent),
+        m_interface(iface)
 {
     setButtons(KDialog::None);
 
@@ -31,11 +31,42 @@ ProgressDialog::ProgressDialog(ProgressInterface *iface, QWidget *parent)
     ui.setupUi(m_widget);
 
     setMainWidget(m_widget);
+    setModal(true);
+    setAttribute(Qt::WA_DeleteOnClose);
 
     connect(m_interface, SIGNAL(totalProgressChanged(int)), this, SLOT(totalProgressChanged(int)));
+    connect(m_interface, SIGNAL(void currentItemChanged(QueueItem*)), this, SLOT(void currentItemChanged(QueueItem*)));
+    connect(m_interface, SIGNAL(currentItemProgressChanged(ProgressInterface::Action, int)),
+            this, SLOT(currentItemProgressChanged(ProgressInterface::Action, int)));
 }
 
 ProgressDialog::~ProgressDialog()
 {
     // TODO Auto-generated destructor stub
 }
+
+void ProgressDialog::totalProgressChanged(int percent)
+{
+    ui.totalBar->setValue(percent);
+}
+
+void ProgressDialog::currentItemChanged(QueueItem *item)
+{
+    switch (item->action) {
+    case QueueItem::Copy:
+        ui.currentLabel->setText(i18n("Copying %1 to %2...", KUrl::fromPath(item->in_path).fileName(),
+                                      item->out_device->name()));
+        break;
+    default:
+        break;
+    }
+}
+
+void ProgressDialog::currentItemProgressChanged(ProgressInterface::Action action, int percent)
+{
+    Q_UNUSED(action)
+
+    ui.currentBar->setValue(percent);
+}
+
+#include "ProgressDialog.moc"

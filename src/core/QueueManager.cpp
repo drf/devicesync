@@ -26,8 +26,7 @@
 class QueueManager::Private
 {
 public:
-    Private()
-    {
+    Private() {
     }
     ~Private() {}
 
@@ -133,9 +132,9 @@ void QueueManager::processNextQueueItem()
         progressInterface()->setCurrentItemAction(ProgressInterface::Getting);
 
         connect((*d->iterator)->in_device, SIGNAL(fileCopiedFromDevice(int, const QString&)),
-                        this, SLOT(fileCopiedFromDevice(int, const QString&)));
+                this, SLOT(fileCopiedFromDevice(int, const QString&)));
         connect((*d->iterator)->in_device, SIGNAL(actionProgressChanged(int)),
-                        progressInterface(), SLOT(setCurrentItemProgress(int)));
+                progressInterface(), SLOT(setCurrentItemProgress(int)));
 
         token = (*d->iterator)->in_device->getFileFromDevice((*d->iterator)->in_path, "/tmp");
 
@@ -156,7 +155,7 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
         disconnect(d->tokenActions[token]->in_device, SIGNAL(fileCopiedFromDevice(int, const QString&)),
                    this, SLOT(fileCopiedFromDevice(int, const QString&)));
         disconnect((*d->iterator)->in_device, SIGNAL(actionProgressChanged(int)),
-                                progressInterface(), SLOT(setCurrentItemProgress(int)));
+                   progressInterface(), SLOT(setCurrentItemProgress(int)));
 
         new_token = d->tokenActions[token]->out_device->sendFileToDevice(filePath, d->tokenActions[token]->out_path);
 
@@ -186,7 +185,7 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
 void QueueManager::fileCopiedToDevice(int token, const QString &filePath)
 {
     disconnect(d->tokenActions[token]->out_device, SIGNAL(fileCopiedToDevice(int, const QString&)),
-                    this, SLOT(fileCopiedToDevice(int, const QString&)));
+               this, SLOT(fileCopiedToDevice(int, const QString&)));
 
     int new_token;
 

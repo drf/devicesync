@@ -35,8 +35,8 @@
 #include <taglib/audioproperties.h>
 
 MtpDevice::MtpDevice(const QString &udi, QObject *parent)
- : AbstractDevice(parent),
- m_udi(udi)
+        : AbstractDevice(parent),
+        m_udi(udi)
 {
 }
 
@@ -47,8 +47,8 @@ MtpDevice::~MtpDevice()
 
 void MtpDevice::connectDevice()
 {
-    Solid::PortableMediaPlayer* pmp = Solid::Device( m_udi ).as<Solid::PortableMediaPlayer>();
-    QString serial = pmp->driverHandle( "mtp" ).toString();
+    Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
+    QString serial = pmp->driverHandle("mtp").toString();
     setName("Mtp Device");
 
     LIBMTP_raw_device_t * rawdevices;
@@ -64,73 +64,67 @@ void MtpDevice::connectDevice()
 
     kDebug() << "Error is: " << err;
 
-    switch(err) {
-        case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-            fprintf(stdout, "   No raw devices found.\n");
-            m_success = false;
-            break;
+    switch (err) {
+    case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
+        fprintf(stdout, "   No raw devices found.\n");
+        m_success = false;
+        break;
 
-        case LIBMTP_ERROR_CONNECTING:
-            fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
-            m_success = false;
-            break;
+    case LIBMTP_ERROR_CONNECTING:
+        fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
+        m_success = false;
+        break;
 
-        case LIBMTP_ERROR_MEMORY_ALLOCATION:
-            fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
-            m_success = false;
-            break;
+    case LIBMTP_ERROR_MEMORY_ALLOCATION:
+        fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
+        m_success = false;
+        break;
 
-        case LIBMTP_ERROR_NONE:
-        {
-            m_success = true;
-            break;
-        }
-
-        default:
-            kDebug() << "Unhandled mtp error";
-            m_success = false;
-            break;
+    case LIBMTP_ERROR_NONE: {
+        m_success = true;
+        break;
     }
 
-    if( m_success )
-    {
+    default:
+        kDebug() << "Unhandled mtp error";
+        m_success = false;
+        break;
+    }
+
+    if (m_success) {
         kDebug() << "Got mtp list, connecting to device using thread";
-        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, serial, this ) );
-    }
-    else
-    {
-        free( rawdevices );
+        ThreadWeaver::Weaver::instance()->enqueue(new WorkerThread(numrawdevices, rawdevices, serial, this));
+    } else {
+        free(rawdevices);
     }
 }
 
-bool MtpDevice::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial )
+bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial)
 {
 
     bool success;
 
     LIBMTP_mtpdevice_t *device;
-            // test raw device for connectability
-    for(int i = 0; i < numrawdevices; i++)
-    {
+    // test raw device for connectability
+    for (int i = 0; i < numrawdevices; i++) {
 
-        kDebug() << "Opening raw device number: " << (i+1);
+        kDebug() << "Opening raw device number: " << (i + 1);
         device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
         if (device == NULL) {
-            kDebug() << "Unable to open raw device: " << (i+1);
+            kDebug() << "Unable to open raw device: " << (i + 1);
             success = false;
-            LIBMTP_Release_Device( device );
+            LIBMTP_Release_Device(device);
             continue;
         }
 
         kDebug() << "Testing serial number";
 
-        QString mtpSerial = QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) );
-        if( !mtpSerial.contains(serial) )
-        {
+        QString mtpSerial = QString::fromUtf8(LIBMTP_Get_Serialnumber(device));
+        if (!mtpSerial.contains(serial)) {
             kDebug() << "Wrong device, going to next";
             kDebug() << "Expected: " << serial << " but got: " << mtpSerial;
             success = false;
-            LIBMTP_Release_Device( device );
+            LIBMTP_Release_Device(device);
             continue;
         }
 
@@ -141,10 +135,10 @@ bool MtpDevice::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawde
 
     m_device = device;
 
-    if( m_device == 0 ) {
+    if (m_device == 0) {
         // TODO: error protection
         success = false;
-        free( rawdevices );
+        free(rawdevices);
 
     }
 
@@ -152,7 +146,7 @@ bool MtpDevice::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawde
 
     kDebug() << "Serial is: " << serial;
 
-    kDebug() << "Success is: " << ( success ? "true" : "false" );
+    kDebug() << "Success is: " << (success ? "true" : "false");
 
     return success;
 }
@@ -172,7 +166,7 @@ QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
     return QString();
 }
 
-void MtpDevice::transferSuccessful( ThreadWeaver::Job *job )
+void MtpDevice::transferSuccessful(ThreadWeaver::Job *job)
 {
     emit fileCopiedToDevice(job->property("ds_transfer_token").toInt(), job->property("ds_filename").toString());
     job->deleteLater();
@@ -183,8 +177,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
     KUrl url = KUrl::fromPath(fromPath);
     int token = getNextTransferToken();
 
-    if (fromPath.contains(".mp3"))
-    {
+    if (fromPath.contains(".mp3")) {
         TagLib::MPEG::File *file = new TagLib::MPEG::File(TagLib::FileName(url.path().toUtf8()));
 
         LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
@@ -200,11 +193,11 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         trackmeta->bitrate = file->audioProperties()->bitrate();
         trackmeta->samplerate = file->audioProperties()->sampleRate();
 
-        ThreadWeaver::Job * thread = new SendTrackThread( m_device, qstrdup( url.path().toUtf8() ),
+        ThreadWeaver::Job * thread = new SendTrackThread(m_device, qstrdup(url.path().toUtf8()),
                 trackmeta, 0, this);
         thread->setProperty("ds_transfer_token", token);
         thread->setProperty("ds_filename", url.fileName());
-        ThreadWeaver::Weaver::instance()->enqueue( thread );
+        ThreadWeaver::Weaver::instance()->enqueue(thread);
 
         return token;
     }
@@ -228,17 +221,17 @@ int MtpDevice::getByteArrayFromDeviceFile(const QString &path)
 
 /////
 
-WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpDevice* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_numrawdevices( numrawdevices )
-    , m_rawdevices( rawdevices )
-    , m_serial( serial )
-    , m_handler( handler )
+WorkerThread::WorkerThread(int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpDevice* handler)
+        : ThreadWeaver::Job()
+        , m_success(false)
+        , m_numrawdevices(numrawdevices)
+        , m_rawdevices(rawdevices)
+        , m_serial(serial)
+        , m_handler(handler)
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchFailed( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchSucceeded( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    connect(this, SIGNAL(failed(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchFailed(ThreadWeaver::Job*)));
+    connect(this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::Job*)));
+    connect(this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()));
 }
 
 WorkerThread::~WorkerThread()
@@ -253,23 +246,23 @@ bool WorkerThread::success() const
 
 void WorkerThread::run()
 {
-    m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices, m_serial );
+    m_success = m_handler->iterateRawDevices(m_numrawdevices, m_rawdevices, m_serial);
 }
 
 //
 
 SendTrackThread::SendTrackThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_track_t *trackmeta,
-        LIBMTP_progressfunc_t cb, MtpDevice *parent)
-    : ThreadWeaver::Job()
-    , m_success( 0 )
-    , m_device( device )
-    , m_name( name )
-    , m_trackmeta( trackmeta )
-    , m_callback( cb )
-    , m_parent( parent )
+                                 LIBMTP_progressfunc_t cb, MtpDevice *parent)
+        : ThreadWeaver::Job()
+        , m_success(0)
+        , m_device(device)
+        , m_name(name)
+        , m_trackmeta(trackmeta)
+        , m_callback(cb)
+        , m_parent(parent)
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_parent, SLOT( transferFailed( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_parent, SLOT( transferSuccessful( ThreadWeaver::Job* ) ) );
+    connect(this, SIGNAL(failed(ThreadWeaver::Job*)), m_parent, SLOT(transferFailed(ThreadWeaver::Job*)));
+    connect(this, SIGNAL(done(ThreadWeaver::Job*)), m_parent, SLOT(transferSuccessful(ThreadWeaver::Job*)));
 }
 
 SendTrackThread::~SendTrackThread()
@@ -284,8 +277,8 @@ bool SendTrackThread::success() const
 
 void SendTrackThread::run()
 {
-    m_success = LIBMTP_Send_Track_From_File( m_device, qstrdup( m_name.toUtf8() ), m_trackmeta,
-            m_callback, m_parent);
+    m_success = LIBMTP_Send_Track_From_File(m_device, qstrdup(m_name.toUtf8()), m_trackmeta,
+                                            m_callback, m_parent);
 }
 
 
