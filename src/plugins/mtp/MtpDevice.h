@@ -50,6 +50,9 @@ public slots:
     int getFileFromDevice(const QString &path, const QString &toPath);
     int getByteArrayFromDeviceFile(const QString &path);
 
+private slots:
+    void transferSuccessful( ThreadWeaver::Job* );
+
 private:
     QAbstractItemModel *m_model;
     QString m_udi;
