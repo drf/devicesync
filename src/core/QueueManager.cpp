@@ -167,6 +167,9 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
 
 void QueueManager::fileCopiedToDevice(int token, const QString &filePath)
 {
+    disconnect(d->tokenActions[token]->out_device, SIGNAL(fileCopiedToDevice(int, const QString&)),
+                    this, SLOT(fileCopiedToDevice(int, const QString&)));
+
     int new_token;
 
     switch (d->tokenActions[token]->action) {
