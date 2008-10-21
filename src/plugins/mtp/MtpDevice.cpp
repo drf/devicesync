@@ -34,10 +34,26 @@
 #include <taglib/tag.h>
 #include <taglib/audioproperties.h>
 
+LibMtpCallbacks* LibMtpCallbacks::s_instance = 0;
+
+int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const *const data)
+{
+    Q_UNUSED(data)
+
+    float percent = (float)sent/(float)total;
+    int realpercent = percent * 100;
+
+    LibMtpCallbacks::instance()->setActionPercentage(realpercent);
+
+    return 0;
+}
+
 MtpDevice::MtpDevice(const QString &udi, QObject *parent)
         : AbstractDevice(parent),
         m_udi(udi)
 {
+    connect(LibMtpCallbacks::instance(), SIGNAL(actionPercentageChanged(int)),
+            this, SIGNAL(actionProgressChanged(int)));
 }
 
 MtpDevice::~MtpDevice()
@@ -194,7 +210,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         trackmeta->samplerate = file->audioProperties()->sampleRate();
 
         ThreadWeaver::Job * thread = new SendTrackThread(m_device, qstrdup(url.path().toUtf8()),
-                trackmeta, 0, this);
+                trackmeta, mtp_transfer_callback, this);
         thread->setProperty("ds_transfer_token", token);
         thread->setProperty("ds_filename", url.fileName());
         ThreadWeaver::Weaver::instance()->enqueue(thread);
@@ -220,6 +236,13 @@ int MtpDevice::getByteArrayFromDeviceFile(const QString &path)
 }
 
 /////
+
+void LibMtpCallbacks::setActionPercentage(int percentage)
+{
+    emit actionPercentageChanged(percentage);
+}
+
+////
 
 WorkerThread::WorkerThread(int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpDevice* handler)
         : ThreadWeaver::Job()

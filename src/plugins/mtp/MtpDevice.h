@@ -60,6 +60,22 @@ private:
     LIBMTP_mtpdevice_t *m_device;
 };
 
+class LibMtpCallbacks : public QObject
+{
+    Q_OBJECT
+
+    public:
+        static LibMtpCallbacks* instance() { return s_instance ? s_instance : new LibMtpCallbacks(); }
+
+        void setActionPercentage(int percentage);
+
+    signals:
+        void actionPercentageChanged(int);
+
+    private:
+        static LibMtpCallbacks* s_instance;
+};
+
 class WorkerThread : public ThreadWeaver::Job
 {
     Q_OBJECT
