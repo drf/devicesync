@@ -28,32 +28,32 @@ class ProgressInterface : public QObject
 {
     Q_OBJECT
 
-    public:
-        enum Action {
-            Getting,
-            Sending,
-            Deleting,
-            Renaming
-        };
+public:
+    enum Action {
+        Getting,
+        Sending,
+        Deleting,
+        Renaming
+    };
 
-        ProgressInterface(QObject *parent = 0);
-        virtual ~ProgressInterface();
+    ProgressInterface(QObject *parent = 0);
+    virtual ~ProgressInterface();
 
-    public slots:
-        void setItems(QueueItem::List list);
-        void setCurrentItem(QueueItem *item);
+public slots:
+    void setItems(QueueItem::List list);
+    void setCurrentItem(QueueItem *item);
 
-        void setCurrentItemProgress(int percent);
-        void setCurrentItemAction(Action action);
+    void setCurrentItemProgress(int percent);
+    void setCurrentItemAction(Action action);
 
-    signals:
-        void currentItemChanged(QueueItem *item);
-        void totalProgressChanged(int percent);
-        void currentItemProgressChanged(Action action, int percent);
+signals:
+    void currentItemChanged(QueueItem *item);
+    void totalProgressChanged(int percent);
+    void currentItemProgressChanged(Action action, int percent);
 
-    private:
-        class Private;
-        Private *d;
+private:
+    class Private;
+    Private *d;
 };
 
 #endif /* PROGRESSINTERFACE_H */

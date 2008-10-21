@@ -33,7 +33,7 @@
 DEVICESYNC_PLUGIN_EXPORT(MtpInterface)
 
 MtpInterface::MtpInterface(QObject *parent, const QVariantList&)
-: AbstractDeviceInterface(parent)
+        : AbstractDeviceInterface(parent)
 {
 }
 
@@ -46,21 +46,19 @@ void MtpInterface::init()
 
 }
 
-bool MtpInterface::isMtp( const QString &udi )
+bool MtpInterface::isMtp(const QString &udi)
 {
     Solid::Device device;
 
-    device = Solid::Device( udi );
-    if( !device.is<Solid::PortableMediaPlayer>() ) {
+    device = Solid::Device(udi);
+    if (!device.is<Solid::PortableMediaPlayer>()) {
         return false;
     }
 
     Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
 
-    foreach( QString protocol, pmp->supportedProtocols() )
-    {
-        if( protocol == "mtp" )
-        {
+    foreach(QString protocol, pmp->supportedProtocols()) {
+        if (protocol == "mtp") {
             kDebug() << "MTP device detected!";
             return true;
         }
@@ -73,18 +71,18 @@ void MtpInterface::startWatching()
 {
     kDebug() << "Watching for Mtp devices";
 
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
-            this, SLOT( deviceAdded( const QString & ) ) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
-            this, SLOT( deviceRemoved( const QString & ) ) );
+    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(const QString &)),
+            this, SLOT(deviceAdded(const QString &)));
+    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(const QString &)),
+            this, SLOT(deviceRemoved(const QString &)));
 }
 
 void MtpInterface::stopWatching()
 {
-    disconnect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
-            this, SLOT( deviceAdded( const QString & ) ) );
-    disconnect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
-            this, SLOT( deviceRemoved( const QString & ) ) );
+    disconnect(Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(const QString &)),
+               this, SLOT(deviceAdded(const QString &)));
+    disconnect(Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(const QString &)),
+               this, SLOT(deviceRemoved(const QString &)));
 }
 
 void MtpInterface::deviceAdded(const QString &udi)

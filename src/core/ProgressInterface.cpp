@@ -33,8 +33,8 @@ public:
 };
 
 ProgressInterface::ProgressInterface(QObject *parent)
- : QObject(parent),
- d(new Private())
+        : QObject(parent),
+        d(new Private())
 {
 }
 
@@ -50,10 +50,9 @@ void ProgressInterface::setCurrentItem(QueueItem *item)
 
     int pos = 1;
 
-    for (QueueItem::List::iterator i = d->itemList.begin(); i != d->itemList.end(); ++i)
-    {
+    for (QueueItem::List::iterator i = d->itemList.begin(); i != d->itemList.end(); ++i) {
         if (*i == item) {
-            emit totalProgressChanged( (int)((float)((float)pos/(float)d->itemList.count()) * 100) );
+            emit totalProgressChanged((int)((float)((float)pos / (float)d->itemList.count()) * 100));
         }
     }
 }

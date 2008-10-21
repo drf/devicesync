@@ -6,6 +6,7 @@ set(devicesync_SRCS
    devicesync.cpp
    main.cpp
    devicesyncview.cpp
+   ProgressDialog.cpp
  )
 
 kde4_add_ui_files(devicesync_SRCS 

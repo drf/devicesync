@@ -23,18 +23,27 @@
 #include <KDialog>
 #include "ui_progressdialog.h"
 
-class ProgressInterface;
+#include "ProgressInterface.h"
+
+class QueueItem;
 
 class ProgressDialog : public KDialog
 {
-    public:
-        ProgressDialog(ProgressInterface *iface, QWidget *parent = 0);
-        virtual ~ProgressDialog();
+    Q_OBJECT
 
-    private:
-        QWidget *m_widget;
-        Ui_progressDialog ui;
-        ProgressInterface *m_interface;
+public:
+    ProgressDialog(ProgressInterface *iface, QWidget *parent = 0);
+    virtual ~ProgressDialog();
+
+private slots:
+    void currentItemChanged(QueueItem *item);
+    void totalProgressChanged(int percent);
+    void currentItemProgressChanged(ProgressInterface::Action action, int percent);
+
+private:
+    QWidget *m_widget;
+    Ui_progressDialog ui;
+    ProgressInterface *m_interface;
 };
 
 #endif /* PROGRESSDIALOG_H */

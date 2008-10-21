@@ -29,7 +29,11 @@
           <widget class="KComboBox" name="leftDeviceBox" />
          </item>
          <item>
-          <widget class="QTreeView" name="leftTreeView" />
+          <widget class="QTreeView" name="leftTreeView" >
+           <property name="selectionMode" >
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -75,7 +79,11 @@
           <widget class="KComboBox" name="rightDeviceBox" />
          </item>
          <item>
-          <widget class="QTreeView" name="rightTreeView" />
+          <widget class="QTreeView" name="rightTreeView" >
+           <property name="selectionMode" >
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

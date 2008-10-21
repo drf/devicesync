@@ -41,7 +41,7 @@ public:
     QAbstractItemModel * getFileModel();
     QString getPathForCurrentIndex(const QModelIndex &index);
 
-    bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial );
+    bool iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial);
 
 public slots:
     int sendFileToDevice(const QString &fromPath, const QString &toPath);
@@ -51,7 +51,7 @@ public slots:
     int getByteArrayFromDeviceFile(const QString &path);
 
 private slots:
-    void transferSuccessful( ThreadWeaver::Job* );
+    void transferSuccessful(ThreadWeaver::Job*);
 
 private:
     QAbstractItemModel *m_model;
@@ -63,43 +63,43 @@ private:
 class WorkerThread : public ThreadWeaver::Job
 {
     Q_OBJECT
-    public:
-        WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpDevice* handler );
-        virtual ~WorkerThread();
+public:
+    WorkerThread(int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpDevice* handler);
+    virtual ~WorkerThread();
 
-        virtual bool success() const;
+    virtual bool success() const;
 
-    protected:
-        virtual void run();
+protected:
+    virtual void run();
 
-    private:
-        bool m_success;
-        int m_numrawdevices;
-        LIBMTP_raw_device_t* m_rawdevices;
-        QString m_serial;
-        MtpDevice *m_handler;
+private:
+    bool m_success;
+    int m_numrawdevices;
+    LIBMTP_raw_device_t* m_rawdevices;
+    QString m_serial;
+    MtpDevice *m_handler;
 };
 
 class SendTrackThread : public ThreadWeaver::Job
 {
     Q_OBJECT
-    public:
-        SendTrackThread( LIBMTP_mtpdevice_t *device, QString name, LIBMTP_track_t *trackmeta,
-                LIBMTP_progressfunc_t cb, MtpDevice *parent );
-        virtual ~SendTrackThread();
+public:
+    SendTrackThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_track_t *trackmeta,
+                    LIBMTP_progressfunc_t cb, MtpDevice *parent);
+    virtual ~SendTrackThread();
 
-        virtual bool success() const;
+    virtual bool success() const;
 
-    protected:
-        virtual void run();
+protected:
+    virtual void run();
 
-    private:
-        int m_success;
-        LIBMTP_mtpdevice_t* m_device;
-        QString m_name;
-        LIBMTP_track_t *m_trackmeta;
-        LIBMTP_progressfunc_t m_callback;
-        MtpDevice *m_parent;
+private:
+    int m_success;
+    LIBMTP_mtpdevice_t* m_device;
+    QString m_name;
+    LIBMTP_track_t *m_trackmeta;
+    LIBMTP_progressfunc_t m_callback;
+    MtpDevice *m_parent;
 };
 
 #endif /* MTPDEVICE_H */

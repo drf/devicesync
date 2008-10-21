@@ -23,6 +23,7 @@
 
 #include "AbstractDeviceInterface.h"
 #include "QueueManager.h"
+#include "ProgressDialog.h"
 
 #include <QtGui/QDropEvent>
 #include <QtGui/QPainter>
@@ -112,12 +113,9 @@ void DeviceSync::setupActions()
 
 void DeviceSync::connectDevice()
 {
-    foreach (AbstractDeviceInterface *iface, d->interfaces)
-    {
-        foreach (DeviceContainer *device, iface->getAllDevices())
-        {
-            if (device->status != DeviceContainer::Connected)
-            {
+    foreach(AbstractDeviceInterface *iface, d->interfaces) {
+        foreach(DeviceContainer *device, iface->getAllDevices()) {
+            if (device->status != DeviceContainer::Connected) {
                 iface->connectDevice(device->device);
             }
         }
@@ -126,6 +124,7 @@ void DeviceSync::connectDevice()
 
 void DeviceSync::processQueue()
 {
+    new ProgressDialog(queueManager()->progressInterface(), this);
     queueManager()->processQueue();
 }
 
