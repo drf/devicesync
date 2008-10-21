@@ -32,6 +32,7 @@
 #include <taglib/taglib.h>
 #include <taglib/mpegfile.h>
 #include <taglib/tag.h>
+#include <taglib/audioproperties.h>
 
 MtpDevice::MtpDevice(const QString &udi, QObject *parent)
  : AbstractDevice(parent),
@@ -188,6 +189,9 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         trackmeta->tracknumber = file->tag()->track();
         trackmeta->filesize = file->length();
         trackmeta->filename = qstrdup(url.fileName().toUtf8());
+        trackmeta->duration = file->audioProperties()->length() * 1000;
+        trackmeta->bitrate = file->audioProperties()->bitrate();
+        trackmeta->samplerate = file->audioProperties()->sampleRate();
 
         int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( url.path().toUtf8() ), trackmeta,
                     0, this );
