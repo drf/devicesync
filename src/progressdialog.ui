@@ -1,6 +1,6 @@
 <ui version="4.0" >
  <class>progressDialog</class>
- <widget class="QDialog" name="progressDialog" >
+ <widget class="QWidget" name="progressDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
