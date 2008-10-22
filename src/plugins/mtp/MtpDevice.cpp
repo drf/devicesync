@@ -287,6 +287,72 @@ void WorkerThread::run()
     m_success = m_handler->iterateRawDevices(m_numrawdevices, m_rawdevices, m_serial);
 }
 
+////
+
+CreateModelThread::CreateModelThread(LIBMTP_mtpdevice_t *device, MtpDevice* handler)
+        : ThreadWeaver::Job()
+        , m_success(false)
+        , m_device(device)
+        , m_handler(handler)
+        , m_model(new QStandardItemModel())
+{
+    connect(this, SIGNAL(modelCreated(QStandardItemModel*)), m_handler, SLOT(modelCreated(QStandardItemModel*)));
+    connect(this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()));
+}
+
+CreateModelThread::~CreateModelThread()
+{
+    //nothing to do
+}
+
+bool CreateModelThread::success() const
+{
+    return m_success;
+}
+
+void CreateModelThread::run()
+{
+    LIBMTP_file_t *mtpfiles = LIBMTP_Get_Filelisting_With_Callback(m_device, 0, 0);
+    LIBMTP_folder_t *folders = LIBMTP_Get_Folder_List(m_device);
+    int mtp_last_folder_id = 0;
+
+    iterateSiblings(folders);
+}
+
+void CreateModelThread::iterateChildren(LIBMTP_folder_t *parentfolder)
+{
+    LIBMTP_folder_t *folder = parentfolder->child;
+
+    while (folder) {
+        QStandardItem *itm = new QStandardItem();
+        itm->setText(folder->name);
+        itm->setData(folder->folder_id, 40);
+
+        foreach(QStandardItem *ent, m_model->findItems("*", Qt::MatchWildcard, 0)) {
+            if (ent->data(40).toInt() == folder->parent_id) {
+                ent->appendRow(ent);
+            }
+        }
+
+        iterateChildren(folder);
+        folder = folder->sibling;
+    }
+}
+
+void CreateModelThread::iterateSiblings(LIBMTP_folder_t *parentfolder)
+{
+    LIBMTP_folder_t *folder = parentfolder;
+
+    while (folder) {
+        QStandardItem *itm = new QStandardItem();
+        itm->setText(folder->name);
+        itm->setData(folder->folder_id, 40);
+        m_model->invisibleRootItem()->appendRow(itm);
+        iterateChildren(folder);
+        folder = folder->sibling;
+    }
+}
+
 //
 
 SendTrackThread::SendTrackThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_track_t *trackmeta,
