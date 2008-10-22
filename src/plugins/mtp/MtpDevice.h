@@ -26,6 +26,7 @@
 #include <threadweaver/Job.h>
 
 class QAbstractItemModel;
+class QStandardItemModel;
 
 class MtpDevice : public AbstractDevice
 {
@@ -97,6 +98,33 @@ private:
     QString m_serial;
     MtpDevice *m_handler;
 };
+
+class CreateModelThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    CreateModelThread(LIBMTP_mtpdevice_t *device, MtpDevice *handler);
+    virtual ~CreateModelThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    void iterateChildren(LIBMTP_folder_t *parentfolder);
+    void iterateSiblings(LIBMTP_folder_t *parentfolder);
+
+signals:
+    void modelCreated(QStandardItemModel *model);
+
+private:
+    int m_success;
+    LIBMTP_mtpdevice_t* m_device;
+    MtpDevice *m_handler;
+    QStandardItemModel *m_model;
+};
+
 
 class SendTrackThread : public ThreadWeaver::Job
 {
