@@ -24,7 +24,7 @@
 #include <KDE/KLocale>
 
 static const char description[] =
-    I18N_NOOP("A KDE 4 Application");
+    I18N_NOOP("An application that lets you transfer data between devices");
 
 static const char version[] = "0.1";
 
@@ -34,6 +34,8 @@ int main(int argc, char **argv)
                      KAboutData::License_GPL, ki18n("(C) 2008 Dario Freddi"), KLocalizedString(), 0, "drf54321@gmail.com");
     about.addAuthor(ki18n("Dario Freddi"), ki18n("Maintainer"), "drf54321@gmail.com");
     KCmdLineArgs::init(argc, argv, &about);
+
+    new KComponentData(about);
 
     KCmdLineOptions options;
     options.add("+[URL]", ki18n("Document to open"));
