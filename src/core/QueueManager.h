@@ -70,6 +70,7 @@ private slots:
     void processNextQueueItem();
     void fileCopiedFromDevice(int token, const QString &path);
     void fileCopiedToDevice(int token, const QString &filePath);
+    void pathRemovedFromDevice(int token, const QString &path);
 
 private:
     int generateItemId();

@@ -148,6 +148,17 @@ void QueueManager::processNextQueueItem()
 
         d->tokenActions[token] = (*d->iterator);
         break;
+    case QueueItem::Delete:
+        progressInterface()->setCurrentItemAction(ProgressInterface::Deleting);
+
+        connect((*d->iterator)->in_device, SIGNAL(pathRemovedFromDevice(int, const QString&)),
+                this, SLOT(pathRemovedFromDevice(int, const QString&)));
+
+        token = (*d->iterator)->in_device->removePath((*d->iterator)->in_path);
+
+        d->tokenActions[token] = (*d->iterator);
+
+        break;
     default:
         break;
     }
@@ -205,6 +216,16 @@ void QueueManager::fileCopiedToDevice(int token, const QString &filePath)
     default:
         break;
     }
+}
+
+void QueueManager::pathRemovedFromDevice(int token, const QString &path)
+{
+    disconnect(d->tokenActions[token]->in_device, SIGNAL(pathRemovedFromDevice(int, const QString&)),
+               this, SLOT(pathRemovedFromDevice(int, const QString&)));
+
+    kDebug() << "Item deleted!!";
+    ++d->iterator;
+    processNextQueueItem();
 }
 
 #include "QueueManager.moc"
