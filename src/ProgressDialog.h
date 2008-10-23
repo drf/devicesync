@@ -32,7 +32,7 @@ class ProgressDialog : public KDialog
     Q_OBJECT
 
 public:
-    ProgressDialog(ProgressInterface *iface, QWidget *parent = 0);
+    explicit ProgressDialog(ProgressInterface *iface, QWidget *parent = 0);
     virtual ~ProgressDialog();
 
 private slots:

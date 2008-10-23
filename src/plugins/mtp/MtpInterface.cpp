@@ -54,7 +54,7 @@ void MtpInterface::scan()
     foreach(const Solid::Device &device, Solid::Device::listFromType(Solid::DeviceInterface::PortableMediaPlayer)) {
         const Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
 
-        foreach(QString protocol, pmp->supportedProtocols()) {
+        foreach(const QString &protocol, pmp->supportedProtocols()) {
             if (protocol == "mtp") {
                 kDebug() << "MTP device detected!";
 
@@ -77,7 +77,7 @@ bool MtpInterface::isMtp(const QString &udi)
 
     Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
 
-    foreach(QString protocol, pmp->supportedProtocols()) {
+    foreach(const QString &protocol, pmp->supportedProtocols()) {
         if (protocol == "mtp") {
             kDebug() << "MTP device detected!";
             return true;
