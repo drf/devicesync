@@ -55,6 +55,7 @@ public:
     virtual ~QueueManager();
 
     ProgressInterface *progressInterface();
+    QueueItem::List currentQueue();
 
 public slots:
     int addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,

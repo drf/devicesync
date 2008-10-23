@@ -75,6 +75,8 @@ private slots:
 
     void processQueue();
 
+    void disconnectAllDevices();
+
 private:
     void setupActions();
     AbstractDeviceInterface * createPluginFromService(const KService::Ptr &service);

@@ -87,7 +87,21 @@ DeviceSync::DeviceSync()
 
 DeviceSync::~DeviceSync()
 {
+    d->view->deleteLater();
+    d->manager->deleteLater();
+
+    disconnectAllDevices();
+
     delete d;
+}
+
+void DeviceSync::disconnectAllDevices()
+{
+    foreach(AbstractDeviceInterface *iface, d->interfaces) {
+        foreach(AbstractDevice *device, iface->getConnectedDevices()) {
+            iface->disconnectDevice(device);
+        }
+    }
 }
 
 QueueManager * DeviceSync::queueManager()
@@ -134,6 +148,10 @@ void DeviceSync::connectDevice()
 
 void DeviceSync::processQueue()
 {
+    if (queueManager()->currentQueue().isEmpty()) {
+        return;
+    }
+
     new ProgressDialog(queueManager()->progressInterface(), this);
     queueManager()->processQueue();
 }
