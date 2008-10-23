@@ -311,6 +311,12 @@ int MtpDevice::getByteArrayFromDeviceFile(const QString &)
     return -1;
 }
 
+int MtpDevice::removePath(const QString &path)
+{
+    //LIBMTP_Delete_Object(m_device, path.toInt());
+    return -1;
+}
+
 /////
 
 void LibMtpCallbacks::setActionPercentage(int percentage)
