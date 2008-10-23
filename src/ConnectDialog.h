@@ -32,24 +32,26 @@ class ConnectDialog : public KDialog
 {
     Q_OBJECT
 
-    public:
-        explicit ConnectDialog(DeviceSync *handler, QWidget *parent = 0);
-        virtual ~ConnectDialog();
+public:
+    explicit ConnectDialog(DeviceSync *handler, QWidget *parent = 0);
+    virtual ~ConnectDialog();
 
-    private slots:
-        void refreshList();
-        void rescanDevices();
+private slots:
+    void refreshList();
+    void rescanDevices();
 
-        void connectDevice();
+    void connectDevice();
 
-    private:
-        int getNextId();
+    void deviceConnected(AbstractDevice *device);
 
-    private:
-        QWidget *m_widget;
-        Ui_connectDialog ui;
-        DeviceSync *m_handler;
-        QMap<int, AbstractDevice*> m_devices;
+private:
+    int getNextId();
+
+private:
+    QWidget *m_widget;
+    Ui_connectDialog ui;
+    DeviceSync *m_handler;
+    QMap<int, AbstractDevice*> m_devices;
 };
 
 #endif /* CONNECTDIALOG_H */

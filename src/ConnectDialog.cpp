@@ -21,13 +21,16 @@
 
 #include <KDebug>
 
+#include <QMovie>
+#include <QTimer>
+
 #include "AbstractDeviceInterface.h"
 
 #include "devicesync.h"
 
 ConnectDialog::ConnectDialog(DeviceSync *handler, QWidget *parent)
- : KDialog(parent),
- m_handler(handler)
+        : KDialog(parent),
+        m_handler(handler)
 {
     setButtons(KDialog::None);
 
@@ -47,7 +50,7 @@ ConnectDialog::ConnectDialog(DeviceSync *handler, QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     show();
 
-
+    refreshList();
 }
 
 ConnectDialog::~ConnectDialog()
@@ -58,7 +61,7 @@ int ConnectDialog::getNextId()
 {
     int id = 0;
 
-    foreach (int i, m_devices.keys()) {
+    foreach(int i, m_devices.keys()) {
         if (i >= id) {
             id = i + 1;
         }
@@ -71,7 +74,7 @@ void ConnectDialog::refreshList()
 {
     ui.listWidget->clear();
 
-    foreach (AbstractDevice *device, m_handler->getAvailableDisconnectedDevices()) {
+    foreach(AbstractDevice *device, m_handler->getAvailableDisconnectedDevices()) {
         QListWidgetItem *itm = new QListWidgetItem(ui.listWidget);
         int id = getNextId();
 
@@ -93,7 +96,58 @@ void ConnectDialog::rescanDevices()
 void ConnectDialog::connectDevice()
 {
     AbstractDevice *device = m_devices[ui.listWidget->currentItem()->data(40).toInt()];
+    connect(device, SIGNAL(deviceConnected(AbstractDevice*)), this, SLOT(deviceConnected(AbstractDevice*)));
+
     device->interface()->connectDevice(device);
+
+    m_widget->deleteLater();
+
+    m_widget = new QWidget();
+    setMainWidget(m_widget);
+
+    QVBoxLayout *ly = new QVBoxLayout();
+    QLabel *text = new QLabel();
+    QLabel *icon = new QLabel();
+
+    text->setText(i18n("Please wait, connecting %1...", device->name()));
+    text->setAlignment(Qt::AlignHCenter);
+    QMovie *movie = KIconLoader::global()->loadMovie("process-working", KIconLoader::Dialog);
+    icon->setMovie(movie);
+
+    if (movie) {
+        movie->start();
+    }
+
+    icon->setAlignment(Qt::AlignHCenter);
+
+    ly->addStretch();
+    ly->addWidget(text);
+    ly->addWidget(icon);
+    ly->addStretch();
+
+    m_widget->setLayout(ly);
+}
+
+void ConnectDialog::deviceConnected(AbstractDevice *device)
+{
+    m_widget->deleteLater();
+
+    m_widget = new QWidget();
+    setMainWidget(m_widget);
+
+    QVBoxLayout *ly = new QVBoxLayout();
+    QLabel *text = new QLabel();
+
+    text->setText(i18n("%1 was successfully connected!", device->name()));
+    text->setAlignment(Qt::AlignHCenter);
+
+    ly->addStretch();
+    ly->addWidget(text);
+    ly->addStretch();
+
+    m_widget->setLayout(ly);
+
+    QTimer::singleShot(2000, this, SLOT(deleteLater()));
 }
 
 #include "ConnectDialog.moc"

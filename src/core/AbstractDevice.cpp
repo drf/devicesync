@@ -65,8 +65,7 @@ QString AbstractDevice::name()
     return d->name;
 }
 
-AbstractDeviceInterface *AbstractDevice::interface()
-{
+AbstractDeviceInterface *AbstractDevice::interface() {
     return d->interface;
 }
 
