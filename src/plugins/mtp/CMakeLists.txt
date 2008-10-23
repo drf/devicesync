@@ -9,7 +9,8 @@ set(mtpplugin_SRCS
 kde4_add_plugin(devicesync_mtpplugin ${mtpplugin_SRCS})
 
 target_link_libraries(devicesync_mtpplugin 
-	${KDE4_KDEUI_LIBS} 
+	${KDE4_KDECORE_LIBS}
+	${KDE4_KIO_LIBS}
 	${KDE4_SOLID_LIBRARY}
 	${KDE4_THREADWEAVER_LIBRARIES} 
 	${MTP_LIBRARIES}

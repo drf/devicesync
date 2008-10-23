@@ -8,7 +8,7 @@ set(dscore_SRCS
 
 kde4_add_library(devicesynccore SHARED ${dscore_SRCS})
 
-target_link_libraries(devicesynccore ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS})
+target_link_libraries(devicesynccore ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS})
 
 set_target_properties(devicesynccore PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION})
 
@@ -19,6 +19,7 @@ set(dscore_HDRS
     AbstractDeviceInterface.h
     AbstractDevice.h
     QueueManager.h
+    ProgressInterface.h
 )
 
 install(FILES ${dscore_HDRS} DESTINATION ${INCLUDE_INSTALL_DIR}/devicesync)
