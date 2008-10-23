@@ -2,6 +2,7 @@
 <kpartgui name="devicesync" version="1">
 <ToolBar fullWidth="true" name="devicesync_toolbar"><text>Main Toolbar</text>
     <Action name="connect_device"/>
+    <Action name="connect_all_devices"/>
     <Action name="scan_devices"/>
     <Separator lineSeparator="true"/>
     <Action name="process_queue"/>
