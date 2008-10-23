@@ -71,6 +71,8 @@ private slots:
 
     void connectDevice();
 
+    void requestDeviceScan();
+
     void processQueue();
 
 private:
