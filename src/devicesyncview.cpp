@@ -215,7 +215,7 @@ void DeviceSyncView::showLeftViewContextMenu()
     menu->addSeparator();
 
     QAction *clearAction = menu->addAction(KIcon("edit-delete"),
-                                           i18n("&Delete File"));
+                                           i18n("&Delete"));
     connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileLeft()));
 
     menu->popup(QCursor::pos());
@@ -292,6 +292,52 @@ void DeviceSyncView::createNewFolderRight()
                                 m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().at(0)));
 
     m_rightDevice->reloadModel();
+}
+
+void DeviceSyncView::deleteFileLeft()
+{
+    QStringList paths;
+    foreach(const QModelIndex &index, ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes()) {
+        if (paths.contains(m_leftDevice->getPathForCurrentIndex(index))) {
+            continue;
+        }
+
+        paths.append(m_leftDevice->getPathForCurrentIndex(index));
+
+        int token =
+            m_core->queueManager()->addJobToQueue(QueueItem::Delete, m_leftDevice,
+                                                  m_leftDevice->getPathForCurrentIndex(index));
+
+        QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Delete %1 from %2",
+                m_leftDevice->getPathForCurrentIndex(index),
+                m_leftDevice->name()),
+                ui_devicesyncview_base.listWidget);
+
+        itm->setData(40, token);
+    }
+}
+
+void DeviceSyncView::deleteFileRight()
+{
+    QStringList paths;
+    foreach(const QModelIndex &index, ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes()) {
+        if (paths.contains(m_rightDevice->getPathForCurrentIndex(index))) {
+            continue;
+        }
+
+        paths.append(m_rightDevice->getPathForCurrentIndex(index));
+
+        int token =
+            m_core->queueManager()->addJobToQueue(QueueItem::Delete, m_rightDevice,
+                                                  m_rightDevice->getPathForCurrentIndex(index));
+
+        QListWidgetItem *itm = new QListWidgetItem(KIcon("edit-copy"), i18n("Delete %1 from %2",
+                m_rightDevice->getPathForCurrentIndex(index),
+                m_rightDevice->name()),
+                ui_devicesyncview_base.listWidget);
+
+        itm->setData(40, token);
+    }
 }
 
 #include "devicesyncview.moc"

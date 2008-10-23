@@ -77,6 +77,9 @@ private slots:
     void createNewFolderLeft();
     void createNewFolderRight();
 
+    void deleteFileLeft();
+    void deleteFileRight();
+
 private:
     QString getNewFolderNameDialog();
 
