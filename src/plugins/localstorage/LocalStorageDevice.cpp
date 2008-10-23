@@ -26,7 +26,8 @@
 
 LocalStorageDevice::LocalStorageDevice()
 {
-
+    setName("Local Storage");
+    setIcon("drive-harddisk");
 }
 
 LocalStorageDevice::~LocalStorageDevice()
@@ -36,7 +37,6 @@ LocalStorageDevice::~LocalStorageDevice()
 
 void LocalStorageDevice::connectDevice()
 {
-    setName("Local Storage");
     m_model = new QFileSystemModel();
     m_model->setRootPath("/");
 }

@@ -24,6 +24,7 @@
 #include "AbstractDeviceInterface.h"
 #include "QueueManager.h"
 #include "ProgressDialog.h"
+#include "ConnectDialog.h"
 
 #include <QtGui/QDropEvent>
 #include <QtGui/QPainter>
@@ -131,6 +132,21 @@ void DeviceSync::setupActions()
     actionCollection()->addAction("process_queue", processQueue);
 }
 
+AbstractDevice::List DeviceSync::getAvailableDisconnectedDevices()
+{
+    AbstractDevice::List retlist;
+
+    foreach(AbstractDeviceInterface *iface, d->interfaces) {
+        foreach(DeviceContainer *device, iface->getAllDevices()) {
+            if (device->status == DeviceContainer::Disconnected) {
+                retlist.append(device->device);
+            }
+        }
+    }
+
+    return retlist;
+}
+
 void DeviceSync::requestDeviceScan()
 {
     foreach(AbstractDeviceInterface *iface, d->interfaces) {
@@ -151,7 +167,7 @@ void DeviceSync::connectAllDevices()
 
 void DeviceSync::connectDevice()
 {
-
+    new ConnectDialog(this, this);
 }
 
 void DeviceSync::processQueue()
@@ -277,7 +293,7 @@ void DeviceSync::newDeviceRegistered(AbstractDevice *device)
 void DeviceSync::deviceConnected(AbstractDevice *device)
 {
     kDebug() << "A new device has been connected:" << device->name();
-    d->view->addDevice(device->name(), device->name());
+    d->view->addDevice(device->icon(), device->name(), device->name());
     connect(device, SIGNAL(actionProgressChanged(int)),
             queueManager()->progressInterface(), SLOT(setCurrentItemProgress(int)));
 }

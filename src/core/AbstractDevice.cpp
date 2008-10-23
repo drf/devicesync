@@ -19,6 +19,8 @@
 
 #include "AbstractDevice.h"
 
+#include <KIcon>
+
 class AbstractDevice::Private
 {
 public:
@@ -29,6 +31,7 @@ public:
 
 
     QString name;
+    QString icon;
     int token;
 };
 
@@ -48,9 +51,24 @@ void AbstractDevice::setName(const QString &name)
     d->name = name;
 }
 
+void AbstractDevice::setIcon(const QString &name)
+{
+    d->icon = name;
+}
+
 QString AbstractDevice::name()
 {
     return d->name;
+}
+
+QString AbstractDevice::iconName()
+{
+    return d->icon;
+}
+
+KIcon AbstractDevice::icon()
+{
+    return KIcon(d->icon);
 }
 
 int AbstractDevice::getNextTransferToken()
