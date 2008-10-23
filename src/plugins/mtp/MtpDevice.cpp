@@ -205,12 +205,7 @@ void MtpDevice::disconnectDevice()
 void MtpDevice::modelCreated(QStandardItemModel *model)
 {
     m_model = model;
-    emit modelChanged(m_model, this);
-}
-
-QAbstractItemModel *MtpDevice::getFileModel()
-{
-    return m_model;
+    setModel(m_model);
 }
 
 QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)

@@ -110,7 +110,7 @@ void DeviceSyncView::leftDeviceChanged(const QString &name)
 
 void DeviceSyncView::setLeftModel(QAbstractItemModel *, AbstractDevice *device)
 {
-    ui_devicesyncview_base.leftTreeView->setModel(device->getFileModel());
+    ui_devicesyncview_base.leftTreeView->setModel(device->model());
 }
 
 void DeviceSyncView::rightDeviceChanged(const QString &name)
@@ -122,7 +122,7 @@ void DeviceSyncView::rightDeviceChanged(const QString &name)
 
     kDebug() << "Loading new model";
     AbstractDevice *device = m_core->getConnectedDeviceByName(name);
-    ui_devicesyncview_base.rightTreeView->setModel(device->getFileModel());
+    ui_devicesyncview_base.rightTreeView->setModel(device->model());
     m_rightDevice = device;
     connect(m_rightDevice, SIGNAL(modelChanged(QAbstractItemModel*, AbstractDevice*)),
             this, SLOT(setRightModel(QAbstractItemModel*, AbstractDevice*)));
@@ -131,7 +131,7 @@ void DeviceSyncView::rightDeviceChanged(const QString &name)
 
 void DeviceSyncView::setRightModel(QAbstractItemModel *, AbstractDevice *device)
 {
-    ui_devicesyncview_base.rightTreeView->setModel(device->getFileModel());
+    ui_devicesyncview_base.rightTreeView->setModel(device->model());
 }
 
 void DeviceSyncView::addToQueueFromLeft()

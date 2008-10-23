@@ -35,6 +35,7 @@ public:
     QString name;
     QString icon;
     AbstractDeviceInterface *interface;
+    QAbstractItemModel *model;
     int token;
 };
 
@@ -77,6 +78,17 @@ QString AbstractDevice::iconName()
 KIcon AbstractDevice::icon()
 {
     return KIcon(d->icon);
+}
+
+void AbstractDevice::setModel(QAbstractItemModel *model)
+{
+    d->model = model;
+    emit modelChanged(d->model, this);
+}
+
+QAbstractItemModel * AbstractDevice::model()
+{
+    return d->model;
 }
 
 int AbstractDevice::getNextTransferToken()

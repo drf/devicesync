@@ -51,7 +51,7 @@ void LocalStorageDevice::reloadModel()
     m_model = new QFileSystemModel();
     m_model->setRootPath("/");
 
-    emit modelChanged(m_model, this);
+    setModel(m_model);
 }
 
 void LocalStorageDevice::connectDevice()
@@ -62,11 +62,6 @@ void LocalStorageDevice::connectDevice()
 void LocalStorageDevice::disconnectDevice()
 {
     m_model->deleteLater();
-}
-
-QAbstractItemModel *LocalStorageDevice::getFileModel()
-{
-    return m_model;
 }
 
 QString LocalStorageDevice::getPathForCurrentIndex(const QModelIndex &index)
