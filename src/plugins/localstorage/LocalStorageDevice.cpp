@@ -118,12 +118,12 @@ int LocalStorageDevice::removePath(const QString &path)
     job->setProperty("transfer_token", token);
     job->setProperty("path_removed", path);
 
-    connect(job, SIGNAL(result(KIO::Job*)), this, SLOT(removalDone(KIO::Job*)));
+    connect(job, SIGNAL(result(KJob*)), this, SLOT(removalDone(KJob*)));
 
     return token;
 }
 
-void LocalStorageDevice::removalDone(KIO::Job *job)
+void LocalStorageDevice::removalDone(KJob *job)
 {
     emit pathRemovedFromDevice(job->property("transfer_token").toInt(),
                                job->property("path_removed").toString());

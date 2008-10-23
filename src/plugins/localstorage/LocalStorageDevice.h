@@ -54,7 +54,7 @@ public slots:
 private slots:
     void sendToDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool);
     void getFromDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool);
-    void removalDone(KIO::Job*);
+    void removalDone(KJob*);
 
     void sendDoneConfirmation();
 
