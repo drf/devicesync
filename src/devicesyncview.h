@@ -68,6 +68,11 @@ private slots:
     void removeSelectedActions();
     void clearQueue();
 
+    void setLeftModel(QAbstractItemModel *model, AbstractDevice *device);
+    void setRightModel(QAbstractItemModel *model, AbstractDevice *device);
+
+    void showLeftViewContextMenu();
+
 private:
     Ui::devicesyncview_base ui_devicesyncview_base;
     DeviceSync *m_core;

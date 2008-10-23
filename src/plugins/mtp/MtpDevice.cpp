@@ -76,6 +76,19 @@ MtpDevice::~MtpDevice()
     // TODO Auto-generated destructor stub
 }
 
+void MtpDevice::reloadModel()
+{
+    kDebug() << "Creating model";
+
+    ThreadWeaver::Job * thread = new CreateModelThread(m_device, this);
+    ThreadWeaver::Weaver::instance()->enqueue(thread);
+}
+
+void MtpDevice::createFolder(const QString &name, const QString &inPath)
+{
+    LIBMTP_Create_Folder(m_device, qstrdup(name.toUtf8()), inPath.toInt(), 0);
+}
+
 void MtpDevice::connectDevice()
 {
     Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
@@ -180,11 +193,6 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
     kDebug() << "Serial is: " << serial;
 
     kDebug() << "Success is: " << (success ? "true" : "false");
-
-    kDebug() << "Creating model";
-
-    ThreadWeaver::Job * thread = new CreateModelThread(m_device, this);
-    ThreadWeaver::Weaver::instance()->enqueue(thread);
 
     return success;
 }

@@ -52,6 +52,10 @@ public slots:
     int getFileFromDevice(const QString &path, const QString &toPath);
     int getByteArrayFromDeviceFile(const QString &path);
 
+    void createFolder(const QString &name, const QString &inPath);
+
+    void reloadModel();
+
 private slots:
     void transferSuccessful(ThreadWeaver::Job*);
     void modelCreated(QStandardItemModel *model);
