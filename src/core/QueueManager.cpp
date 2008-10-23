@@ -41,6 +41,7 @@ QueueManager::QueueManager(QObject *parent)
         d(new Private())
 {
     d->progressInterface = new ProgressInterface(this);
+    d->itemList.clear();
 }
 
 QueueManager::~QueueManager()
@@ -106,6 +107,8 @@ void QueueManager::clearQueue()
         QueueItem *itm = d->itemList.takeFirst();
         delete itm;
     }
+
+    d->itemList.clear();
 }
 
 void QueueManager::processQueue()
@@ -119,7 +122,7 @@ void QueueManager::processQueue()
 
 void QueueManager::processNextQueueItem()
 {
-    if (d->iterator == d->itemList.end()) {
+    if (d->iterator == d->itemList.end() || !(*d->iterator)) {
         kDebug() << "Queue ended";
         clearQueue();
         return;
