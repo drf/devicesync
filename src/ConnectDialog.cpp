@@ -21,6 +21,8 @@
 
 #include <KDebug>
 
+#include "AbstractDeviceInterface.h"
+
 #include "devicesync.h"
 
 ConnectDialog::ConnectDialog(DeviceSync *handler, QWidget *parent)
@@ -90,7 +92,8 @@ void ConnectDialog::rescanDevices()
 
 void ConnectDialog::connectDevice()
 {
-    m_devices[ui.listWidget->currentItem()->data(40).toInt()]->connectDevice();
+    AbstractDevice *device = m_devices[ui.listWidget->currentItem()->data(40).toInt()];
+    device->interface()->connectDevice(device);
 }
 
 #include "ConnectDialog.moc"
