@@ -31,6 +31,10 @@
 #include <solid/device.h>
 #include <solid/portablemediaplayer.h>
 
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+#include <kio/netaccess.h>
+
 #include <taglib/taglib.h>
 #include <taglib/mpegfile.h>
 #include <taglib/tag.h>
@@ -244,9 +248,35 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         LIBMTP_file_t *file = LIBMTP_new_file_t();
         QFile qfile(url.path().toUtf8());
 
+        KIO::MimetypeJob *job = KIO::mimetype(url, KIO::HideProgressInfo);
+
+        KIO::NetAccess::synchronousRun(job, 0);
+
+        QString mimetype = job->mimetype();
+
+        job->deleteLater();
+
+        if (mimetype == "video/x-msvideo" || mimetype == "video/msvideo") {
+            kDebug() << "Setting AVI Video";
+            file->filetype = LIBMTP_FILETYPE_AVI;
+        } else if (mimetype == "video/x-mpeg" || mimetype == "video/mpeg") {
+            kDebug() << "Setting MPEG Video";
+            file->filetype = LIBMTP_FILETYPE_MPEG;
+        } else if (mimetype == "image/jpeg") {
+            kDebug() << "Setting JPEG Image";
+            file->filetype = LIBMTP_FILETYPE_JPEG;
+        } else if (mimetype == "image/jp2") {
+            kDebug() << "Setting JP2 Image";
+            file->filetype = LIBMTP_FILETYPE_JP2;
+        } else if (mimetype == "image/png") {
+            kDebug() << "Setting PNG Image";
+            file->filetype = LIBMTP_FILETYPE_PNG;
+        } else {
+            file->filetype = LIBMTP_FILETYPE_UNDEF_VIDEO;
+        }
+
         file->filename = qstrdup(url.fileName().toUtf8());
         file->filesize = qfile.size();
-        //file->filetype = LIBMTP_FILETYPE_AVI;
         file->parent_id = toPath.toInt();
 
         ThreadWeaver::Job * thread = new SendFileThread(m_device, qstrdup(url.path().toUtf8()),
