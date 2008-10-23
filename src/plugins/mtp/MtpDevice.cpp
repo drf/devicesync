@@ -42,7 +42,7 @@ int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const 
 {
     Q_UNUSED(data)
 
-    float percent = (float)sent/(float)total;
+    float percent = (float)sent / (float)total;
     int realpercent = percent * 100;
 
     LibMtpCallbacks::instance()->setActionPercentage(realpercent);
@@ -409,7 +409,7 @@ void SendTrackThread::run()
 //
 
 SendFileThread::SendFileThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_file_t *file,
-                                 LIBMTP_progressfunc_t cb, MtpDevice *parent)
+                               LIBMTP_progressfunc_t cb, MtpDevice *parent)
         : ThreadWeaver::Job()
         , m_success(0)
         , m_device(device)
@@ -435,7 +435,7 @@ bool SendFileThread::success() const
 void SendFileThread::run()
 {
     m_success = LIBMTP_Send_File_From_File(m_device, qstrdup(m_name.toUtf8()), m_file,
-                                            m_callback, m_parent);
+                                           m_callback, m_parent);
     kDebug() << m_success;
 }
 

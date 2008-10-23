@@ -67,18 +67,22 @@ class LibMtpCallbacks : public QObject
 {
     Q_OBJECT
 
-    public:
-        static LibMtpCallbacks* instance() { return s_instance ? s_instance : new LibMtpCallbacks(); }
+public:
+    static LibMtpCallbacks* instance() {
+        return s_instance ? s_instance : new LibMtpCallbacks();
+    }
 
-        LibMtpCallbacks() { s_instance = this; };
+    LibMtpCallbacks() {
+        s_instance = this;
+    };
 
-        void setActionPercentage(int percentage);
+    void setActionPercentage(int percentage);
 
-    signals:
-        void actionPercentageChanged(int);
+signals:
+    void actionPercentageChanged(int);
 
-    private:
-        static LibMtpCallbacks* s_instance;
+private:
+    static LibMtpCallbacks* s_instance;
 };
 
 class WorkerThread : public ThreadWeaver::Job
@@ -156,7 +160,7 @@ class SendFileThread : public ThreadWeaver::Job
     Q_OBJECT
 public:
     SendFileThread(LIBMTP_mtpdevice_t *device, QString name, LIBMTP_file_t *file,
-                    LIBMTP_progressfunc_t cb, MtpDevice *parent);
+                   LIBMTP_progressfunc_t cb, MtpDevice *parent);
     virtual ~SendFileThread();
 
     virtual bool success() const;
