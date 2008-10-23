@@ -66,6 +66,8 @@ signals:
 
     void modelChanged(QAbstractItemModel *, AbstractDevice *);
 
+    void deviceConnected(AbstractDevice *device);
+
 private:
     class Private;
     Private *d;
