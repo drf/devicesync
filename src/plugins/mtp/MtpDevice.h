@@ -34,7 +34,7 @@ class MtpDevice : public AbstractDevice
     Q_OBJECT
 
 public:
-    MtpDevice(const QString &udi, QObject *parent = 0);
+    explicit MtpDevice(const QString &udi, QObject *parent = 0);
     virtual ~MtpDevice();
 
     void connectDevice();

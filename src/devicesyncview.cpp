@@ -103,7 +103,7 @@ void DeviceSyncView::rightDeviceChanged(const QString &name)
 void DeviceSyncView::addToQueueFromLeft()
 {
     QStringList paths;
-    foreach(QModelIndex index, ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes()) {
+    foreach(const QModelIndex &index, ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes()) {
         if (paths.contains(m_leftDevice->getPathForCurrentIndex(index))) {
             continue;
         }
@@ -129,7 +129,7 @@ void DeviceSyncView::addToQueueFromLeft()
 void DeviceSyncView::addToQueueFromRight()
 {
     QStringList paths;
-    foreach(QModelIndex index, ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes()) {
+    foreach(const QModelIndex &index, ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes()) {
         if (paths.contains(m_rightDevice->getPathForCurrentIndex(index))) {
             continue;
         }
