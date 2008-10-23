@@ -27,11 +27,13 @@
 #include <kdemacros.h>
 
 class QAbstractItemModel;
+class KIcon;
 
 class KDE_EXPORT AbstractDevice : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString icon READ iconName WRITE setIcon)
 
 public:
     typedef QList<AbstractDevice*> List;
@@ -43,6 +45,8 @@ public:
     virtual void disconnectDevice() = 0;
 
     QString name();
+    KIcon icon();
+    QString iconName();
 
     virtual QAbstractItemModel *getFileModel() = 0;
     virtual QString getPathForCurrentIndex(const QModelIndex &index) = 0;
@@ -56,6 +60,7 @@ public slots:
 
 protected:
     void setName(const QString &name);
+    void setIcon(const QString &name);
     int getNextTransferToken();
 
 signals:

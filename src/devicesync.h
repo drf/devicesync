@@ -24,13 +24,14 @@
 #include <kxmlguiwindow.h>
 #include <KService>
 
+#include "AbstractDevice.h"
+
 #include "ui_prefs_base.h"
 
 class DeviceSyncView;
 class QPrinter;
 class KToggleAction;
 class KUrl;
-class AbstractDevice;
 class AbstractDeviceInterface;
 class QueueManager;
 
@@ -57,8 +58,12 @@ public:
     virtual ~DeviceSync();
 
     AbstractDevice *getConnectedDeviceByName(const QString &name);
+    AbstractDevice::List getAvailableDisconnectedDevices();
 
     QueueManager *queueManager();
+
+public slots:
+    void requestDeviceScan();
 
 private slots:
     void optionsPreferences();
@@ -71,8 +76,6 @@ private slots:
 
     void connectDevice();
     void connectAllDevices();
-
-    void requestDeviceScan();
 
     void processQueue();
 

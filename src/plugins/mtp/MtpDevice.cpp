@@ -36,6 +36,8 @@
 #include <taglib/tag.h>
 #include <taglib/audioproperties.h>
 
+#include <klocalizedstring.h>
+
 LibMtpCallbacks* LibMtpCallbacks::s_instance = 0;
 
 int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const *const data)
@@ -57,6 +59,12 @@ MtpDevice::MtpDevice(const QString &udi, QObject *parent)
 {
     connect(LibMtpCallbacks::instance(), SIGNAL(actionPercentageChanged(int)),
             this, SIGNAL(actionProgressChanged(int)));
+
+    Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
+    QString serial = pmp->driverHandle("mtp").toString();
+
+    setName(i18n("Mtp Device (serial %1)", serial));
+    setIcon("multimedia-player");
 }
 
 MtpDevice::~MtpDevice()
@@ -68,7 +76,6 @@ void MtpDevice::connectDevice()
 {
     Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
     QString serial = pmp->driverHandle("mtp").toString();
-    setName("Mtp Device");
 
     LIBMTP_raw_device_t * rawdevices;
     int numrawdevices;

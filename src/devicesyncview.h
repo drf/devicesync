@@ -28,6 +28,7 @@
 
 class QPainter;
 class KUrl;
+class KIcon;
 
 /**
  * This is the main view class for DeviceSync.  Most of the non-menu,
@@ -53,7 +54,7 @@ public:
      */
     virtual ~DeviceSyncView();
 
-    void addDevice(const QString &name, const QVariant &data);
+    void addDevice(const KIcon &icon, const QString &name, const QVariant &data);
     void removeDevice(const QVariant &data);
 
 private slots:

@@ -72,10 +72,10 @@ void DeviceSyncView::showQueueWidgetContextMenu()
     menu->popup(QCursor::pos());
 }
 
-void DeviceSyncView::addDevice(const QString &name, const QVariant &data)
+void DeviceSyncView::addDevice(const KIcon &icon, const QString &name, const QVariant &data)
 {
-    ui_devicesyncview_base.leftDeviceBox->addItem(name, data);
-    ui_devicesyncview_base.rightDeviceBox->addItem(name, data);
+    ui_devicesyncview_base.leftDeviceBox->addItem(icon, name, data);
+    ui_devicesyncview_base.rightDeviceBox->addItem(icon, name, data);
 }
 
 void DeviceSyncView::removeDevice(const QVariant &data)
