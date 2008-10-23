@@ -42,6 +42,8 @@ public:
 
     virtual void init() = 0;
 
+    virtual void scan() = 0;
+
 public slots:
     virtual void startWatching() = 0;
     virtual void stopWatching() = 0;
