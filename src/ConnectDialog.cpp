@@ -19,6 +19,8 @@
 
 #include "ConnectDialog.h"
 
+#include <KDebug>
+
 #include "devicesync.h"
 
 ConnectDialog::ConnectDialog(DeviceSync *handler, QWidget *parent)
@@ -36,6 +38,7 @@ ConnectDialog::ConnectDialog(DeviceSync *handler, QWidget *parent)
 
     connect(ui.cancelButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
     connect(ui.scanButton, SIGNAL(clicked()), this, SLOT(rescanDevices()));
+    connect(ui.connectButton, SIGNAL(clicked()), this, SLOT(connectDevice()));
 
     setMainWidget(m_widget);
     setModal(true);
@@ -49,16 +52,32 @@ ConnectDialog::~ConnectDialog()
 {
 }
 
+int ConnectDialog::getNextId()
+{
+    int id = 0;
+
+    foreach (int i, m_devices.keys()) {
+        if (i >= id) {
+            id = i + 1;
+        }
+    }
+
+    return id;
+}
+
 void ConnectDialog::refreshList()
 {
     ui.listWidget->clear();
 
     foreach (AbstractDevice *device, m_handler->getAvailableDisconnectedDevices()) {
         QListWidgetItem *itm = new QListWidgetItem(ui.listWidget);
+        int id = getNextId();
 
         itm->setText(device->name());
         itm->setIcon(device->icon());
-        itm->setData(40, QVariant(device));
+        itm->setData(40, id);
+
+        m_devices[id] = device;
     }
 }
 
@@ -67,6 +86,11 @@ void ConnectDialog::rescanDevices()
     m_handler->requestDeviceScan();
 
     refreshList();
+}
+
+void ConnectDialog::connectDevice()
+{
+    m_devices[ui.listWidget->currentItem()->data(40).toInt()]->connectDevice();
 }
 
 #include "ConnectDialog.moc"

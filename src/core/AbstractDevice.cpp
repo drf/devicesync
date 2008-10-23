@@ -19,6 +19,8 @@
 
 #include "AbstractDevice.h"
 
+#include "AbstractDeviceInterface.h"
+
 #include <KIcon>
 
 class AbstractDevice::Private
@@ -32,13 +34,15 @@ public:
 
     QString name;
     QString icon;
+    AbstractDeviceInterface *interface;
     int token;
 };
 
-AbstractDevice::AbstractDevice(QObject *parent)
+AbstractDevice::AbstractDevice(AbstractDeviceInterface *parent)
         : QObject(parent),
         d(new Private())
 {
+    d->interface = parent;
 }
 
 AbstractDevice::~AbstractDevice()
@@ -59,6 +63,11 @@ void AbstractDevice::setIcon(const QString &name)
 QString AbstractDevice::name()
 {
     return d->name;
+}
+
+AbstractDeviceInterface *AbstractDevice::interface()
+{
+    return d->interface;
 }
 
 QString AbstractDevice::iconName()

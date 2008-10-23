@@ -28,6 +28,7 @@
 
 class QAbstractItemModel;
 class KIcon;
+class AbstractDeviceInterface;
 
 class KDE_EXPORT AbstractDevice : public QObject
 {
@@ -38,7 +39,7 @@ class KDE_EXPORT AbstractDevice : public QObject
 public:
     typedef QList<AbstractDevice*> List;
 
-    AbstractDevice(QObject *parent = 0);
+    explicit AbstractDevice(AbstractDeviceInterface *parent);
     virtual ~AbstractDevice();
 
     virtual void connectDevice() = 0;
@@ -47,6 +48,8 @@ public:
     QString name();
     KIcon icon();
     QString iconName();
+
+    AbstractDeviceInterface *interface();
 
     virtual QAbstractItemModel *getFileModel() = 0;
     virtual QString getPathForCurrentIndex(const QModelIndex &index) = 0;
