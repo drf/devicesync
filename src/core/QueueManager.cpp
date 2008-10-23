@@ -53,6 +53,11 @@ ProgressInterface *QueueManager::progressInterface()
     return d->progressInterface;
 }
 
+QueueItem::List QueueManager::currentQueue()
+{
+    return d->itemList;
+}
+
 int QueueManager::addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,
                                 AbstractDevice *out, const QString &outpath)
 {
