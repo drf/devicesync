@@ -96,15 +96,15 @@ void DeviceSyncView::removeDevice(const QVariant &data)
 void DeviceSyncView::leftDeviceChanged(const QString &name)
 {
     if (m_leftDevice) {
-        disconnect(m_leftDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
-                this, SLOT(setLeftModel(QAbstractItemModel*,AbstractDevice*)));
+        disconnect(m_leftDevice, SIGNAL(modelChanged(QAbstractItemModel*, AbstractDevice*)),
+                   this, SLOT(setLeftModel(QAbstractItemModel*, AbstractDevice*)));
     }
 
     kDebug() << "Loading new model";
     AbstractDevice *device = m_core->getConnectedDeviceByName(name);
     m_leftDevice = device;
-    connect(m_leftDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
-            this, SLOT(setLeftModel(QAbstractItemModel*,AbstractDevice*)));
+    connect(m_leftDevice, SIGNAL(modelChanged(QAbstractItemModel*, AbstractDevice*)),
+            this, SLOT(setLeftModel(QAbstractItemModel*, AbstractDevice*)));
     m_leftDevice->reloadModel();
 }
 
@@ -116,16 +116,16 @@ void DeviceSyncView::setLeftModel(QAbstractItemModel *, AbstractDevice *device)
 void DeviceSyncView::rightDeviceChanged(const QString &name)
 {
     if (m_rightDevice) {
-        disconnect(m_rightDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
-                this, SLOT(setRightModel(QAbstractItemModel*,AbstractDevice*)));
+        disconnect(m_rightDevice, SIGNAL(modelChanged(QAbstractItemModel*, AbstractDevice*)),
+                   this, SLOT(setRightModel(QAbstractItemModel*, AbstractDevice*)));
     }
 
     kDebug() << "Loading new model";
     AbstractDevice *device = m_core->getConnectedDeviceByName(name);
     ui_devicesyncview_base.rightTreeView->setModel(device->getFileModel());
     m_rightDevice = device;
-    connect(m_rightDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
-            this, SLOT(setRightModel(QAbstractItemModel*,AbstractDevice*)));
+    connect(m_rightDevice, SIGNAL(modelChanged(QAbstractItemModel*, AbstractDevice*)),
+            this, SLOT(setRightModel(QAbstractItemModel*, AbstractDevice*)));
     m_rightDevice->reloadModel();
 }
 
@@ -209,13 +209,13 @@ void DeviceSyncView::showLeftViewContextMenu()
     QMenu *menu = new QMenu(this);
 
     QAction *removeAction = menu->addAction(KIcon("folder-new"),
-            i18n("Create &Folder"));
+                                            i18n("Create &Folder"));
     connect(removeAction, SIGNAL(triggered()), SLOT(createNewFolderLeft()));
 
     menu->addSeparator();
 
     QAction *clearAction = menu->addAction(KIcon("edit-delete"),
-            i18n("&Delete File"));
+                                           i18n("&Delete File"));
     connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileLeft()));
 
     menu->popup(QCursor::pos());
@@ -230,13 +230,13 @@ void DeviceSyncView::showRightViewContextMenu()
     QMenu *menu = new QMenu(this);
 
     QAction *removeAction = menu->addAction(KIcon("folder-new"),
-            i18n("Create &Folder"));
+                                            i18n("Create &Folder"));
     connect(removeAction, SIGNAL(triggered()), SLOT(createNewFolderRight()));
 
     menu->addSeparator();
 
     QAction *clearAction = menu->addAction(KIcon("edit-delete"),
-            i18n("&Delete File"));
+                                           i18n("&Delete File"));
     connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileRight()));
 
     menu->popup(QCursor::pos());
@@ -275,7 +275,7 @@ void DeviceSyncView::createNewFolderLeft()
     }
 
     m_leftDevice->createFolder(name,
-            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes().at(0)));
+                               m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes().at(0)));
 
     m_leftDevice->reloadModel();
 }
@@ -289,7 +289,7 @@ void DeviceSyncView::createNewFolderRight()
     }
 
     m_rightDevice->createFolder(name,
-            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().at(0)));
+                                m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().at(0)));
 
     m_rightDevice->reloadModel();
 }
