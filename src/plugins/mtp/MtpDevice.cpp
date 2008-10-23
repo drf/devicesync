@@ -21,6 +21,7 @@
 
 #include <KDebug>
 #include <KUrl>
+#include <KIcon>
 
 #include <QStandardItemModel>
 #include <QFile>
@@ -51,7 +52,8 @@ int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const 
 
 MtpDevice::MtpDevice(const QString &udi, QObject *parent)
         : AbstractDevice(parent),
-        m_udi(udi)
+        m_udi(udi),
+        m_model(0)
 {
     connect(LibMtpCallbacks::instance(), SIGNAL(actionPercentageChanged(int)),
             this, SIGNAL(actionProgressChanged(int)));
@@ -165,6 +167,11 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
 
     kDebug() << "Success is: " << (success ? "true" : "false");
 
+    kDebug() << "Creating model";
+
+    ThreadWeaver::Job * thread = new CreateModelThread(m_device, this);
+    ThreadWeaver::Weaver::instance()->enqueue(thread);
+
     return success;
 }
 
@@ -173,14 +180,20 @@ void MtpDevice::disconnectDevice()
 
 }
 
+void MtpDevice::modelCreated(QStandardItemModel *model)
+{
+    m_model = model;
+    emit modelChanged(m_model, this);
+}
+
 QAbstractItemModel *MtpDevice::getFileModel()
 {
-    return new QStandardItemModel();
+    return m_model;
 }
 
 QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
 {
-    return QString();
+    return QString(m_model->itemData(index)[40].toInt());
 }
 
 void MtpDevice::transferSuccessful(ThreadWeaver::Job *job)
@@ -317,6 +330,9 @@ void CreateModelThread::run()
     int mtp_last_folder_id = 0;
 
     iterateSiblings(folders);
+
+    kDebug() << "Model created";
+    emit modelCreated(m_model);
 }
 
 void CreateModelThread::iterateChildren(LIBMTP_folder_t *parentfolder)
@@ -325,14 +341,15 @@ void CreateModelThread::iterateChildren(LIBMTP_folder_t *parentfolder)
 
     while (folder) {
         QStandardItem *itm = new QStandardItem();
-        itm->setText(folder->name);
-        itm->setData(folder->folder_id, 40);
 
-        foreach(QStandardItem *ent, m_model->findItems("*", Qt::MatchWildcard, 0)) {
-            if (ent->data(40).toInt() == folder->parent_id) {
-                ent->appendRow(ent);
-            }
-        }
+        kDebug() << "New folder detected:" << folder->name;
+
+        itm->setText(folder->name);
+        itm->setIcon(KIcon("folder"));
+        itm->setData(folder->folder_id, 40);
+        m_itemMap[folder->folder_id] = itm;
+
+        m_itemMap[folder->parent_id]->appendRow(itm);
 
         iterateChildren(folder);
         folder = folder->sibling;
@@ -345,9 +362,14 @@ void CreateModelThread::iterateSiblings(LIBMTP_folder_t *parentfolder)
 
     while (folder) {
         QStandardItem *itm = new QStandardItem();
+
+        kDebug() << "New folder detected:" << folder->name;
+
         itm->setText(folder->name);
+        itm->setIcon(KIcon("folder"));
         itm->setData(folder->folder_id, 40);
         m_model->invisibleRootItem()->appendRow(itm);
+        m_itemMap[folder->folder_id] = itm;
         iterateChildren(folder);
         folder = folder->sibling;
     }

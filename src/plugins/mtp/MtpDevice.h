@@ -27,6 +27,7 @@
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStandardItem;
 
 class MtpDevice : public AbstractDevice
 {
@@ -53,6 +54,7 @@ public slots:
 
 private slots:
     void transferSuccessful(ThreadWeaver::Job*);
+    void modelCreated(QStandardItemModel *model);
 
 private:
     QAbstractItemModel *m_model;
@@ -123,6 +125,7 @@ private:
     LIBMTP_mtpdevice_t* m_device;
     MtpDevice *m_handler;
     QStandardItemModel *m_model;
+    QMap<int, QStandardItem*> m_itemMap;
 };
 
 

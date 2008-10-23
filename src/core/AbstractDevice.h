@@ -64,7 +64,7 @@ signals:
 
     void actionProgressChanged(int);
 
-    void modelChanged(QAbstractItemModel *);
+    void modelChanged(QAbstractItemModel *, AbstractDevice *);
 
 private:
     class Private;
