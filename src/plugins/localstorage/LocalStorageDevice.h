@@ -49,10 +49,12 @@ public slots:
     int getByteArrayFromDeviceFile(const QString &path);
 
     void createFolder(const QString &name, const QString &inPath);
+    int removePath(const QString &path);
 
 private slots:
     void sendToDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool);
     void getFromDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool);
+    void removalDone(KIO::Job*);
 
     void sendDoneConfirmation();
 

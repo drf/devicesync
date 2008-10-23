@@ -39,12 +39,20 @@ class AbstractDeviceInterface;
  * device-specific. Though, please make sure of reading the whole documentation
  * for the virtual functions, since some times you are requested to do some specific
  * operations inside them.
+ *
+ * AbstractDevice is completely asynchronous and makes heavy use of signals and slots,
+ * so you will have to emit some signals in your reimplementation to notify the core about
+ * events. There are no threads in DeviceSync, though you will probably have to use threading
+ * in your device plugin if that kind of device does not support asynchronous transfer.
+ * It is strongly suggested to use ThreadWeaver for both performance and ease of use:
+ * you can see an example of ThreadWeaver usage in the MTP plugin.
  */
 class KDE_EXPORT AbstractDevice : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QString icon READ iconName WRITE setIcon)
+    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
 
 public:
     /**
@@ -142,6 +150,8 @@ public slots:
 
     virtual void createFolder(const QString &name, const QString &inPath) = 0;
 
+    virtual int removePath(const QString &path) = 0;
+
 protected:
     void setName(const QString &name);
     void setIcon(const QString &name);
@@ -150,6 +160,7 @@ protected:
 signals:
     void fileCopiedToDevice(int, const QString&);
     void fileCopiedFromDevice(int, const QString&);
+    void pathRemovedFromDevice(int, const QString&);
 
     void actionProgressChanged(int);
 

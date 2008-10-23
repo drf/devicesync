@@ -53,6 +53,8 @@ public slots:
 
     void createFolder(const QString &name, const QString &inPath);
 
+    int removePath(const QString &path);
+
     void reloadModel();
 
 private slots:

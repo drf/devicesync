@@ -20,7 +20,9 @@
 #include "LocalStorageDevice.h"
 
 #include <QFileSystemModel>
+
 #include <kio/copyjob.h>
+#include <kio/deletejob.h>
 
 #include <QTimer>
 
@@ -107,6 +109,24 @@ int LocalStorageDevice::getFileFromDevice(const QString &path, const QString &to
             this, SLOT(getFromDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool)));*/
 
 
+}
+
+int LocalStorageDevice::removePath(const QString &path)
+{
+    KJob *job = KIO::del(KUrl::fromPath(path), KIO::HideProgressInfo);
+    int token = getNextTransferToken();
+    job->setProperty("transfer_token", token);
+    job->setProperty("path_removed", path);
+
+    connect(job, SIGNAL(result(KIO::Job*)), this, SLOT(removalDone(KIO::Job*)));
+
+    return token;
+}
+
+void LocalStorageDevice::removalDone(KIO::Job *job)
+{
+    emit pathRemovedFromDevice(job->property("transfer_token").toInt(),
+                               job->property("path_removed").toString());
 }
 
 void LocalStorageDevice::sendDoneConfirmation()
