@@ -31,7 +31,7 @@ class LocalStorageDevice : public AbstractDevice
     Q_OBJECT
 
 public:
-    LocalStorageDevice();
+    explicit LocalStorageDevice(AbstractDeviceInterface *parent);
     virtual ~LocalStorageDevice();
 
     void connectDevice();

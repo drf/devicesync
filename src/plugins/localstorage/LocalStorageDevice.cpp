@@ -24,7 +24,8 @@
 
 #include <QTimer>
 
-LocalStorageDevice::LocalStorageDevice()
+LocalStorageDevice::LocalStorageDevice(AbstractDeviceInterface *parent)
+ : AbstractDevice(parent)
 {
     setName("Local Storage");
     setIcon("drive-harddisk");

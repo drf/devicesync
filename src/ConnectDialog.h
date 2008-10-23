@@ -40,12 +40,16 @@ class ConnectDialog : public KDialog
         void refreshList();
         void rescanDevices();
 
+        void connectDevice();
+
+    private:
+        int getNextId();
+
     private:
         QWidget *m_widget;
         Ui_connectDialog ui;
         DeviceSync *m_handler;
+        QMap<int, AbstractDevice*> m_devices;
 };
-
-Q_DECLARE_METATYPE(AbstractDevice*)
 
 #endif /* CONNECTDIALOG_H */

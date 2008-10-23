@@ -52,7 +52,7 @@ int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const 
     return 0;
 }
 
-MtpDevice::MtpDevice(const QString &udi, QObject *parent)
+MtpDevice::MtpDevice(const QString &udi, AbstractDeviceInterface *parent)
         : AbstractDevice(parent),
         m_model(0),
         m_udi(udi)

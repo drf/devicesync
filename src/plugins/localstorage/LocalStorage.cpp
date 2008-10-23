@@ -34,7 +34,7 @@ LocalStorage::~LocalStorage()
 
 void LocalStorage::init()
 {
-    LocalStorageDevice *device = new LocalStorageDevice();
+    LocalStorageDevice *device = new LocalStorageDevice(this);
 
     addDevice(device);
     connectDevice(device);
