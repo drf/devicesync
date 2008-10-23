@@ -174,7 +174,7 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
 
 void MtpDevice::disconnectDevice()
 {
-
+    LIBMTP_Release_Device(m_device);
 }
 
 void MtpDevice::modelCreated(QStandardItemModel *model)
@@ -233,6 +233,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 
         file->filename = qstrdup(url.fileName().toUtf8());
         file->filesize = qfile.size();
+        //file->filetype = LIBMTP_FILETYPE_AVI;
         file->parent_id = toPath.toInt();
 
         ThreadWeaver::Job * thread = new SendFileThread(m_device, qstrdup(url.path().toUtf8()),

@@ -61,6 +61,12 @@ DeviceContainer::List AbstractDeviceInterface::getAllDevices()
 
 void AbstractDeviceInterface::addDevice(AbstractDevice *device, const QString &udi)
 {
+    foreach (DeviceContainer *ent, getAllDevices()) {
+        if (device == ent->device) {
+            return;
+        }
+    }
+
     DeviceContainer *cont = new DeviceContainer();
 
     cont->device = device;

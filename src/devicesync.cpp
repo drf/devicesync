@@ -102,13 +102,23 @@ void DeviceSync::setupActions()
     KStandardAction::preferences(this, SLOT(optionsPreferences()), actionCollection());
 
     KAction *connectDevice = new KAction(KIcon("network-connect"), i18n("&Connect Device..."), this);
+    KAction *scanDevices = new KAction(KIcon("network-connect"), i18n("&Scan for Devices"), this);
     KAction *processQueue = new KAction(KIcon("network-connect"), i18n("Process Q&ueue"), this);
 
     connect(connectDevice, SIGNAL(triggered()), this, SLOT(connectDevice()));
+    connect(scanDevices, SIGNAL(triggered()), this, SLOT(requestDeviceScan()));
     connect(processQueue, SIGNAL(triggered()), this, SLOT(processQueue()));
 
     actionCollection()->addAction("connect_device", connectDevice);
+    actionCollection()->addAction("scan_devices", scanDevices);
     actionCollection()->addAction("process_queue", processQueue);
+}
+
+void DeviceSync::requestDeviceScan()
+{
+    foreach(AbstractDeviceInterface *iface, d->interfaces) {
+        iface->scan();
+    }
 }
 
 void DeviceSync::connectDevice()
