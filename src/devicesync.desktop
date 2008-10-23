@@ -3,5 +3,5 @@ Name=DeviceSync
 Exec=devicesync %i -caption "%c"
 Icon=devicesync
 Type=Application
-DocPath=devicesync/index.html
+X-KDE-DocPath=devicesync/index.html
 
