@@ -70,6 +70,7 @@ private slots:
     void deviceRemoved(AbstractDevice *device);
 
     void connectDevice();
+    void connectAllDevices();
 
     void requestDeviceScan();
 
