@@ -27,6 +27,9 @@
 #include <QtGui/QLabel>
 #include <QMenu>
 
+#include <KDialog>
+#include <KLineEdit>
+
 DeviceSyncView::DeviceSyncView(DeviceSync *parent)
         : m_core(parent),
         m_leftDevice(0),
@@ -47,6 +50,8 @@ DeviceSyncView::DeviceSyncView(DeviceSync *parent)
             this, SLOT(addToQueueFromRight()));
     connect(ui_devicesyncview_base.listWidget, SIGNAL(customContextMenuRequested(const QPoint&)),
             this, SLOT(showQueueWidgetContextMenu()));
+    connect(ui_devicesyncview_base.leftTreeView, SIGNAL(customContextMenuRequested(const QPoint&)),
+            this, SLOT(showLeftViewContextMenu()));
 }
 
 DeviceSyncView::~DeviceSyncView()
@@ -55,26 +60,6 @@ DeviceSyncView::~DeviceSyncView()
 }
 
 void DeviceSyncView::showQueueWidgetContextMenu()
-{
-    if (ui_devicesyncview_base.listWidget->selectedItems().isEmpty())
-        return;
-
-    QMenu *menu = new QMenu(this);
-
-    QAction *removeAction = menu->addAction(KIcon("edit-delete"),
-                                            i18n("&Remove from Queue"));
-    connect(removeAction, SIGNAL(triggered()), SLOT(removeSelectedActions()));
-
-    menu->addSeparator();
-
-    QAction *clearAction = menu->addAction(KIcon("edit-clear"),
-                                           i18n("&Clear Queue"));
-    connect(clearAction, SIGNAL(triggered()), SLOT(clearQueue()));
-
-    menu->popup(QCursor::pos());
-}
-
-void DeviceSyncView::showLeftViewContextMenu()
 {
     if (ui_devicesyncview_base.listWidget->selectedItems().isEmpty())
         return;
@@ -211,6 +196,65 @@ void DeviceSyncView::clearQueue()
 {
     m_core->queueManager()->clearQueue();
     ui_devicesyncview_base.listWidget->clear();
+}
+
+void DeviceSyncView::showLeftViewContextMenu()
+{
+    if (ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes().isEmpty()) {
+        return;
+    }
+
+    QMenu *menu = new QMenu(this);
+
+    QAction *removeAction = menu->addAction(KIcon("edit-delete"),
+            i18n("Create &Folder"));
+    connect(removeAction, SIGNAL(triggered()), SLOT(createNewFolderLeft()));
+
+    menu->addSeparator();
+
+    QAction *clearAction = menu->addAction(KIcon("edit-delete"),
+            i18n("&Delete File"));
+    connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileLeft()));
+
+    menu->popup(QCursor::pos());
+}
+
+QString DeviceSyncView::getNewFolderNameDialog()
+{
+    KDialog *dlog = new KDialog(this);
+    QWidget *wg = new QWidget();
+    QLabel *lb = new QLabel(i18n("Please enter the name for the new folder:"));
+    KLineEdit *ed = new KLineEdit();
+    QVBoxLayout *ly = new QVBoxLayout();
+
+    ly->addWidget(lb);
+    ly->addWidget(ed);
+
+    wg->setLayout(ly);
+
+    dlog->setMainWidget(wg);
+
+    dlog->setModal(true);
+
+    if (dlog->exec() == KDialog::Accepted) {
+        return ed->text();
+    } else {
+        return QString();
+    }
+}
+
+void DeviceSyncView::createNewFolderLeft()
+{
+    QString name = getNewFolderNameDialog();
+
+    if (name.isEmpty()) {
+        return;
+    }
+
+    m_leftDevice->createFolder(name,
+            m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes().at(0)));
+
+    m_leftDevice->reloadModel();
 }
 
 #include "devicesyncview.moc"

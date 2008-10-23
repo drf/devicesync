@@ -73,6 +73,11 @@ private slots:
 
     void showLeftViewContextMenu();
 
+    void createNewFolderLeft();
+
+private:
+    QString getNewFolderNameDialog();
+
 private:
     Ui::devicesyncview_base ui_devicesyncview_base;
     DeviceSync *m_core;
