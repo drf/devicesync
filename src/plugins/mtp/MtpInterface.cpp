@@ -121,9 +121,13 @@ void MtpInterface::deviceRemoved(const QString &udi)
     kDebug() << "Removed a device";
 
     if (isMtp(udi)) {
-        /*MtpDevice *device = new MtpDevice(udi, this);
-
-        addDevice(device);*/
+        kDebug() << "Removing an MTP device!";
+        foreach (DeviceContainer *cont, getAllDevices()) {
+            if (cont->udi == udi) {
+                kDebug() << "Removing a managed MTP device!";
+                removeDevice(cont->device);
+            }
+        }
     }
 }
 

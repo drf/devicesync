@@ -82,6 +82,10 @@ void AbstractDeviceInterface::removeDevice(AbstractDevice *device)
 {
     foreach(DeviceContainer *cont, d->m_devices) {
         if (cont->device == device) {
+            if (cont->status == DeviceContainer::Connected) {
+                device->disconnectDevice();
+            }
+
             d->m_devices.removeOne(cont);
             cont->device->deleteLater();
             delete cont;
