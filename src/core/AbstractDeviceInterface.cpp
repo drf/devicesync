@@ -99,12 +99,11 @@ void AbstractDeviceInterface::connectDevice(AbstractDevice *device)
 {
     foreach(DeviceContainer *cont, d->m_devices) {
         if (cont->device == device) {
+            connect(device, SIGNAL(deviceConnected(AbstractDevice*)), this, SIGNAL(deviceConnected(AbstractDevice*)));
             cont->device->connectDevice();
             cont->status = DeviceContainer::Connected;
         }
     }
-
-    emit deviceConnected(device);
 }
 
 void AbstractDeviceInterface::disconnectDevice(AbstractDevice *device)

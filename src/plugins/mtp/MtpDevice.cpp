@@ -115,6 +115,12 @@ void MtpDevice::connectDevice()
     }
 }
 
+void MtpDevice::connectionSuccessful()
+{
+    setName(QString("%1 (%2)").arg(LIBMTP_Get_Modelname(m_device)).arg(LIBMTP_Get_Friendlyname(m_device)));
+    emit deviceConnected(this);
+}
+
 bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial)
 {
 
@@ -283,7 +289,7 @@ WorkerThread::WorkerThread(int numrawdevices, LIBMTP_raw_device_t* rawdevices, c
         , m_handler(handler)
 {
     connect(this, SIGNAL(failed(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchFailed(ThreadWeaver::Job*)));
-    connect(this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotDeviceMatchSucceeded(ThreadWeaver::Job*)));
+    connect(this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(connectionSuccessful()));
     connect(this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()));
 }
 

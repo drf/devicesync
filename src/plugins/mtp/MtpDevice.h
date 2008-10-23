@@ -56,6 +56,8 @@ private slots:
     void transferSuccessful(ThreadWeaver::Job*);
     void modelCreated(QStandardItemModel *model);
 
+    void connectionSuccessful();
+
 private:
     QAbstractItemModel *m_model;
     QString m_udi;

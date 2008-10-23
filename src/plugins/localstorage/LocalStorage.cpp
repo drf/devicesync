@@ -38,6 +38,7 @@ void LocalStorage::init()
 
     addDevice(device);
     connectDevice(device);
+    emit deviceConnected(device);
 }
 
 void LocalStorage::startWatching()
