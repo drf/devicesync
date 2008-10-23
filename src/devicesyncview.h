@@ -72,8 +72,10 @@ private slots:
     void setRightModel(QAbstractItemModel *model, AbstractDevice *device);
 
     void showLeftViewContextMenu();
+    void showRightViewContextMenu();
 
     void createNewFolderLeft();
+    void createNewFolderRight();
 
 private:
     QString getNewFolderNameDialog();

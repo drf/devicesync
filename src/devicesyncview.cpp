@@ -52,6 +52,8 @@ DeviceSyncView::DeviceSyncView(DeviceSync *parent)
             this, SLOT(showQueueWidgetContextMenu()));
     connect(ui_devicesyncview_base.leftTreeView, SIGNAL(customContextMenuRequested(const QPoint&)),
             this, SLOT(showLeftViewContextMenu()));
+    connect(ui_devicesyncview_base.rightTreeView, SIGNAL(customContextMenuRequested(const QPoint&)),
+            this, SLOT(showRightViewContextMenu()));
 }
 
 DeviceSyncView::~DeviceSyncView()
@@ -206,7 +208,7 @@ void DeviceSyncView::showLeftViewContextMenu()
 
     QMenu *menu = new QMenu(this);
 
-    QAction *removeAction = menu->addAction(KIcon("edit-delete"),
+    QAction *removeAction = menu->addAction(KIcon("folder-new"),
             i18n("Create &Folder"));
     connect(removeAction, SIGNAL(triggered()), SLOT(createNewFolderLeft()));
 
@@ -215,6 +217,27 @@ void DeviceSyncView::showLeftViewContextMenu()
     QAction *clearAction = menu->addAction(KIcon("edit-delete"),
             i18n("&Delete File"));
     connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileLeft()));
+
+    menu->popup(QCursor::pos());
+}
+
+void DeviceSyncView::showRightViewContextMenu()
+{
+    if (ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().isEmpty()) {
+        return;
+    }
+
+    QMenu *menu = new QMenu(this);
+
+    QAction *removeAction = menu->addAction(KIcon("folder-new"),
+            i18n("Create &Folder"));
+    connect(removeAction, SIGNAL(triggered()), SLOT(createNewFolderRight()));
+
+    menu->addSeparator();
+
+    QAction *clearAction = menu->addAction(KIcon("edit-delete"),
+            i18n("&Delete File"));
+    connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileRight()));
 
     menu->popup(QCursor::pos());
 }
@@ -255,6 +278,20 @@ void DeviceSyncView::createNewFolderLeft()
             m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes().at(0)));
 
     m_leftDevice->reloadModel();
+}
+
+void DeviceSyncView::createNewFolderRight()
+{
+    QString name = getNewFolderNameDialog();
+
+    if (name.isEmpty()) {
+        return;
+    }
+
+    m_rightDevice->createFolder(name,
+            m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().at(0)));
+
+    m_rightDevice->reloadModel();
 }
 
 #include "devicesyncview.moc"
