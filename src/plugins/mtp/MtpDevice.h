@@ -120,6 +120,7 @@ protected:
 private:
     void iterateChildren(LIBMTP_folder_t *parentfolder);
     void iterateSiblings(LIBMTP_folder_t *parentfolder);
+    void populateFiles(LIBMTP_file_t *files);
 
 signals:
     void modelCreated(QStandardItemModel *model);
