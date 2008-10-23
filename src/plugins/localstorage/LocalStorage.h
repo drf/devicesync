@@ -32,7 +32,9 @@ public:
     LocalStorage(QObject *parent, const QVariantList&);
     virtual ~LocalStorage();
 
-    virtual void init();
+    void init();
+
+    void scan() {};
 
 public slots:
     void startWatching();

@@ -74,9 +74,6 @@ void MtpDevice::connectDevice()
     int numrawdevices;
     LIBMTP_error_number_t err;
 
-    kDebug() << "Initializing MTP stuff";
-    LIBMTP_Init();
-
     // get list of raw devices
     kDebug() << "Getting list of raw devices";
     err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
@@ -193,7 +190,7 @@ QAbstractItemModel *MtpDevice::getFileModel()
 
 QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
 {
-    return QString(m_model->itemData(index)[40].toInt());
+    return m_model->data(index, 40).toString();
 }
 
 void MtpDevice::transferSuccessful(ThreadWeaver::Job *job)
@@ -236,6 +233,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 
         file->filename = qstrdup(url.fileName().toUtf8());
         file->filesize = qfile.size();
+        file->parent_id = toPath.toInt();
 
         ThreadWeaver::Job * thread = new SendFileThread(m_device, qstrdup(url.path().toUtf8()),
                 file, mtp_transfer_callback, this);
@@ -342,7 +340,7 @@ void CreateModelThread::iterateChildren(LIBMTP_folder_t *parentfolder)
     while (folder) {
         QStandardItem *itm = new QStandardItem();
 
-        kDebug() << "New folder detected:" << folder->name;
+        kDebug() << "New folder detected:" << folder->name << " id: " << folder->folder_id;
 
         itm->setText(folder->name);
         itm->setIcon(KIcon("folder"));
@@ -363,7 +361,7 @@ void CreateModelThread::iterateSiblings(LIBMTP_folder_t *parentfolder)
     while (folder) {
         QStandardItem *itm = new QStandardItem();
 
-        kDebug() << "New folder detected:" << folder->name;
+        kDebug() << "New folder detected:" << folder->name << " id: " << folder->folder_id;
 
         itm->setText(folder->name);
         itm->setIcon(KIcon("folder"));

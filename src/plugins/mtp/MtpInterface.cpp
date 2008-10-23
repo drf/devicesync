@@ -23,6 +23,8 @@
 
 #include <KDebug>
 
+#include <libmtp.h>
+
 //solid specific includes
 #include <solid/devicenotifier.h>
 #include <solid/device.h>
@@ -42,6 +44,12 @@ MtpInterface::~MtpInterface()
 }
 
 void MtpInterface::init()
+{
+    kDebug() << "Initializing MTP stuff";
+    LIBMTP_Init();
+}
+
+void MtpInterface::scan()
 {
 
 }
