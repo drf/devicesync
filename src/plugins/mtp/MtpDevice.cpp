@@ -52,8 +52,8 @@ int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const 
 
 MtpDevice::MtpDevice(const QString &udi, QObject *parent)
         : AbstractDevice(parent),
-        m_udi(udi),
-        m_model(0)
+        m_model(0),
+        m_udi(udi)
 {
     connect(LibMtpCallbacks::instance(), SIGNAL(actionPercentageChanged(int)),
             this, SIGNAL(actionProgressChanged(int)));
@@ -120,7 +120,7 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
 
     bool success;
 
-    LIBMTP_mtpdevice_t *device;
+    LIBMTP_mtpdevice_t *device = 0;
     // test raw device for connectability
     for (int i = 0; i < numrawdevices; i++) {
 
@@ -248,16 +248,19 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
     return -1;
 }
 
-int MtpDevice::sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath)
+int MtpDevice::sendFileToDeviceFromByteArray(const QByteArray &, const QString &)
 {
+
     return -1;
 }
 
-int MtpDevice::getFileFromDevice(const QString &path, const QString &toPath)
+int MtpDevice::getFileFromDevice(const QString &, const QString &)
 {
+    // TODO
+    return -1;
 }
 
-int MtpDevice::getByteArrayFromDeviceFile(const QString &path)
+int MtpDevice::getByteArrayFromDeviceFile(const QString &)
 {
     return -1;
 }
@@ -326,12 +329,31 @@ void CreateModelThread::run()
 {
     LIBMTP_file_t *mtpfiles = LIBMTP_Get_Filelisting_With_Callback(m_device, 0, 0);
     LIBMTP_folder_t *folders = LIBMTP_Get_Folder_List(m_device);
-    int mtp_last_folder_id = 0;
 
     iterateSiblings(folders);
+    populateFiles(mtpfiles);
 
     kDebug() << "Model created";
     emit modelCreated(m_model);
+}
+
+void CreateModelThread::populateFiles(LIBMTP_file_t *files)
+{
+    while (files) {
+        QStandardItem *itm = new QStandardItem();
+
+        itm->setText(files->filename);
+        itm->setIcon(KIcon("application-octet-stream"));
+        itm->setData(files->item_id, 40);
+
+        if (m_itemMap.contains(files->parent_id)) {
+            m_itemMap[files->parent_id]->appendRow(itm);
+        } else {
+            m_model->invisibleRootItem()->appendRow(itm);
+        }
+
+        files = files->next;
+    }
 }
 
 void CreateModelThread::iterateChildren(LIBMTP_folder_t *parentfolder)
