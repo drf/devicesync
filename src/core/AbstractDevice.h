@@ -54,12 +54,16 @@ public:
     virtual QAbstractItemModel *getFileModel() = 0;
     virtual QString getPathForCurrentIndex(const QModelIndex &index) = 0;
 
+    virtual void reloadModel() = 0;
+
 public slots:
     virtual int sendFileToDevice(const QString &fromPath, const QString &toPath) = 0;
     virtual int sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath) = 0;
 
     virtual int getFileFromDevice(const QString &path, const QString &toPath) = 0;
     virtual int getByteArrayFromDeviceFile(const QString &path) = 0;
+
+    virtual void createFolder(const QString &name, const QString &inPath) = 0;
 
 protected:
     void setName(const QString &name);

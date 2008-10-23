@@ -25,7 +25,8 @@
 #include <QTimer>
 
 LocalStorageDevice::LocalStorageDevice(AbstractDeviceInterface *parent)
-        : AbstractDevice(parent)
+        : AbstractDevice(parent),
+        m_model(0)
 {
     setName("Local Storage");
     setIcon("drive-harddisk");
@@ -36,10 +37,26 @@ LocalStorageDevice::~LocalStorageDevice()
     // TODO Auto-generated destructor stub
 }
 
-void LocalStorageDevice::connectDevice()
+void LocalStorageDevice::createFolder(const QString &name, const QString &inPath)
 {
+
+}
+
+void LocalStorageDevice::reloadModel()
+{
+    if (m_model) {
+        m_model->deleteLater();
+    }
+
     m_model = new QFileSystemModel();
     m_model->setRootPath("/");
+
+    emit modelChanged(m_model, this);
+}
+
+void LocalStorageDevice::connectDevice()
+{
+
 }
 
 void LocalStorageDevice::disconnectDevice()

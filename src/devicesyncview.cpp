@@ -28,7 +28,9 @@
 #include <QMenu>
 
 DeviceSyncView::DeviceSyncView(DeviceSync *parent)
-        : m_core(parent)
+        : m_core(parent),
+        m_leftDevice(0),
+        m_rightDevice(0)
 {
     ui_devicesyncview_base.setupUi(this);
     setAutoFillBackground(true);
@@ -72,6 +74,26 @@ void DeviceSyncView::showQueueWidgetContextMenu()
     menu->popup(QCursor::pos());
 }
 
+void DeviceSyncView::showLeftViewContextMenu()
+{
+    if (ui_devicesyncview_base.listWidget->selectedItems().isEmpty())
+        return;
+
+    QMenu *menu = new QMenu(this);
+
+    QAction *removeAction = menu->addAction(KIcon("edit-delete"),
+                                            i18n("&Remove from Queue"));
+    connect(removeAction, SIGNAL(triggered()), SLOT(removeSelectedActions()));
+
+    menu->addSeparator();
+
+    QAction *clearAction = menu->addAction(KIcon("edit-clear"),
+                                           i18n("&Clear Queue"));
+    connect(clearAction, SIGNAL(triggered()), SLOT(clearQueue()));
+
+    menu->popup(QCursor::pos());
+}
+
 void DeviceSyncView::addDevice(const KIcon &icon, const QString &name, const QVariant &data)
 {
     ui_devicesyncview_base.leftDeviceBox->addItem(icon, name, data);
@@ -86,18 +108,43 @@ void DeviceSyncView::removeDevice(const QVariant &data)
 
 void DeviceSyncView::leftDeviceChanged(const QString &name)
 {
+    if (m_leftDevice) {
+        disconnect(m_leftDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
+                this, SLOT(setLeftModel(QAbstractItemModel*,AbstractDevice*)));
+    }
+
     kDebug() << "Loading new model";
     AbstractDevice *device = m_core->getConnectedDeviceByName(name);
-    ui_devicesyncview_base.leftTreeView->setModel(device->getFileModel());
     m_leftDevice = device;
+    connect(m_leftDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
+            this, SLOT(setLeftModel(QAbstractItemModel*,AbstractDevice*)));
+    m_leftDevice->reloadModel();
+}
+
+void DeviceSyncView::setLeftModel(QAbstractItemModel *, AbstractDevice *device)
+{
+    ui_devicesyncview_base.leftTreeView->setModel(device->getFileModel());
 }
 
 void DeviceSyncView::rightDeviceChanged(const QString &name)
 {
+    if (m_rightDevice) {
+        disconnect(m_rightDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
+                this, SLOT(setRightModel(QAbstractItemModel*,AbstractDevice*)));
+    }
+
     kDebug() << "Loading new model";
     AbstractDevice *device = m_core->getConnectedDeviceByName(name);
     ui_devicesyncview_base.rightTreeView->setModel(device->getFileModel());
     m_rightDevice = device;
+    connect(m_rightDevice, SIGNAL(modelChanged(QAbstractItemModel*,AbstractDevice*)),
+            this, SLOT(setRightModel(QAbstractItemModel*,AbstractDevice*)));
+    m_rightDevice->reloadModel();
+}
+
+void DeviceSyncView::setRightModel(QAbstractItemModel *, AbstractDevice *device)
+{
+    ui_devicesyncview_base.rightTreeView->setModel(device->getFileModel());
 }
 
 void DeviceSyncView::addToQueueFromLeft()

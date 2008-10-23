@@ -40,12 +40,16 @@ public:
     QAbstractItemModel * getFileModel();
     QString getPathForCurrentIndex(const QModelIndex &index);
 
+    void reloadModel();
+
 public slots:
     int sendFileToDevice(const QString &fromPath, const QString &toPath);
     int sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath);
 
     int getFileFromDevice(const QString &path, const QString &toPath);
     int getByteArrayFromDeviceFile(const QString &path);
+
+    void createFolder(const QString &name, const QString &inPath);
 
 private slots:
     void sendToDeviceDone(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool);
