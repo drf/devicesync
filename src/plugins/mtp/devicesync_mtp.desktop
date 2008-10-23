@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=computer
+Icon=multimedia-player
 Name=Mtp
 Comment=Allows managing a Mtp device through DeviceSync
 
