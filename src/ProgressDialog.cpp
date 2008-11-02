@@ -21,6 +21,8 @@
 
 #include "QueueManager.h"
 
+#include <QTimer>
+
 #include <KDebug>
 
 ProgressDialog::ProgressDialog(ProgressInterface *iface, QWidget *parent)
@@ -44,11 +46,11 @@ ProgressDialog::ProgressDialog(ProgressInterface *iface, QWidget *parent)
     connect(m_interface, SIGNAL(currentItemChanged(QueueItem*)), this, SLOT(currentItemChanged(QueueItem*)));
     connect(m_interface, SIGNAL(currentItemProgressChanged(ProgressInterface::Action, int)),
             this, SLOT(currentItemProgressChanged(ProgressInterface::Action, int)));
+    connect(m_interface, SIGNAL(completed()), this, SLOT(completed()));
 }
 
 ProgressDialog::~ProgressDialog()
 {
-    // TODO Auto-generated destructor stub
 }
 
 void ProgressDialog::totalProgressChanged(int percent)
@@ -74,6 +76,13 @@ void ProgressDialog::currentItemProgressChanged(ProgressInterface::Action action
     Q_UNUSED(action)
 
     ui.currentBar->setValue(percent);
+}
+
+void ProgressDialog::completed()
+{
+    ui.currentLabel->setText(i18n("Queue successfully completed!"));
+    ui.cancelButton->setVisible(false);
+    QTimer::singleShot(2000, this, SLOT(deleteLater()));
 }
 
 #include "ProgressDialog.moc"

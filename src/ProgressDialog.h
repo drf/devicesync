@@ -40,6 +40,8 @@ private slots:
     void totalProgressChanged(int percent);
     void currentItemProgressChanged(ProgressInterface::Action action, int percent);
 
+    void completed();
+
 private:
     QWidget *m_widget;
     Ui_progressDialog ui;

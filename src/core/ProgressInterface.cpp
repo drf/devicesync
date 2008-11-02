@@ -77,4 +77,9 @@ void ProgressInterface::setItems(QueueItem::List list)
     emit totalProgressChanged(0);
 }
 
+void ProgressInterface::completed()
+{
+
+}
+
 #include "ProgressInterface.moc"
