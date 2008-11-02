@@ -64,10 +64,15 @@ MtpDevice::MtpDevice(const QString &udi, AbstractDeviceInterface *parent)
     connect(LibMtpCallbacks::instance(), SIGNAL(actionPercentageChanged(int)),
             this, SIGNAL(actionProgressChanged(int)));
 
-    Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
-    QString serial = pmp->driverHandle("mtp").toString();
+    if (!udi.isEmpty()) {
+        Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
+        QString serial = pmp->driverHandle("mtp").toString();
 
-    setName(i18n("Mtp Device (serial %1)", serial));
+        setName(i18n("Mtp Device (serial %1)", serial));
+    } else {
+        setName(i18n("Mtp Device (raw)"));
+    }
+
     setIcon("multimedia-player");
 }
 
