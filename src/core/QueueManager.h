@@ -75,9 +75,6 @@ private slots:
 private:
     int generateItemId();
 
-signals:
-    void queueCompleted();
-
 private:
     class Private;
     Private *d;
