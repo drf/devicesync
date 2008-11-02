@@ -75,6 +75,7 @@ void MtpInterface::scan()
 void MtpInterface::forceDeviceScan()
 {
     MtpDevice *device = new MtpDevice(QString(), this);
+    device->connectFirstAvailableDevice();
 }
 
 bool MtpInterface::isMtp(const QString &udi)

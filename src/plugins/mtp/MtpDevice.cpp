@@ -144,6 +144,58 @@ void MtpDevice::connectDevice()
     }
 }
 
+bool MtpDevice::connectFirstAvailableDevice()
+{
+    Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
+    QString serial = pmp->driverHandle("mtp").toString();
+
+    LIBMTP_raw_device_t * rawdevices;
+    int numrawdevices;
+    LIBMTP_error_number_t err;
+
+    // get list of raw devices
+    kDebug() << "Getting list of raw devices";
+    err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
+
+    kDebug() << "Error is: " << err;
+
+    switch (err) {
+    case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
+        kDebug() << "   No raw devices found.";
+        return false;
+        break;
+
+    case LIBMTP_ERROR_CONNECTING:
+        kDebug() << "Detect: There has been an error connecting. Exiting";
+        return false;
+        break;
+
+    case LIBMTP_ERROR_MEMORY_ALLOCATION:
+        kDebug() << "Detect: Encountered a Memory Allocation Error. Exiting";
+        return false;
+        break;
+
+    case LIBMTP_ERROR_NONE: {
+        m_success = true;
+        break;
+    }
+
+    default:
+        kDebug() << "Unhandled mtp error";
+        return false;
+        break;
+    }
+
+    if (m_success) {
+        kDebug() << "Got mtp list, connecting to device using thread";
+        ThreadWeaver::Weaver::instance()->enqueue(new WorkerThread(numrawdevices, rawdevices, QString(), this));
+        return true;
+    } else {
+        free(rawdevices);
+        return false;
+    }
+}
+
 void MtpDevice::connectionSuccessful()
 {
     setName(QString("%1 (%2)").arg(LIBMTP_Get_Modelname(m_device)).arg(LIBMTP_Get_Friendlyname(m_device)));
@@ -168,15 +220,17 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
             continue;
         }
 
-        kDebug() << "Testing serial number";
+        if (!serial.isEmpty()) {
+            kDebug() << "Testing serial number";
 
-        QString mtpSerial = QString::fromUtf8(LIBMTP_Get_Serialnumber(device));
-        if (!mtpSerial.contains(serial)) {
-            kDebug() << "Wrong device, going to next";
-            kDebug() << "Expected: " << serial << " but got: " << mtpSerial;
-            success = false;
-            LIBMTP_Release_Device(device);
-            continue;
+            QString mtpSerial = QString::fromUtf8(LIBMTP_Get_Serialnumber(device));
+            if (!mtpSerial.contains(serial)) {
+                kDebug() << "Wrong device, going to next";
+                kDebug() << "Expected: " << serial << " but got: " << mtpSerial;
+                success = false;
+                LIBMTP_Release_Device(device);
+                continue;
+            }
         }
 
         kDebug() << "Correct device found";
@@ -193,9 +247,11 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
 
     }
 
-    //QString serial = QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
-
-    kDebug() << "Serial is: " << serial;
+    if (serial.isEmpty()) {
+        kDebug() << "Serial is: " << QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
+    } else {
+        kDebug() << "Serial is: " << serial;
+    }
 
     kDebug() << "Success is: " << (success ? "true" : "false");
 
