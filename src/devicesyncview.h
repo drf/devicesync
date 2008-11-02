@@ -57,6 +57,8 @@ public:
     void addDevice(const KIcon &icon, const QString &name, const QVariant &data);
     void removeDevice(const QVariant &data);
 
+    void disconnectAll();
+
 private slots:
     void leftDeviceChanged(const QString &name);
     void rightDeviceChanged(const QString &name);
