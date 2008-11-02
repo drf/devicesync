@@ -88,6 +88,9 @@ DeviceSync::DeviceSync()
 
 DeviceSync::~DeviceSync()
 {
+    kDebug() << "Deletion requested, shutting off...";
+
+    d->view->disconnectAll();
     d->view->deleteLater();
     d->manager->deleteLater();
 
