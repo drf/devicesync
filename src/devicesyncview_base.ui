@@ -15,120 +15,129 @@
   <property name="autoFillBackground" >
    <bool>true</bool>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2" >
+  <layout class="QVBoxLayout" name="verticalLayout_6" >
    <item>
-    <widget class="QDockWidget" name="dockWidget" >
-     <property name="windowTitle" >
-      <string>Connected Devices</string>
-     </property>
-     <widget class="QWidget" name="dockWidgetContents_2" >
-      <layout class="QVBoxLayout" name="verticalLayout_5" >
-       <item>
-        <widget class="QListWidget" name="connectedDevicesWidget" />
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QSplitter" name="splitter" >
+    <widget class="QSplitter" name="splitter_2" >
      <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget" >
-      <layout class="QHBoxLayout" name="horizontalLayout" >
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2" >
-         <item>
-          <widget class="KComboBox" name="leftDeviceBox" />
-         </item>
-         <item>
-          <widget class="QTreeView" name="leftTreeView" >
-           <property name="contextMenuPolicy" >
-            <enum>Qt::CustomContextMenu</enum>
-           </property>
-           <property name="selectionMode" >
-            <enum>QAbstractItemView::ExtendedSelection</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_3" >
-         <item>
-          <spacer name="verticalSpacer" >
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0" >
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="KPushButton" name="moveRightButton" />
-         </item>
-         <item>
-          <widget class="KPushButton" name="moveLeftButton" />
-         </item>
-         <item>
-          <spacer name="verticalSpacer_2" >
-           <property name="orientation" >
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0" >
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4" >
-         <item>
-          <widget class="KComboBox" name="rightDeviceBox" />
-         </item>
-         <item>
-          <widget class="QTreeView" name="rightTreeView" >
-           <property name="contextMenuPolicy" >
-            <enum>Qt::CustomContextMenu</enum>
-           </property>
-           <property name="selectionMode" >
-            <enum>QAbstractItemView::ExtendedSelection</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QDockWidget" name="queueWidget" >
-      <property name="sizePolicy" >
-       <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QDockWidget" name="dockWidget" >
+      <property name="maximumSize" >
+       <size>
+        <width>200</width>
+        <height>524287</height>
+       </size>
       </property>
       <property name="windowTitle" >
-       <string>Queue</string>
+       <string>Connected Devices</string>
       </property>
-      <widget class="QWidget" name="dockWidgetContents" >
-       <layout class="QVBoxLayout" name="verticalLayout" >
+      <widget class="QWidget" name="dockWidgetContents_2" >
+       <layout class="QVBoxLayout" name="verticalLayout_5" >
         <item>
-         <widget class="QListWidget" name="listWidget" >
-          <property name="contextMenuPolicy" >
-           <enum>Qt::CustomContextMenu</enum>
-          </property>
-         </widget>
+         <widget class="QListWidget" name="connectedDevicesWidget" />
         </item>
        </layout>
+      </widget>
+     </widget>
+     <widget class="QSplitter" name="splitter" >
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget" >
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2" >
+          <item>
+           <widget class="KComboBox" name="leftDeviceBox" />
+          </item>
+          <item>
+           <widget class="QTreeView" name="leftTreeView" >
+            <property name="contextMenuPolicy" >
+             <enum>Qt::CustomContextMenu</enum>
+            </property>
+            <property name="selectionMode" >
+             <enum>QAbstractItemView::ExtendedSelection</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3" >
+          <item>
+           <spacer name="verticalSpacer" >
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="KPushButton" name="moveRightButton" />
+          </item>
+          <item>
+           <widget class="KPushButton" name="moveLeftButton" />
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2" >
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4" >
+          <item>
+           <widget class="KComboBox" name="rightDeviceBox" />
+          </item>
+          <item>
+           <widget class="QTreeView" name="rightTreeView" >
+            <property name="contextMenuPolicy" >
+             <enum>Qt::CustomContextMenu</enum>
+            </property>
+            <property name="selectionMode" >
+             <enum>QAbstractItemView::ExtendedSelection</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QDockWidget" name="queueWidget" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="windowTitle" >
+        <string>Queue</string>
+       </property>
+       <widget class="QWidget" name="dockWidgetContents" >
+        <layout class="QVBoxLayout" name="verticalLayout" >
+         <item>
+          <widget class="QListWidget" name="listWidget" >
+           <property name="contextMenuPolicy" >
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </widget>
