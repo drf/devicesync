@@ -125,6 +125,7 @@ void QueueManager::processNextQueueItem()
     if (d->iterator == d->itemList.end() || !(*d->iterator)) {
         kDebug() << "Queue ended";
         clearQueue();
+        emit queueCompleted();
         return;
     }
 

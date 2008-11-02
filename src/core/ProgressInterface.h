@@ -46,6 +46,8 @@ public slots:
     void setCurrentItemProgress(int percent);
     void setCurrentItemAction(Action action);
 
+    void completed();
+
 signals:
     void currentItemChanged(QueueItem *item);
     void totalProgressChanged(int percent);
