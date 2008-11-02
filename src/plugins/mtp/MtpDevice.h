@@ -40,6 +40,8 @@ public:
     void connectDevice();
     void disconnectDevice();
 
+    bool connectFirstAvailableDevice();
+
     QString getPathForCurrentIndex(const QModelIndex &index);
 
     bool iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial);
