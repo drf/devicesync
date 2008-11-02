@@ -22,6 +22,7 @@
 #include "MtpDevice.h"
 
 #include <KDebug>
+#include <klocalizedstring.h>
 
 #include <libmtp.h>
 
@@ -49,6 +50,11 @@ void MtpInterface::init()
     LIBMTP_Init();
 }
 
+QString MtpInterface::name()
+{
+    return i18n("Mtp Device");
+}
+
 void MtpInterface::scan()
 {
     foreach(const Solid::Device &device, Solid::Device::listFromType(Solid::DeviceInterface::PortableMediaPlayer)) {
@@ -64,6 +70,11 @@ void MtpInterface::scan()
             }
         }
     }
+}
+
+void MtpInterface::forceDeviceScan()
+{
+    MtpDevice *device = new MtpDevice(QString(), this);
 }
 
 bool MtpInterface::isMtp(const QString &udi)

@@ -36,9 +36,13 @@ public:
 
     void scan();
 
+    QString name();
+
 public slots:
     void startWatching();
     void stopWatching();
+
+    void forceDeviceScan();
 
 private slots:
     void deviceAdded(const QString &udi);

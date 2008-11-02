@@ -20,6 +20,8 @@
 #include "LocalStorage.h"
 #include "LocalStorageDevice.h"
 
+#include <klocalizedstring.h>
+
 DEVICESYNC_PLUGIN_EXPORT(LocalStorage)
 
 LocalStorage::LocalStorage(QObject *parent, const QVariantList&)
@@ -30,6 +32,11 @@ LocalStorage::LocalStorage(QObject *parent, const QVariantList&)
 
 LocalStorage::~LocalStorage()
 {
+}
+
+QString LocalStorage::name()
+{
+    return i18n("Local Storage");
 }
 
 void LocalStorage::init()

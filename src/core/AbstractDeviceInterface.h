@@ -44,9 +44,13 @@ public:
 
     virtual void scan() = 0;
 
+    virtual QString name() = 0;
+
 public slots:
     virtual void startWatching() = 0;
     virtual void stopWatching() = 0;
+
+    virtual void forceDeviceScan() = 0;
 
     AbstractDevice::List getConnectedDevices();
     DeviceContainer::List getAllDevices();
