@@ -115,6 +115,7 @@ void QueueManager::processQueue()
 {
     d->iterator = d->itemList.begin();
 
+    progressInterface()->reset();
     progressInterface()->setItems(d->itemList);
 
     processNextQueueItem();
@@ -125,7 +126,7 @@ void QueueManager::processNextQueueItem()
     if (d->iterator == d->itemList.end() || !(*d->iterator)) {
         kDebug() << "Queue ended";
         clearQueue();
-        emit queueCompleted();
+        progressInterface()->queueCompleted();
         return;
     }
 

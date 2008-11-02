@@ -77,9 +77,16 @@ void ProgressInterface::setItems(QueueItem::List list)
     emit totalProgressChanged(0);
 }
 
-void ProgressInterface::completed()
+void ProgressInterface::queueCompleted()
 {
+    emit completed();
+}
 
+void ProgressInterface::reset()
+{
+    d->action_percent = 0;
+    d->itemList.clear();
+    d->current = 0;
 }
 
 #include "ProgressInterface.moc"

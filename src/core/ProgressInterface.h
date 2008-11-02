@@ -46,12 +46,14 @@ public slots:
     void setCurrentItemProgress(int percent);
     void setCurrentItemAction(Action action);
 
-    void completed();
+    void queueCompleted();
+    void reset();
 
 signals:
     void currentItemChanged(QueueItem *item);
     void totalProgressChanged(int percent);
     void currentItemProgressChanged(ProgressInterface::Action action, int percent);
+    void completed();
 
 private:
     class Private;
