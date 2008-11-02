@@ -82,6 +82,7 @@ public:
      * Failure in doing this will lead to undefined behavior in the core
      */
     virtual void connectDevice() = 0;
+
     /**
      * Disconnects the device
      *
@@ -134,11 +135,39 @@ public:
      */
     AbstractDeviceInterface *interface();
 
-    void setModel(QAbstractItemModel *model);
+    /**
+     * Returns the model for representing file/folder view of the device
+     *
+     * @returns the current model for this device
+     * @see setModel
+     */
     QAbstractItemModel *model();
 
+    /**
+     * Returns the path associated to the given index.
+     *
+     * You have to reimplement this function. It is critical to return
+     * a path representation that you will be able to use later. The path
+     * you will return here will be the path passed in transfer functions.
+     *
+     * @param index the index of the current model
+     * @returns the path associated to index
+     *
+     * @see sendFileToDevice
+     * @see getFileFromDevice
+     * @see model
+     * @see setModel
+     */
     virtual QString getPathForCurrentIndex(const QModelIndex &index) = 0;
 
+    /**
+     * Requests reloading the model.
+     *
+     * You have to reimplement this function. Just load a new model and
+     * set it through @setModel
+     *
+     * @see setModel
+     */
     virtual void reloadModel() = 0;
 
 public slots:
@@ -155,6 +184,7 @@ public slots:
 protected:
     void setName(const QString &name);
     void setIcon(const QString &name);
+    void setModel(QAbstractItemModel *model);
     int getNextTransferToken();
 
 signals:
