@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>kapp4_base</string>
+   <string/>
   </property>
   <property name="autoFillBackground" >
    <bool>true</bool>
