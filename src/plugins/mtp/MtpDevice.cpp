@@ -96,8 +96,14 @@ void MtpDevice::createFolder(const QString &name, const QString &inPath)
 
 void MtpDevice::connectDevice()
 {
-    Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
-    QString serial = pmp->driverHandle("mtp").toString();
+    QString serial;
+
+    if (!m_udi.isEmpty()) {
+        Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
+        serial = pmp->driverHandle("mtp").toString();
+    } else {
+        serial.clear();
+    }
 
     LIBMTP_raw_device_t * rawdevices;
     int numrawdevices;
@@ -111,17 +117,17 @@ void MtpDevice::connectDevice()
 
     switch (err) {
     case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-        fprintf(stdout, "   No raw devices found.\n");
+        kDebug() << "No raw devices found";
         m_success = false;
         break;
 
     case LIBMTP_ERROR_CONNECTING:
-        fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
+        kDebug() << "Detect: There has been an error connecting. Exiting";
         m_success = false;
         break;
 
     case LIBMTP_ERROR_MEMORY_ALLOCATION:
-        fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
+        kDebug() << "Detect: Encountered a Memory Allocation Error. Exiting";
         m_success = false;
         break;
 
@@ -141,58 +147,6 @@ void MtpDevice::connectDevice()
         ThreadWeaver::Weaver::instance()->enqueue(new WorkerThread(numrawdevices, rawdevices, serial, this));
     } else {
         free(rawdevices);
-    }
-}
-
-bool MtpDevice::connectFirstAvailableDevice()
-{
-    Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
-    QString serial = pmp->driverHandle("mtp").toString();
-
-    LIBMTP_raw_device_t * rawdevices;
-    int numrawdevices;
-    LIBMTP_error_number_t err;
-
-    // get list of raw devices
-    kDebug() << "Getting list of raw devices";
-    err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
-
-    kDebug() << "Error is: " << err;
-
-    switch (err) {
-    case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-        kDebug() << "   No raw devices found.";
-        return false;
-        break;
-
-    case LIBMTP_ERROR_CONNECTING:
-        kDebug() << "Detect: There has been an error connecting. Exiting";
-        return false;
-        break;
-
-    case LIBMTP_ERROR_MEMORY_ALLOCATION:
-        kDebug() << "Detect: Encountered a Memory Allocation Error. Exiting";
-        return false;
-        break;
-
-    case LIBMTP_ERROR_NONE: {
-        m_success = true;
-        break;
-    }
-
-    default:
-        kDebug() << "Unhandled mtp error";
-        return false;
-        break;
-    }
-
-    if (m_success) {
-        kDebug() << "Got mtp list, connecting to device using thread";
-        ThreadWeaver::Weaver::instance()->enqueue(new WorkerThread(numrawdevices, rawdevices, QString(), this));
-        return true;
-    } else {
-        free(rawdevices);
-        return false;
     }
 }
 
