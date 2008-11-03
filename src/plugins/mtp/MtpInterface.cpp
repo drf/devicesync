@@ -72,7 +72,7 @@ void MtpInterface::scan()
     }
 }
 
-void MtpInterface::forceDeviceScan()
+void MtpInterface::forceDeviceConnection()
 {
     MtpDevice *device = new MtpDevice(QString(), this);
     device->connectFirstAvailableDevice();
