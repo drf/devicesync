@@ -72,10 +72,12 @@ void MtpInterface::scan()
     }
 }
 
-void MtpInterface::forceDeviceConnection()
+AbstractDevice *MtpInterface::forceDeviceConnection()
 {
     MtpDevice *device = new MtpDevice(QString(), this);
-    device->connectDevice();
+    connectDevice(device);
+
+    return device;
 }
 
 bool MtpInterface::isMtp(const QString &udi)

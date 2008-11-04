@@ -50,7 +50,7 @@ public slots:
     virtual void startWatching() = 0;
     virtual void stopWatching() = 0;
 
-    virtual void forceDeviceConnection() = 0;
+    virtual AbstractDevice *forceDeviceConnection() = 0;
 
     AbstractDevice::List getConnectedDevices();
     DeviceContainer::List getAllDevices();

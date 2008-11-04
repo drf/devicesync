@@ -42,6 +42,7 @@ ConnectDialog::ConnectDialog(DeviceSync *handler, QWidget *parent)
     ui.scanButton->setIcon(KIcon("system-search"));
 
     connect(ui.cancelButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
+    connect(ui.manualButton, SIGNAL(clicked()), this, SLOT(manualConnection()));
     connect(ui.scanButton, SIGNAL(clicked()), this, SLOT(rescanDevices()));
     connect(ui.connectButton, SIGNAL(clicked()), this, SLOT(connectDevice()));
 
@@ -148,6 +149,71 @@ void ConnectDialog::deviceConnected(AbstractDevice *device)
     m_widget->setLayout(ly);
 
     QTimer::singleShot(2000, this, SLOT(deleteLater()));
+}
+
+void ConnectDialog::manualConnection()
+{
+    m_widget->deleteLater();
+    m_widget = new QWidget();
+
+    force_ui.setupUi(m_widget);
+
+    force_ui.continueButton->setIcon(KIcon("dialog-ok-apply"));
+
+    force_ui.deviceBox->clear();
+
+    foreach (AbstractDeviceInterface *iface, m_handler->getAvailableInterfaces()) {
+        force_ui.deviceBox->addItem(iface->name());
+    }
+
+    connect(force_ui.continueButton, SIGNAL(clicked()), this, SLOT(forceConnection()));
+
+    setMainWidget(m_widget);
+}
+
+void ConnectDialog::forceConnection()
+{
+    AbstractDeviceInterface *iface = 0;
+
+    foreach (AbstractDeviceInterface *ent, m_handler->getAvailableInterfaces()) {
+        if (ent->name() == force_ui.deviceBox->currentText()) {
+            iface = ent;
+        }
+    }
+
+    if (!iface) {
+        return;
+    }
+
+    AbstractDevice *device = iface->forceDeviceConnection();
+    connect(device, SIGNAL(deviceConnected(AbstractDevice*)), this, SLOT(deviceConnected(AbstractDevice*)));
+
+    m_widget->deleteLater();
+
+    m_widget = new QWidget();
+    setMainWidget(m_widget);
+
+    QVBoxLayout *ly = new QVBoxLayout();
+    QLabel *text = new QLabel();
+    QLabel *icon = new QLabel();
+
+    text->setText(i18n("Please wait, connecting %1...", device->name()));
+    text->setAlignment(Qt::AlignHCenter);
+    QMovie *movie = KIconLoader::global()->loadMovie("process-working", KIconLoader::Dialog);
+    icon->setMovie(movie);
+
+    if (movie) {
+        movie->start();
+    }
+
+    icon->setAlignment(Qt::AlignHCenter);
+
+    ly->addStretch();
+    ly->addWidget(text);
+    ly->addWidget(icon);
+    ly->addStretch();
+
+    m_widget->setLayout(ly);
 }
 
 #include "ConnectDialog.moc"

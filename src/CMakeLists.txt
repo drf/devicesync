@@ -15,6 +15,7 @@ kde4_add_ui_files(devicesync_SRCS
 	prefs_base.ui
 	progressdialog.ui
 	connectdialog.ui
+	forceconnectdialog.ui
 )
 
 kde4_add_kcfg_files(devicesync_SRCS settings.kcfgc )

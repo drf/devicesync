@@ -102,8 +102,12 @@ void AbstractDeviceInterface::connectDevice(AbstractDevice *device)
             connect(device, SIGNAL(deviceConnected(AbstractDevice*)), this, SIGNAL(deviceConnected(AbstractDevice*)));
             cont->device->connectDevice();
             cont->status = DeviceContainer::Connected;
+            return;
         }
     }
+
+    addDevice(device);
+    connectDevice(device);
 }
 
 void AbstractDeviceInterface::disconnectDevice(AbstractDevice *device)
