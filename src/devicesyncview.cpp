@@ -343,7 +343,7 @@ void DeviceSyncView::deleteFileRight()
 void DeviceSyncView::disconnectAll()
 {
     disconnect(ui_devicesyncview_base.leftDeviceBox, SIGNAL(currentIndexChanged(const QString&)),
-               this,SLOT(leftDeviceChanged(const QString&)));
+               this, SLOT(leftDeviceChanged(const QString&)));
     disconnect(ui_devicesyncview_base.rightDeviceBox, SIGNAL(currentIndexChanged(const QString&)),
                this, SLOT(rightDeviceChanged(const QString&)));
 }

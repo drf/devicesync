@@ -202,7 +202,7 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
     }
 
     if (serial.isEmpty()) {
-        kDebug() << "Serial is: " << QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
+        kDebug() << "Serial is: " << QString::fromUtf8(LIBMTP_Get_Serialnumber(m_device));
     } else {
         kDebug() << "Serial is: " << serial;
     }
