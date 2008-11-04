@@ -59,6 +59,7 @@ public slots:
 
 private slots:
     void transferSuccessful(ThreadWeaver::Job*);
+    void deletionSuccessful(ThreadWeaver::Job*);
     void modelCreated(QStandardItemModel *model);
 
     void connectionSuccessful();
@@ -183,6 +184,28 @@ private:
     LIBMTP_file_t *m_file;
     LIBMTP_progressfunc_t m_callback;
     MtpDevice *m_parent;
+};
+
+class DeleteObjectThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    DeleteObjectThread(LIBMTP_mtpdevice_t *device, uint32_t object, MtpDevice *parent);
+    virtual ~DeleteObjectThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+    void removeObjectRecursively(uint32_t object, bool main = false);
+
+private:
+    int m_success;
+    LIBMTP_mtpdevice_t* m_device;
+    uint32_t m_object;
+    MtpDevice *m_parent;
+    LIBMTP_folder_t *m_folders;
 };
 
 #endif /* MTPDEVICE_H */

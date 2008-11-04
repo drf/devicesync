@@ -234,6 +234,12 @@ void MtpDevice::transferSuccessful(ThreadWeaver::Job *job)
     job->deleteLater();
 }
 
+void MtpDevice::deletionSuccessful(ThreadWeaver::Job *job)
+{
+    emit pathRemovedFromDevice(job->property("ds_transfer_token").toInt(), job->property("ds_filename").toString());
+    job->deleteLater();
+}
+
 int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
 {
     KUrl url = KUrl::fromPath(fromPath);
@@ -328,8 +334,13 @@ int MtpDevice::getByteArrayFromDeviceFile(const QString &)
 
 int MtpDevice::removePath(const QString &path)
 {
-    //LIBMTP_Delete_Object(m_device, path.toInt());
-    return -1;
+    int token = getNextTransferToken();
+
+    ThreadWeaver::Job * thread = new DeleteObjectThread(m_device, path.toInt(), this);
+    thread->setProperty("ds_transfer_token", token);
+    ThreadWeaver::Weaver::instance()->enqueue(thread);
+
+    return token;
 }
 
 /////
@@ -528,5 +539,92 @@ void SendFileThread::run()
     kDebug() << m_success;
 }
 
+//
+
+DeleteObjectThread::DeleteObjectThread(LIBMTP_mtpdevice_t *device, uint32_t object, MtpDevice *parent)
+        : ThreadWeaver::Job()
+        , m_success(0)
+        , m_device(device)
+        , m_object(object)
+        , m_parent(parent)
+{
+    connect(this, SIGNAL(failed(ThreadWeaver::Job*)), m_parent, SLOT(deletionFailed(ThreadWeaver::Job*)));
+    connect(this, SIGNAL(done(ThreadWeaver::Job*)), m_parent, SLOT(deletionSuccessful(ThreadWeaver::Job*)));
+}
+
+DeleteObjectThread::~DeleteObjectThread()
+{
+    //nothing to do
+}
+
+bool DeleteObjectThread::success() const
+{
+    return m_success;
+}
+
+void DeleteObjectThread::run()
+{
+    m_folders = LIBMTP_Get_Folder_List(m_device);
+
+    removeObjectRecursively(m_object, true);
+
+    m_success = true;
+
+    kDebug() << m_success;
+}
+
+void DeleteObjectThread::removeObjectRecursively(uint32_t object, bool main)
+{
+    LIBMTP_folder_t *folder = LIBMTP_Find_Folder(m_folders, object);
+
+    if (folder == NULL) {
+        // Not a folder, just delete it and we are done
+
+        if (main) {
+            LIBMTP_file_t *files = LIBMTP_Get_Filelisting_With_Callback(m_device, 0, 0);
+
+            while (files) {
+                if (files->item_id == object) {
+                    setProperty("ds_filename", QString(files->filename));
+                    break;
+                }
+
+                files = files->next;
+            }
+        }
+
+        LIBMTP_Delete_Object(m_device, object);
+    } else {
+
+        if (main) {
+            setProperty("ds_filename", QString(folder->name));
+        }
+
+        // First of all, let's destroy all files inside the directory.
+
+        LIBMTP_file_t *files = LIBMTP_Get_Filelisting_With_Callback(m_device, 0, 0);
+
+        while (files) {
+            if (files->parent_id == object) {
+                LIBMTP_Delete_Object(m_device, files->item_id);
+            }
+
+            files = files->next;
+        }
+
+        // And now, let's recurse again if there are some folders
+
+        LIBMTP_folder_t *child = folder->child;
+
+        while (child != NULL) {
+            removeObjectRecursively(child->folder_id);
+            child = child->sibling;
+        }
+
+        // Last but not least, let's remove the folder itself.
+
+        LIBMTP_Delete_Object(m_device, object);
+    }
+}
 
 #include "MtpDevice.moc"
