@@ -1,0 +1,40 @@
+/** @mainpage DeviceSync Core Library
+
+<p><b>
+Overview |
+@ref plugindevelopment
+</b></p>
+
+This is the online reference for developing with DeviceSync core library.
+If you are reading this you probably want to write a plugin for it.
+<p>
+DeviceSync core consists of AbstractDevice, AbstractDeviceInterface, a Queue
+Manager and a progress interface. Documentation for the last two parts is not 
+as extensive as abstract components' ones, since those ApiDox are mainly targeted 
+to plugin developers.
+<p>
+To get yourself started in developing a DeviceSync Plugin, check out next page
+
+@authors
+(c) 2008 Dario Freddi
+
+@maintainers
+Dario Freddi
+
+@licenses
+@gpl
+
+*/
+
+/** @page plugindevelopment Developing a DeviceSync Plugin
+
+<p><b>
+@ref index "Overview" |
+plugindevelopment
+</b></p>
+
+*/
+
+// DOXYGEN_REFERENCES = kdecore
+// DOXYGEN_SET_INTERNAL_DOCS = YES
+// DOXYGEN_SET_PROJECT_NAME = DEVICESYNC
