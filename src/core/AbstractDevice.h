@@ -47,6 +47,7 @@ class AbstractDeviceInterface;
  * It is strongly suggested to use ThreadWeaver for both performance and ease of use:
  * you can see an example of ThreadWeaver usage in the MTP plugin.
  */
+
 class KDE_EXPORT AbstractDevice : public QObject
 {
     Q_OBJECT
@@ -171,6 +172,30 @@ public:
     virtual void reloadModel() = 0;
 
 public slots:
+    /**
+     * Transfers a file to the device
+     *
+     * You have to reimplement this function. This function should return a
+     * valid transfer token for tracking the operation. You can get one simply
+     * by calling getNextTransferToken(). Make sure to keep track of the token yourself
+     * since you will need them later.
+     *
+     * DeviceSync is completely asynchronous. This means this function should just
+     * initialize the transfer and return the token immediately. It is strongly
+     * advised to implement file transfer with threads.
+     *
+     * Once the transfer is complete, you need to emit fileCopiedToDevice(). This is
+     * critical, since the core needs to be notified about transfer status. Failure
+     * in doing this will result in a non working plugin.
+     *
+     * @param fromPath the path of the file that should be copied onto the device. It is a standard path on the local disk
+     * @param toPath the path where the file should be copied. It is a path you returned in getPathForCurrentIndex()
+     * @returns a transfer token associated to the newly created transfer
+     *
+     * @see getNextTransferToken
+     * @see fileCopiedToDevice
+     * @see getPathForCurrentIndex
+     */
     virtual int sendFileToDevice(const QString &fromPath, const QString &toPath) = 0;
     virtual int sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath) = 0;
 
