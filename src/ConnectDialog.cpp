@@ -162,7 +162,7 @@ void ConnectDialog::manualConnection()
 
     force_ui.deviceBox->clear();
 
-    foreach (AbstractDeviceInterface *iface, m_handler->getAvailableInterfaces()) {
+    foreach(AbstractDeviceInterface *iface, m_handler->getAvailableInterfaces()) {
         force_ui.deviceBox->addItem(iface->name());
     }
 
@@ -175,7 +175,7 @@ void ConnectDialog::forceConnection()
 {
     AbstractDeviceInterface *iface = 0;
 
-    foreach (AbstractDeviceInterface *ent, m_handler->getAvailableInterfaces()) {
+    foreach(AbstractDeviceInterface *ent, m_handler->getAvailableInterfaces()) {
         if (ent->name() == force_ui.deviceBox->currentText()) {
             iface = ent;
         }
