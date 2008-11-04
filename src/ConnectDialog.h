@@ -21,6 +21,7 @@
 #define CONNECTDIALOG_H
 
 #include "ui_connectdialog.h"
+#include "ui_forceconnectdialog.h"
 
 #include <KDialog>
 
@@ -42,6 +43,9 @@ private slots:
 
     void connectDevice();
 
+    void manualConnection();
+    void forceConnection();
+
     void deviceConnected(AbstractDevice *device);
 
 private:
@@ -49,7 +53,8 @@ private:
 
 private:
     QWidget *m_widget;
-    Ui_connectDialog ui;
+    Ui::connectDialog ui;
+    Ui::forceConnectDialog force_ui;
     DeviceSync *m_handler;
     QMap<int, AbstractDevice*> m_devices;
 };

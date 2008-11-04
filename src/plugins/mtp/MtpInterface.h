@@ -42,7 +42,7 @@ public slots:
     void startWatching();
     void stopWatching();
 
-    void forceDeviceConnection();
+    AbstractDevice *forceDeviceConnection();
 
 private slots:
     void deviceAdded(const QString &udi);

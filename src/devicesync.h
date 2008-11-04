@@ -25,6 +25,7 @@
 #include <KService>
 
 #include "AbstractDevice.h"
+#include "AbstractDeviceInterface.h"
 
 #include "ui_prefs_base.h"
 
@@ -32,7 +33,6 @@ class DeviceSyncView;
 class QPrinter;
 class KToggleAction;
 class KUrl;
-class AbstractDeviceInterface;
 class QueueManager;
 
 /**
@@ -59,6 +59,7 @@ public:
 
     AbstractDevice *getConnectedDeviceByName(const QString &name);
     AbstractDevice::List getAvailableDisconnectedDevices();
+    AbstractDeviceInterface::List getAvailableInterfaces();
 
     QueueManager *queueManager();
 

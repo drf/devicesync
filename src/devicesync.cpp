@@ -21,7 +21,6 @@
 #include "devicesyncview.h"
 #include "settings.h"
 
-#include "AbstractDeviceInterface.h"
 #include "QueueManager.h"
 #include "ProgressDialog.h"
 #include "ConnectDialog.h"
@@ -321,6 +320,11 @@ AbstractDevice * DeviceSync::getConnectedDeviceByName(const QString &name)
             }
         }
     }
+}
+
+AbstractDeviceInterface::List DeviceSync::getAvailableInterfaces()
+{
+    return d->interfaces;
 }
 
 #include "devicesync.moc"
