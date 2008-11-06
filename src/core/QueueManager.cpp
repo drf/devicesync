@@ -31,7 +31,7 @@ public:
     ~Private() {}
 
     QueueItem::List itemList;
-    QueueItem::List::iterator iterator;
+    QueueItem::List::const_iterator iterator;
     QMap<int, QueueItem*> tokenActions;
     ProgressInterface *progressInterface;
 };
@@ -113,7 +113,7 @@ void QueueManager::clearQueue()
 
 void QueueManager::processQueue()
 {
-    d->iterator = d->itemList.begin();
+    d->iterator = d->itemList.constBegin();
 
     progressInterface()->reset();
     progressInterface()->setItems(d->itemList);
@@ -123,7 +123,7 @@ void QueueManager::processQueue()
 
 void QueueManager::processNextQueueItem()
 {
-    if (d->iterator == d->itemList.end() || !(*d->iterator)) {
+    if (d->iterator == d->itemList.constEnd() || !(*d->iterator)) {
         kDebug() << "Queue ended";
         clearQueue();
         progressInterface()->queueCompleted();
@@ -213,7 +213,7 @@ void QueueManager::fileCopiedToDevice(int token, const QString &/*filePath*/)
     switch (d->tokenActions[token]->action) {
     case QueueItem::Copy:
         kDebug() << "Copy completed!!";
-        ++d->iterator;
+        d->iterator += 1;
         processNextQueueItem();
     default:
         break;
@@ -226,7 +226,7 @@ void QueueManager::pathRemovedFromDevice(int token, const QString &)
                this, SLOT(pathRemovedFromDevice(int, const QString&)));
 
     kDebug() << "Item deleted!!";
-    ++d->iterator;
+    d->iterator += 1;
     processNextQueueItem();
 }
 
