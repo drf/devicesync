@@ -19,6 +19,8 @@
 
 #include "AbstractDeviceInterface.h"
 
+#include <KDebug>
+
 class AbstractDeviceInterface::Private
 {
 public:
@@ -40,6 +42,21 @@ AbstractDeviceInterface::AbstractDeviceInterface(QObject *parent)
 AbstractDeviceInterface::~AbstractDeviceInterface()
 {
     delete d;
+}
+
+void AbstractDeviceInterface::init()
+{
+
+}
+
+void AbstractDeviceInterface::startWatching()
+{
+    kDebug() << "No hotplugging enabled for this interface";
+}
+
+void AbstractDeviceInterface::stopWatching()
+{
+    kDebug() << "No hotplugging enabled for this interface";
 }
 
 QString AbstractDeviceInterface::name() const
