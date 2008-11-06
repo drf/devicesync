@@ -23,6 +23,7 @@
 
 #include <kio/copyjob.h>
 #include <kio/deletejob.h>
+#include <kio/netaccess.h>
 
 #include <QTimer>
 
@@ -41,7 +42,12 @@ LocalStorageDevice::~LocalStorageDevice()
 
 void LocalStorageDevice::createFolder(const QString &name, const QString &inPath)
 {
+    KUrl path = KUrl::fromPath(inPath);
+    path.addPath(name);
 
+    KIO::SimpleJob *job = KIO::mkdir(path);
+
+    KIO::NetAccess::synchronousRun(job, 0);
 }
 
 void LocalStorageDevice::reloadModel()
@@ -84,7 +90,7 @@ int LocalStorageDevice::sendFileToDevice(const QString &fromPath, const QString 
     return token;
 }
 
-int LocalStorageDevice::sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath)
+int LocalStorageDevice::sendFileToDeviceFromByteArray(const QByteArray &, const QString &)
 {
     return -1;
 }
@@ -144,7 +150,7 @@ void LocalStorageDevice::getFromDeviceDone(KIO::Job *job, const KUrl&, const KUr
     emit fileCopiedFromDevice(job->property("transfer_token").toInt(), to.pathOrUrl());
 }
 
-int LocalStorageDevice::getByteArrayFromDeviceFile(const QString &path)
+int LocalStorageDevice::getByteArrayFromDeviceFile(const QString &)
 {
     return -1;
 }

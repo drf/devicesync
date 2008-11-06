@@ -68,7 +68,7 @@ public slots:
 
 private slots:
     void optionsPreferences();
-    bool loadAllPlugins();
+    void loadAllPlugins();
 
     void deviceConnected(AbstractDevice *device);
     void deviceDisconnected(AbstractDevice *device);

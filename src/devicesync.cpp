@@ -219,14 +219,12 @@ void DeviceSync::optionsPreferences()
     dialog->deleteLater();
 }
 
-bool DeviceSync::loadAllPlugins()
+void DeviceSync::loadAllPlugins()
 {
     KService::List offers;
 
     //Static plugins
     offers = KServiceTypeTrader::self()->query("Devicesync/Plugin");
-
-    bool loaded = false;
 
     KSharedConfig::Ptr config = KGlobal::config();
     KConfigGroup conf(config, "Plugins");
@@ -320,6 +318,8 @@ AbstractDevice * DeviceSync::getConnectedDeviceByName(const QString &name)
             }
         }
     }
+
+    return 0;
 }
 
 AbstractDeviceInterface::List DeviceSync::getAvailableInterfaces()
