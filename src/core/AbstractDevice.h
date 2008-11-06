@@ -103,7 +103,7 @@ public:
      *
      * @see setName
      */
-    QString name();
+    QString name() const;
     /**
      * Returns the icon of the device.
      *
@@ -114,7 +114,7 @@ public:
      * @see setIcon
      * @see iconName
      */
-    KIcon icon();
+    KIcon icon() const;
     /**
      * Returns the icon name of the device.
      *
@@ -125,7 +125,7 @@ public:
      * @see setIcon
      * @see icon
      */
-    QString iconName();
+    QString iconName() const;
 
     /**
      * Returns the parent interface of the device.

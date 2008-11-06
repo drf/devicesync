@@ -61,7 +61,7 @@ void AbstractDevice::setIcon(const QString &name)
     d->icon = name;
 }
 
-QString AbstractDevice::name()
+QString AbstractDevice::name() const
 {
     return d->name;
 }
@@ -70,12 +70,12 @@ AbstractDeviceInterface *AbstractDevice::interface() {
     return d->interface;
 }
 
-QString AbstractDevice::iconName()
+QString AbstractDevice::iconName() const
 {
     return d->icon;
 }
 
-KIcon AbstractDevice::icon()
+KIcon AbstractDevice::icon() const
 {
     return KIcon(d->icon);
 }
