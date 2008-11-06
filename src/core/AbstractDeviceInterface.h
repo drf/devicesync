@@ -26,7 +26,8 @@
 
 #include "AbstractDevice.h"
 
-/** Convenience macros to export a devicesync plugin. Suppose you created the plugin
+/**
+ * Convenience macros to export a devicesync plugin. Suppose you created the plugin
  * FooDevice, and its interface is named FooDeviceInterface. In FooDeviceInterface you
  * will have to put the following line:
  *
@@ -44,8 +45,17 @@
  * The device interface is the main component of the plugin. It takes care of
  * detecting available devices, managing them, and keeping the core up-to-date.
  *
+ * Through a deviceinterface, devicesync core is able to get available devices,
+ * connected devices and more. It is the connector between the core and the devices.
+ *
  * You have to reimplement just few functions in this interface, since almost
- * all the hard work has already been done for you.
+ * all the hard work has already been done for you, thanks to abstraction in devices.
+ * The only thing you have to do here is reimplement initialization and device detection.
+ *
+ * Please note that Solid has an entire framework able to detect device hotplugging, and
+ * device recognition too. It is multiplatform, scalable and extremely fast, so please
+ * consider taking advantage of Solid while writing your plugin, because it's probably worth it.
+ * Look at the MTP interface code for an example of Solid usage.
  *
  * @author Dario Freddi
  */
