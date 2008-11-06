@@ -28,6 +28,7 @@ public:
 
 
     DeviceContainer::List m_devices;
+    QString name;
 };
 
 AbstractDeviceInterface::AbstractDeviceInterface(QObject *parent)
@@ -39,6 +40,16 @@ AbstractDeviceInterface::AbstractDeviceInterface(QObject *parent)
 AbstractDeviceInterface::~AbstractDeviceInterface()
 {
     delete d;
+}
+
+QString AbstractDeviceInterface::name() const
+{
+    return d->name;
+}
+
+void AbstractDeviceInterface::setName(const QString &newName)
+{
+    d->name = newName;
 }
 
 AbstractDevice::List AbstractDeviceInterface::getConnectedDevices()

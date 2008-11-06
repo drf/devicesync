@@ -58,7 +58,7 @@ class KDE_EXPORT AbstractDevice : public QObject
 public:
     /**
      * @internal
-     * A list of AbstractDevicePointers.
+     * A list of AbstractDevice Pointers.
      */
     typedef QList<AbstractDevice*> List;
 
@@ -362,7 +362,7 @@ signals:
     /**
      * You have to emit this signal when the current action progress
      * changes. It is not compulsory to do it, though it is advised, since
-     * it allows to show more detailed informations in the interface.
+     * it allows to show more detailed information in the interface.
      *
      */
     void actionProgressChanged(int percentage);
@@ -391,18 +391,39 @@ private:
     Private *d;
 };
 
+/**
+ * DeviceContainer is a convenience class used to represent a device and some
+ * of its properties. Since accessing directly the device class could be dangerous sometimes
+ * (eg. underlying object no longer exists) or can be rather slow, DeviceContainer
+ * handles the job of making information about a device reachable in a simple way.
+ *
+ * This class has no methods: it is simply a container (surprise, huh?), and you will
+ * have to deal with it very few times
+ */
 class KDE_EXPORT DeviceContainer
 {
 public:
+    /**
+     * @internal
+     * A list of DeviceContainer Pointers.
+     */
     typedef QList<DeviceContainer*> List;
 
+    /**
+     * This enum represents the current status of the device
+     */
     enum Status {
+        /** The device is connected and ready to be used */
         Connected,
+        /** The device exists, but is not connected yet */
         Disconnected
     };
 
+    /** The device this container has */
     AbstractDevice *device;
+    /** Current status of the device */
     Status status;
+    /** UDI of the device */
     QString udi;
 };
 
