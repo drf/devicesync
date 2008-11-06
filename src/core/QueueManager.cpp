@@ -109,6 +109,8 @@ void QueueManager::clearQueue()
     }
 
     d->itemList.clear();
+
+    emit queueCleared();
 }
 
 void QueueManager::processQueue()

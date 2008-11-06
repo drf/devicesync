@@ -40,6 +40,8 @@ DeviceSyncView::DeviceSyncView(DeviceSync *parent)
     ui_devicesyncview_base.moveRightButton->setIcon(KIcon("arrow-right"));
     ui_devicesyncview_base.moveLeftButton->setIcon(KIcon("arrow-left"));
 
+    connect(m_core->queueManager(), SIGNAL(queueCleared()), SLOT(clearQueueView()));
+
     connect(ui_devicesyncview_base.leftDeviceBox, SIGNAL(currentIndexChanged(const QString&)),
             SLOT(leftDeviceChanged(const QString&)));
     connect(ui_devicesyncview_base.rightDeviceBox, SIGNAL(currentIndexChanged(const QString&)),
@@ -197,6 +199,10 @@ void DeviceSyncView::removeSelectedActions()
 void DeviceSyncView::clearQueue()
 {
     m_core->queueManager()->clearQueue();
+}
+
+void DeviceSyncView::clearQueueView()
+{
     ui_devicesyncview_base.listWidget->clear();
 }
 

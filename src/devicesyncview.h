@@ -68,7 +68,9 @@ private slots:
 
     void showQueueWidgetContextMenu();
     void removeSelectedActions();
+
     void clearQueue();
+    void clearQueueView();
 
     void setLeftModel(QAbstractItemModel *model, AbstractDevice *device);
     void setRightModel(QAbstractItemModel *model, AbstractDevice *device);

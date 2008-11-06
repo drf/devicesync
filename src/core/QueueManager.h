@@ -147,6 +147,9 @@ private slots:
     void fileCopiedToDevice(int token, const QString &filePath);
     void pathRemovedFromDevice(int token, const QString &path);
 
+Q_SIGNALS:
+    void queueCleared();
+
 private:
     int generateItemId();
 
