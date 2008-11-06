@@ -36,8 +36,6 @@ public:
 
     void scan();
 
-    QString name();
-
 public slots:
     void startWatching();
     void stopWatching();

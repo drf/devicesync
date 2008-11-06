@@ -47,12 +47,8 @@ MtpInterface::~MtpInterface()
 void MtpInterface::init()
 {
     kDebug() << "Initializing MTP stuff";
+    setName(i18n("Mtp Device"));
     LIBMTP_Init();
-}
-
-QString MtpInterface::name()
-{
-    return i18n("Mtp Device");
 }
 
 void MtpInterface::scan()

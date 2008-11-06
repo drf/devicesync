@@ -34,13 +34,10 @@ LocalStorage::~LocalStorage()
 {
 }
 
-QString LocalStorage::name()
-{
-    return i18n("Local Storage");
-}
-
 void LocalStorage::init()
 {
+    setName(i18n("Local Storage"));
+
     LocalStorageDevice *device = new LocalStorageDevice(this);
 
     addDevice(device);
