@@ -27,8 +27,8 @@ class AbstractDevice::Private
 {
 public:
     Private()
-            : token(0) {
-    }
+            : token(0) {}
+
     ~Private() {}
 
 

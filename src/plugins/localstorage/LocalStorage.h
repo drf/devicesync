@@ -40,7 +40,9 @@ public slots:
     void startWatching();
     void stopWatching();
 
-    AbstractDevice *forceDeviceConnection() { return 0; };
+    AbstractDevice *forceDeviceConnection() {
+        return 0;
+    };
 };
 
 #endif /* LOCALSTORAGE_H */
