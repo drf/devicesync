@@ -34,6 +34,7 @@ public:
     QueueItem::List::const_iterator iterator;
     QMap<int, QueueItem*> tokenActions;
     ProgressInterface *progressInterface;
+    AbstractDevice::List deviceList;
 };
 
 QueueManager::QueueManager(QObject *parent)
@@ -128,6 +129,14 @@ void QueueManager::processNextQueueItem()
     if (d->iterator == d->itemList.constEnd() || !(*d->iterator)) {
         kDebug() << "Queue ended";
         clearQueue();
+
+        // Let's reload needed models
+        foreach (AbstractDevice *ent, d->deviceList) {
+            ent->reloadModel();
+        }
+
+        d->deviceList.clear();
+
         progressInterface()->queueCompleted();
         return;
     }
@@ -151,7 +160,9 @@ void QueueManager::processNextQueueItem()
         token = (*d->iterator)->in_device->getFileFromDevice((*d->iterator)->in_path, "/tmp");
 
         d->tokenActions[token] = (*d->iterator);
+
         break;
+
     case QueueItem::Delete:
         progressInterface()->setCurrentItemAction(ProgressInterface::Deleting);
 
@@ -162,7 +173,12 @@ void QueueManager::processNextQueueItem()
 
         d->tokenActions[token] = (*d->iterator);
 
+        if (!d->deviceList.contains((*d->iterator)->in_device)) {
+            d->deviceList.append((*d->iterator)->in_device);
+        }
+
         break;
+
     default:
         break;
     }
@@ -175,6 +191,7 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
 
     switch (d->tokenActions[token]->action) {
     case QueueItem::Copy:
+        progressInterface()->setCurrentItemAction(ProgressInterface::Sending);
         disconnect(d->tokenActions[token]->in_device, SIGNAL(fileCopiedFromDevice(int, const QString&)),
                    this, SLOT(fileCopiedFromDevice(int, const QString&)));
         disconnect((*d->iterator)->in_device, SIGNAL(actionProgressChanged(int)),
@@ -186,12 +203,16 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
 
         connect(d->tokenActions[new_token]->out_device, SIGNAL(fileCopiedToDevice(int, const QString&)),
                 this, SLOT(fileCopiedToDevice(int, const QString&)));
+
+        if (!d->deviceList.contains((*d->iterator)->out_device)) {
+            d->deviceList.append((*d->iterator)->out_device);
+        }
+
         break;
     case QueueItem::Move:
+        progressInterface()->setCurrentItemAction(ProgressInterface::Sending);
         disconnect(d->tokenActions[token]->in_device, SIGNAL(fileCopiedFromDevice(int, const QString&)),
                    this, SLOT(fileCopiedFromDevice(int, const QString&)));
-
-        //d->tokenActions[token]->in_device->removeFile(d->tokenActions[token]->in_path);
 
         new_token = d->tokenActions[token]->out_device->sendFileToDevice(filePath, d->tokenActions[token]->out_path);
 
@@ -199,6 +220,11 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
 
         connect(d->tokenActions[new_token]->out_device, SIGNAL(fileCopiedToDevice(int, const QString&)),
                 this, SLOT(fileCopiedToDevice(int, const QString&)));
+
+        if (!d->deviceList.contains((*d->iterator)->out_device)) {
+            d->deviceList.append((*d->iterator)->out_device);
+        }
+
         break;
     default:
         break;
@@ -210,13 +236,29 @@ void QueueManager::fileCopiedToDevice(int token, const QString &/*filePath*/)
     disconnect(d->tokenActions[token]->out_device, SIGNAL(fileCopiedToDevice(int, const QString&)),
                this, SLOT(fileCopiedToDevice(int, const QString&)));
 
-    //int new_token;
+    int new_token;
 
     switch (d->tokenActions[token]->action) {
     case QueueItem::Copy:
         kDebug() << "Copy completed!!";
         d->iterator += 1;
         processNextQueueItem();
+        break;
+
+    case QueueItem::Move:
+        progressInterface()->setCurrentItemAction(ProgressInterface::Deleting);
+        connect((*d->iterator)->in_device, SIGNAL(pathRemovedFromDevice(int, const QString&)),
+                this, SLOT(pathRemovedFromDevice(int, const QString&)));
+
+        token = (*d->iterator)->in_device->removePath((*d->iterator)->in_path);
+
+        d->tokenActions[token] = (*d->iterator);
+
+        if (!d->deviceList.contains((*d->iterator)->in_device)) {
+            d->deviceList.append((*d->iterator)->in_device);
+        }
+        break;
+
     default:
         break;
     }
