@@ -81,6 +81,8 @@ public:
      * in your plugin.
      * When your device gets connected, please make sure you emit the signal @deviceConnected.
      * Failure in doing this will lead to undefined behavior in the core
+     *
+     * @see deviceConnected
      */
     virtual void connectDevice() = 0;
 
@@ -199,28 +201,189 @@ public slots:
     virtual int sendFileToDevice(const QString &fromPath, const QString &toPath) = 0;
     virtual int sendFileToDeviceFromByteArray(const QByteArray &file, const QString &toPath) = 0;
 
+    /**
+     * Gets a file from the device
+     *
+     * You have to reimplement this function. This function should return a
+     * valid transfer token for tracking the operation. You can get one simply
+     * by calling getNextTransferToken(). Make sure to keep track of the token yourself
+     * since you will need them later.
+     *
+     * DeviceSync is completely asynchronous. This means this function should just
+     * initialize the transfer and return the token immediately. It is strongly
+     * advised to implement file transfer with threads.
+     *
+     * Once the transfer is complete, you need to emit fileCopiedFromDevice(). This is
+     * critical, since the core needs to be notified about transfer status. Failure
+     * in doing this will result in a non working plugin.
+     *
+     * @param fromPath the path of the file we want to get. It is a path you
+     *                 returned in getPathForCurrentIndex()
+     * @param toPath the path where the file should be copied.
+     *               It is a standard path on the local disk
+     * @returns a transfer token associated to the newly created transfer
+     *
+     * @see getNextTransferToken
+     * @see fileCopiedFromDevice
+     * @see getPathForCurrentIndex
+     */
     virtual int getFileFromDevice(const QString &path, const QString &toPath) = 0;
     virtual int getByteArrayFromDeviceFile(const QString &path) = 0;
 
+    /**
+     * Creates a folder into the device
+     *
+     * You have to reimplement this function. This is the only non-queued and
+     * non asynchronous function in the device interface. You just have to create
+     * the folder and return right after that. This might change in the future,
+     * though.
+     *
+     * @param name the name of the new folder
+     * @param inPath the path where the folder should be created.
+     *               It is a path returned from getPathForCurrentIndex
+     *
+     * @see getPathForCurrentIndex
+     */
     virtual void createFolder(const QString &name, const QString &inPath) = 0;
 
+    /**
+     * Removes an object from the device
+     *
+     * You have to reimplement this function. This function should return a
+     * valid transfer token for tracking the operation. You can get one simply
+     * by calling getNextTransferToken(). Make sure to keep track of the token yourself
+     * since you will need them later.
+     *
+     * DeviceSync is completely asynchronous. This means this function should just
+     * initialize the deletion and return the token immediately. It is strongly
+     * advised to implement deletion with threads.
+     *
+     * Once the deletion is complete, you need to emit pathRemovedFromDevice(). This is
+     * critical, since the core needs to be notified about transfer status. Failure
+     * in doing this will result in a non working plugin.
+     *
+     * Please note that you need to add recursion if the requested path is a folder.
+     *
+     * @param fromPath the path we want to remove. It is a path you
+     *                 returned in getPathForCurrentIndex()
+     * @returns a transfer token associated to the newly created transfer
+     *
+     * @see getNextTransferToken
+     * @see fileCopiedFromDevice
+     * @see getPathForCurrentIndex
+     */
     virtual int removePath(const QString &path) = 0;
 
 protected:
+    /**
+     * Sets the name for this device. This name will be displayed in
+     * the interface, so be sure to set it at least once.
+     *
+     * @param name the name for the device
+     *
+     * @see name
+     */
     void setName(const QString &name);
+    /**
+     * Sets the icon for this device. This icon will be displayed in
+     * the interface, so be sure to set it at least once.
+     *
+     * @param icon the icon for the device
+     *
+     * @see icon
+     */
     void setIcon(const QString &name);
+    /**
+     * Sets the file model for this interface. The model passed in this
+     * function will be the one displayed in the interface for navigating
+     * inside the device. You basically have to create a model containing
+     * the disk structure of the device and set it through this function when
+     * requested, for example, by reloadModel()
+     *
+     * @param model the new model to be shown
+     *
+     * @see reloadModel
+     */
     void setModel(QAbstractItemModel *model);
+
+    /**
+     * Returns a valid, unique transfer token.
+     *
+     * This function is granted to return a valid transfer token for a single
+     * operation. You need to call this when you're starting a new operation
+     * and you need to keep track of it, aka always. The returned token will be
+     * useful both for the main interface to keep track of your job, and for you
+     * to make some action on it. So please be sure to track all your jobs through
+     * their token.
+     *
+     * @returns a unique valid transfer token
+     *
+     * @see sendFileFromDevice
+     * @see getFileFromDevice
+     * @see removePath
+     */
     int getNextTransferToken();
 
 signals:
-    void fileCopiedToDevice(int, const QString&);
-    void fileCopiedFromDevice(int, const QString&);
-    void pathRemovedFromDevice(int, const QString&);
+    /**
+     * You have to emit this signal when a copy operation to the device finishes.
+     * It is strictly compulsory to emit it when the operation finishes, since
+     * the core keeps track of progress and handles the queue through these signals.
+     *
+     * @param token the token associated with the completed transfer
+     * @param path the path this transfer was referring to
+     *
+     * @see sendFileToDevice
+     */
+    void fileCopiedToDevice(int token, const QString &path);
+    /**
+     * You have to emit this signal when a copy operation from the device finishes.
+     * It is strictly compulsory to emit it when the operation finishes, since
+     * the core keeps track of progress and handles the queue through these signals.
+     *
+     * @param token the token associated with the completed transfer
+     * @param path the path this transfer was referring to
+     *
+     * @see getFileFromDevice
+     */
+    void fileCopiedFromDevice(int token, const QString &path);
+    /**
+     * You have to emit this signal when a removal operation on the device finishes.
+     * It is strictly compulsory to emit it when the operation finishes, since
+     * the core keeps track of progress and handles the queue through these signals.
+     *
+     * @param token the token associated with the completed deletion
+     * @param path the path this deletion was referring to
+     *
+     * @see removePath
+     */
+    void pathRemovedFromDevice(int token, const QString &path);
 
-    void actionProgressChanged(int);
+    /**
+     * You have to emit this signal when the current action progress
+     * changes. It is not compulsory to do it, though it is advised, since
+     * it allows to show more detailed informations in the interface.
+     *
+     */
+    void actionProgressChanged(int percentage);
 
+    /**
+     * Emitted when the model gets changed. Do not emit this signal manually:
+     * it is already done for you when you call setModel()!
+     *
+     * @see setModel
+     */
     void modelChanged(QAbstractItemModel *, AbstractDevice *);
 
+    /**
+     * Emitted when the device gets connected. You have to emit
+     * this signal when the connection operation finishes and the device
+     * is available, passing this as a parameter.
+     *
+     * @param device the connected device, just use "this" here
+     *
+     * @see connectDevice
+     */
     void deviceConnected(AbstractDevice *device);
 
 private:
