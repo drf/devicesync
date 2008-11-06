@@ -26,26 +26,61 @@
 
 class ProgressInterface;
 
+/**
+ * This class provides a representation of an item in the Queue.
+ *
+ * It is just a container, and you will have to handle it read-only, in
+ * case you want to create your own frontend.
+ */
 class KDE_EXPORT QueueItem
 {
 public:
+    /**
+     * @internal
+     *
+     * A list of QueueItem pointers
+     */
     typedef QList<QueueItem*> List;
 
+    /**
+     * Represents the action this item will be doing
+     */
     enum Action {
+        /** Copying a file */
         Copy,
+        /** Moving a file */
         Move,
+        /* Deleting an object */
         Delete,
+        /* Renaming an object */
         Rename
     };
 
+    /** The action of this item */
     Action action;
+    /** The input device */
     AbstractDevice *in_device;
+    /** The output device */
     AbstractDevice *out_device;
+    /* The input path */
     QString in_path;
+    /* The output path */
     QString out_path;
+    /* The job token associated with this item */
     int jobId;
 };
 
+/**
+ * Queue manager handles queue in devicesync. It is device agnostic
+ * (it can handle an infinite number of jobs/devices in a single queue),
+ * job agnostic (it can handle an infinite type of jobs), and completely
+ * asynchronous.
+ *
+ * This handler can be used to set up and perform a queue pretty easily,
+ * and has builtin support to show detailed progress.
+ *
+ * @author Dario Freddi
+ */
 class KDE_EXPORT QueueManager : public QObject
 {
     Q_OBJECT
@@ -54,16 +89,56 @@ public:
     QueueManager(QObject *parent = 0);
     virtual ~QueueManager();
 
+    /**
+     * Returns the progress interface for the queue. Through the
+     * progress interface you can monitor progress of this queue.
+     *
+     * @returns the progress interface
+     */
     ProgressInterface *progressInterface();
+    /**
+     * Returns all items in queue
+     *
+     * @returns all items in queue
+     */
     QueueItem::List currentQueue();
 
 public slots:
+    /**
+     * Adds a new job to the queue.
+     *
+     * Jobs are tracked through their own token too. This function returns a
+     * valid job token if adding the item succeeded, or -1 if adding the item
+     * to queue failed.
+     *
+     * If the operation is done on a single device, such as folder creation or
+     * removal, just omit out and outpath
+     *
+     * @param action the action of the job
+     * @param in the input device (for example, in a copy operation, the device files will be copied from)
+     * @param inpath the input path
+     * @param out the output device (for example, in a copy operation, the device files will be copied to)
+     * @param outpath the output path
+     *
+     * @returns a valid job token on success, -1 on failure
+     */
     int addJobToQueue(QueueItem::Action action, AbstractDevice *in, const QString &inpath,
                       AbstractDevice *out = 0, const QString &outpath = QString());
+    /**
+     * Removes a job from the current queue
+     *
+     * @param jobId the job token associated to the job you want to remove
+     */
     void removeJobFromQueue(int jobId);
 
+    /**
+     * Clears all the queue
+     */
     void clearQueue();
 
+    /**
+     * Starts processing the current queue
+     */
     void processQueue();
 
 private slots:
