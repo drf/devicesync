@@ -203,12 +203,12 @@ void QueueManager::fileCopiedFromDevice(int token, const QString &filePath)
     }
 }
 
-void QueueManager::fileCopiedToDevice(int token, const QString &filePath)
+void QueueManager::fileCopiedToDevice(int token, const QString &/*filePath*/)
 {
     disconnect(d->tokenActions[token]->out_device, SIGNAL(fileCopiedToDevice(int, const QString&)),
                this, SLOT(fileCopiedToDevice(int, const QString&)));
 
-    int new_token;
+    //int new_token;
 
     switch (d->tokenActions[token]->action) {
     case QueueItem::Copy:
@@ -220,7 +220,7 @@ void QueueManager::fileCopiedToDevice(int token, const QString &filePath)
     }
 }
 
-void QueueManager::pathRemovedFromDevice(int token, const QString &path)
+void QueueManager::pathRemovedFromDevice(int token, const QString &)
 {
     disconnect(d->tokenActions[token]->in_device, SIGNAL(pathRemovedFromDevice(int, const QString&)),
                this, SLOT(pathRemovedFromDevice(int, const QString&)));
