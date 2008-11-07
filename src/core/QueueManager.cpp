@@ -131,7 +131,7 @@ void QueueManager::processNextQueueItem()
         clearQueue();
 
         // Let's reload needed models
-        foreach (AbstractDevice *ent, d->deviceList) {
+        foreach(AbstractDevice *ent, d->deviceList) {
             ent->reloadModel();
         }
 

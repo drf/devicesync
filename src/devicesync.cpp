@@ -60,8 +60,8 @@ DeviceSync::DeviceSync()
         : KXmlGuiWindow(),
         d(new Private())
 {
-    d->view = new DeviceSyncView(this);
     d->manager = new QueueManager(this);
+    d->view = new DeviceSyncView(this);
 
     // accept dnd
     setAcceptDrops(true);

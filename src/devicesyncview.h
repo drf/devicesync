@@ -84,8 +84,12 @@ private slots:
     void deleteFileLeft();
     void deleteFileRight();
 
+    void renameObjectLeft();
+    void renameObjectRight();
+
 private:
     QString getNewFolderNameDialog();
+    QString getRenameDialog(const QString &oldName);
 
 private:
     Ui::devicesyncview_base ui_devicesyncview_base;

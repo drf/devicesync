@@ -56,14 +56,15 @@ int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const 
     return 0;
 }
 
-class MtpDevice::Private {
-    public:
-        Private(const QString &u) : model(0), udi(u) {}
+class MtpDevice::Private
+{
+public:
+    Private(const QString &u) : model(0), udi(u) {}
 
-        QAbstractItemModel *model;
-        QString udi;
-        bool success;
-        LIBMTP_mtpdevice_t *device;
+    QAbstractItemModel *model;
+    QString udi;
+    bool success;
+    LIBMTP_mtpdevice_t *device;
 };
 
 MtpDevice::MtpDevice(const QString &udi, AbstractDeviceInterface *parent)
@@ -101,7 +102,6 @@ void MtpDevice::reloadModel()
 void MtpDevice::createFolder(const QString &name, const QString &inPath)
 {
     LIBMTP_Create_Folder(d->device, qstrdup(name.toUtf8()), inPath.toInt(), 0);
-    reloadModel();
 }
 
 void MtpDevice::renameObject(const QString &path, const QString &newName)
@@ -111,19 +111,17 @@ void MtpDevice::renameObject(const QString &path, const QString &newName)
     while (files) {
         if (files->item_id == (uint32_t)path.toInt()) {
             LIBMTP_Set_File_Name(d->device, files, qstrdup(newName.toUtf8()));
-            reloadModel();
             return;
         }
 
         files = files->next;
     }
 
-    LIBMTP_folder_t *folders = LIBMTP_Get_Folder_List(m_device);
+    LIBMTP_folder_t *folders = LIBMTP_Get_Folder_List(d->device);
 
     while (folders) {
         if (folders->folder_id == (uint32_t)path.toInt()) {
             LIBMTP_Set_Folder_Name(d->device, folders, qstrdup(newName.toUtf8()));
-            reloadModel();
             return;
         }
 

@@ -220,6 +220,9 @@ void DeviceSyncView::showLeftViewContextMenu()
 
     menu->addSeparator();
 
+    QAction *renameAction = menu->addAction(KIcon("edit-rename"),
+                                            i18n("&Rename"));
+    connect(renameAction, SIGNAL(triggered()), SLOT(renameObjectLeft()));
     QAction *clearAction = menu->addAction(KIcon("edit-delete"),
                                            i18n("&Delete"));
     connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileLeft()));
@@ -241,6 +244,9 @@ void DeviceSyncView::showRightViewContextMenu()
 
     menu->addSeparator();
 
+    QAction *renameAction = menu->addAction(KIcon("edit-rename"),
+                                            i18n("&Rename"));
+    connect(renameAction, SIGNAL(triggered()), SLOT(renameObjectRight()));
     QAction *clearAction = menu->addAction(KIcon("edit-delete"),
                                            i18n("&Delete File"));
     connect(clearAction, SIGNAL(triggered()), SLOT(deleteFileRight()));
@@ -254,6 +260,30 @@ QString DeviceSyncView::getNewFolderNameDialog()
     QWidget *wg = new QWidget();
     QLabel *lb = new QLabel(i18n("Please enter the name for the new folder:"));
     KLineEdit *ed = new KLineEdit();
+    QVBoxLayout *ly = new QVBoxLayout();
+
+    ly->addWidget(lb);
+    ly->addWidget(ed);
+
+    wg->setLayout(ly);
+
+    dlog->setMainWidget(wg);
+
+    dlog->setModal(true);
+
+    if (dlog->exec() == KDialog::Accepted) {
+        return ed->text();
+    } else {
+        return QString();
+    }
+}
+
+QString DeviceSyncView::getRenameDialog(const QString &oldname)
+{
+    KDialog *dlog = new KDialog(this);
+    QWidget *wg = new QWidget();
+    QLabel *lb = new QLabel(i18n("Please enter the new name for this object:"));
+    KLineEdit *ed = new KLineEdit(oldname);
     QVBoxLayout *ly = new QVBoxLayout();
 
     ly->addWidget(lb);
@@ -296,6 +326,34 @@ void DeviceSyncView::createNewFolderRight()
 
     m_rightDevice->createFolder(name,
                                 m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().at(0)));
+
+    m_rightDevice->reloadModel();
+}
+
+void DeviceSyncView::renameObjectLeft()
+{
+    QString name = getRenameDialog(ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes().at(0).data().toString());
+
+    if (name.isEmpty()) {
+        return;
+    }
+
+    m_leftDevice->renameObject(m_leftDevice->getPathForCurrentIndex(ui_devicesyncview_base.leftTreeView->selectionModel()->selectedIndexes().at(0)),
+                               name);
+
+    m_leftDevice->reloadModel();
+}
+
+void DeviceSyncView::renameObjectRight()
+{
+    QString name = getRenameDialog(ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().at(0).data().toString());
+
+    if (name.isEmpty()) {
+        return;
+    }
+
+    m_rightDevice->renameObject(m_rightDevice->getPathForCurrentIndex(ui_devicesyncview_base.rightTreeView->selectionModel()->selectedIndexes().at(0)),
+                                name);
 
     m_rightDevice->reloadModel();
 }
