@@ -50,6 +50,17 @@ void LocalStorageDevice::createFolder(const QString &name, const QString &inPath
     KIO::NetAccess::synchronousRun(job, 0);
 }
 
+void LocalStorageDevice::renameObject(const QString &path, const QString &newName)
+{
+    KUrl url = KUrl::fromPath(path);
+    KUrl name = KUrl::fromPath(url.directory());
+    name.addPath(newName);
+
+    KIO::SimpleJob *job = KIO::rename(path, name);
+
+    KIO::NetAccess::synchronousRun(job, 0);
+}
+
 void LocalStorageDevice::reloadModel()
 {
     if (m_model) {

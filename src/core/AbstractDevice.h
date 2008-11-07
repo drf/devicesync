@@ -233,10 +233,9 @@ public slots:
     /**
      * Creates a folder into the device
      *
-     * You have to reimplement this function. This is the only non-queued and
-     * non asynchronous function in the device interface. You just have to create
-     * the folder and return right after that. This might change in the future,
-     * though.
+     * You have to reimplement this function. This is function is non-queued and
+     * non asynchronous. You just have to create the folder and return right after that.
+     * This might change in the future, though.
      *
      * @param name the name of the new folder
      * @param inPath the path where the folder should be created.
@@ -245,6 +244,20 @@ public slots:
      * @see getPathForCurrentIndex
      */
     virtual void createFolder(const QString &name, const QString &inPath) = 0;
+    /**
+     * Renames an object in the device
+     *
+     * You have to reimplement this function. This is function is non-queued and
+     * non asynchronous. You just have to rename the given object and return right
+     * after that. The object could be a file or a folder
+     *
+     * @param path the path of the object to rename.
+     *             It is a path returned from getPathForCurrentIndex
+     * @param newName the new name for the object
+     *
+     * @see getPathForCurrentIndex
+     */
+    virtual void renameObject(const QString &path, const QString &newName) = 0;
 
     /**
      * Removes an object from the device

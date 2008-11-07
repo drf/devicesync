@@ -49,6 +49,7 @@ public slots:
     int getByteArrayFromDeviceFile(const QString &path);
 
     void createFolder(const QString &name, const QString &inPath);
+    void renameObject(const QString &path, const QString &newName);
     int removePath(const QString &path);
 
 private slots:

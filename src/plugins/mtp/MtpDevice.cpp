@@ -56,16 +56,25 @@ int mtp_transfer_callback(uint64_t const sent, uint64_t const total, void const 
     return 0;
 }
 
+class MtpDevice::Private {
+    public:
+        Private(const QString &u) : model(0), udi(u) {}
+
+        QAbstractItemModel *model;
+        QString udi;
+        bool success;
+        LIBMTP_mtpdevice_t *device;
+};
+
 MtpDevice::MtpDevice(const QString &udi, AbstractDeviceInterface *parent)
         : AbstractDevice(parent),
-        m_model(0),
-        m_udi(udi)
+        d(new Private(udi))
 {
     connect(LibMtpCallbacks::instance(), SIGNAL(actionPercentageChanged(int)),
             this, SIGNAL(actionProgressChanged(int)));
 
     if (!udi.isEmpty()) {
-        Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
+        Solid::PortableMediaPlayer* pmp = Solid::Device(d->udi).as<Solid::PortableMediaPlayer>();
         QString serial = pmp->driverHandle("mtp").toString();
 
         setName(i18n("Mtp Device (serial %1)", serial));
@@ -78,28 +87,56 @@ MtpDevice::MtpDevice(const QString &udi, AbstractDeviceInterface *parent)
 
 MtpDevice::~MtpDevice()
 {
-    // TODO Auto-generated destructor stub
+    delete d;
 }
 
 void MtpDevice::reloadModel()
 {
     kDebug() << "Creating model";
 
-    ThreadWeaver::Job * thread = new CreateModelThread(m_device, this);
+    ThreadWeaver::Job * thread = new CreateModelThread(d->device, this);
     ThreadWeaver::Weaver::instance()->enqueue(thread);
 }
 
 void MtpDevice::createFolder(const QString &name, const QString &inPath)
 {
-    LIBMTP_Create_Folder(m_device, qstrdup(name.toUtf8()), inPath.toInt(), 0);
+    LIBMTP_Create_Folder(d->device, qstrdup(name.toUtf8()), inPath.toInt(), 0);
+    reloadModel();
+}
+
+void MtpDevice::renameObject(const QString &path, const QString &newName)
+{
+    LIBMTP_file_t *files = LIBMTP_Get_Filelisting_With_Callback(d->device, 0, 0);
+
+    while (files) {
+        if (files->item_id == (uint32_t)path.toInt()) {
+            LIBMTP_Set_File_Name(d->device, files, qstrdup(newName.toUtf8()));
+            reloadModel();
+            return;
+        }
+
+        files = files->next;
+    }
+
+    LIBMTP_folder_t *folders = LIBMTP_Get_Folder_List(m_device);
+
+    while (folders) {
+        if (folders->folder_id == (uint32_t)path.toInt()) {
+            LIBMTP_Set_Folder_Name(d->device, folders, qstrdup(newName.toUtf8()));
+            reloadModel();
+            return;
+        }
+
+        folders = folders->sibling;
+    }
 }
 
 void MtpDevice::connectDevice()
 {
     QString serial;
 
-    if (!m_udi.isEmpty()) {
-        Solid::PortableMediaPlayer* pmp = Solid::Device(m_udi).as<Solid::PortableMediaPlayer>();
+    if (!d->udi.isEmpty()) {
+        Solid::PortableMediaPlayer* pmp = Solid::Device(d->udi).as<Solid::PortableMediaPlayer>();
         serial = pmp->driverHandle("mtp").toString();
     } else {
         serial.clear();
@@ -118,31 +155,31 @@ void MtpDevice::connectDevice()
     switch (err) {
     case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
         kDebug() << "No raw devices found";
-        m_success = false;
+        d->success = false;
         break;
 
     case LIBMTP_ERROR_CONNECTING:
         kDebug() << "Detect: There has been an error connecting. Exiting";
-        m_success = false;
+        d->success = false;
         break;
 
     case LIBMTP_ERROR_MEMORY_ALLOCATION:
         kDebug() << "Detect: Encountered a Memory Allocation Error. Exiting";
-        m_success = false;
+        d->success = false;
         break;
 
     case LIBMTP_ERROR_NONE: {
-        m_success = true;
+        d->success = true;
         break;
     }
 
     default:
         kDebug() << "Unhandled mtp error";
-        m_success = false;
+        d->success = false;
         break;
     }
 
-    if (m_success) {
+    if (d->success) {
         kDebug() << "Got mtp list, connecting to device using thread";
         ThreadWeaver::Weaver::instance()->enqueue(new WorkerThread(numrawdevices, rawdevices, serial, this));
     } else {
@@ -152,7 +189,7 @@ void MtpDevice::connectDevice()
 
 void MtpDevice::connectionSuccessful()
 {
-    setName(QString("%1 (%2)").arg(LIBMTP_Get_Modelname(m_device)).arg(LIBMTP_Get_Friendlyname(m_device)));
+    setName(QString("%1 (%2)").arg(LIBMTP_Get_Modelname(d->device)).arg(LIBMTP_Get_Friendlyname(d->device)));
     emit deviceConnected(this);
 }
 
@@ -192,9 +229,9 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
         break;
     }
 
-    m_device = device;
+    d->device = device;
 
-    if (m_device == 0) {
+    if (d->device == 0) {
         // TODO: error protection
         success = false;
         free(rawdevices);
@@ -202,7 +239,7 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
     }
 
     if (serial.isEmpty()) {
-        kDebug() << "Serial is: " << QString::fromUtf8(LIBMTP_Get_Serialnumber(m_device));
+        kDebug() << "Serial is: " << QString::fromUtf8(LIBMTP_Get_Serialnumber(d->device));
     } else {
         kDebug() << "Serial is: " << serial;
     }
@@ -214,18 +251,18 @@ bool MtpDevice::iterateRawDevices(int numrawdevices, LIBMTP_raw_device_t* rawdev
 
 void MtpDevice::disconnectDevice()
 {
-    LIBMTP_Release_Device(m_device);
+    LIBMTP_Release_Device(d->device);
 }
 
 void MtpDevice::modelCreated(QStandardItemModel *model)
 {
-    m_model = model;
-    setModel(m_model);
+    d->model = model;
+    setModel(d->model);
 }
 
 QString MtpDevice::getPathForCurrentIndex(const QModelIndex &index)
 {
-    return m_model->data(index, 40).toString();
+    return d->model->data(index, 40).toString();
 }
 
 void MtpDevice::transferSuccessful(ThreadWeaver::Job *job)
@@ -261,7 +298,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         trackmeta->bitrate = file->audioProperties()->bitrate();
         trackmeta->samplerate = file->audioProperties()->sampleRate();
 
-        ThreadWeaver::Job * thread = new SendTrackThread(m_device, qstrdup(url.path().toUtf8()),
+        ThreadWeaver::Job * thread = new SendTrackThread(d->device, qstrdup(url.path().toUtf8()),
                 trackmeta, mtp_transfer_callback, this);
         thread->setProperty("ds_transfer_token", token);
         thread->setProperty("ds_filename", url.fileName());
@@ -303,7 +340,7 @@ int MtpDevice::sendFileToDevice(const QString &fromPath, const QString &toPath)
         file->filesize = qfile.size();
         file->parent_id = toPath.toInt();
 
-        ThreadWeaver::Job * thread = new SendFileThread(m_device, qstrdup(url.path().toUtf8()),
+        ThreadWeaver::Job * thread = new SendFileThread(d->device, qstrdup(url.path().toUtf8()),
                 file, mtp_transfer_callback, this);
         thread->setProperty("ds_transfer_token", token);
         thread->setProperty("ds_filename", url.fileName());
@@ -336,7 +373,7 @@ int MtpDevice::removePath(const QString &path)
 {
     int token = getNextTransferToken();
 
-    ThreadWeaver::Job * thread = new DeleteObjectThread(m_device, path.toInt(), this);
+    ThreadWeaver::Job * thread = new DeleteObjectThread(d->device, path.toInt(), this);
     thread->setProperty("ds_transfer_token", token);
     ThreadWeaver::Weaver::instance()->enqueue(thread);
 

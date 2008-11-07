@@ -52,6 +52,7 @@ public slots:
     int getByteArrayFromDeviceFile(const QString &path);
 
     void createFolder(const QString &name, const QString &inPath);
+    void renameObject(const QString &path, const QString &newName);
 
     int removePath(const QString &path);
 
@@ -65,10 +66,8 @@ private slots:
     void connectionSuccessful();
 
 private:
-    QAbstractItemModel *m_model;
-    QString m_udi;
-    bool m_success;
-    LIBMTP_mtpdevice_t *m_device;
+    class Private;
+    Private *d;
 };
 
 class LibMtpCallbacks : public QObject
